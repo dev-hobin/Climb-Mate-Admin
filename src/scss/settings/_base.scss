@@ -1,0 +1,45 @@
+* {
+  box-sizing: border-box;
+}
+ol,
+ul {
+  list-style: none;
+}
+body {
+  word-break: break-all;
+  min-height: 100vh;
+}
+button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.block-container {
+  display: block;
+}
+
+.flex-start-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.flex-center-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-end-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}

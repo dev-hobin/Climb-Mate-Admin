@@ -8,7 +8,7 @@ module.exports = {
     extensions: ['.js', '.scss'],
   },
   entry: {
-    banner: '../src/banner',
+    banner: './src/js/banner',
   },
   module: {
     rules: [
