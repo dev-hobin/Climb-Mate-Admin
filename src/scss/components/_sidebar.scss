@@ -6,21 +6,31 @@
   height: calc(100vh - 3rem);
   overflow-y: auto;
   background-color: $color-sidebar-background;
+  transition: left 300ms ease;
+
+  &.close {
+    left: -200px;
+  }
 
   &__depth-1-item {
     &:hover {
       background-color: $color-sidebar-active;
+      .sidebar__depth-1-link {
+        color: $color-white-smoke;
+      }
     }
-
     &.active {
       background-color: $color-sidebar-active;
+      .sidebar__depth-1-link {
+        color: $color-white-smoke;
+      }
       .sidebar__depth-1-toggle-btn {
         &::before {
           transform: rotate(180deg) translateY(0.5rem);
         }
       }
       .sidebar__depth-2-list {
-        display: block;
+        max-height: 1000px;
       }
     }
   }
@@ -60,7 +70,7 @@
       align-items: center;
       justify-content: center;
       transform: translateY(-50%);
-      transition: rotate, translateY 200ms ease;
+      transition: rotate 200ms ease;
     }
     &:hover {
       color: $color-white-smoke;
@@ -68,7 +78,9 @@
   }
 
   &__depth-2-list {
-    display: none;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 200ms ease;
   }
   &__depth-2-item {
     padding: 0.25rem 0 0.25rem 16px;

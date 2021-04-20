@@ -1,7 +1,13 @@
 .main {
   padding-top: 3rem;
-  padding-left: 200px;
+  width: 100%;
+  max-width: calc(100% - 200px);
+  margin-left: auto;
   height: 100vh;
   background-color: $color-white-smoke;
-  min-width: $bp-tablet;
+  transition: max-width 300ms ease;
+
+  &.close {
+    max-width: 100%;
+  }
 }
