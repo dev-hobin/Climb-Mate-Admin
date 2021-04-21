@@ -8,7 +8,7 @@
   background-color: $color-sidebar-background;
   transition: left 300ms ease;
 
-  &.close {
+  &.hide {
     left: -200px;
   }
 
@@ -70,7 +70,7 @@
       align-items: center;
       justify-content: center;
       transform: translateY(-50%);
-      transition: rotate 200ms ease;
+      transition: transform 200ms ease;
     }
     &:hover {
       color: $color-white-smoke;
@@ -85,6 +85,12 @@
   &__depth-2-item {
     padding: 0.25rem 0 0.25rem 16px;
     font-weight: 400;
+
+    &.active {
+      .sidebar__depth-2-link {
+        color: $color-white-smoke;
+      }
+    }
   }
   &__depth-2-link {
     font-size: 1rem;
@@ -94,8 +100,7 @@
     color: $color-sidebar-text;
     padding: 0.5rem 16px;
 
-    &:hover,
-    &.active {
+    &:hover {
       color: $color-white-smoke;
     }
   }

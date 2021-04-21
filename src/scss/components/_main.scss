@@ -7,7 +7,7 @@
   background-color: $color-white-smoke;
   transition: max-width 300ms ease;
 
-  &.close {
+  &.hide {
     max-width: 100%;
   }
 }
