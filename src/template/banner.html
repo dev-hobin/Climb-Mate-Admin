@@ -62,6 +62,32 @@
         </li>
       </ul>
     </nav>
-    <main class="main"></main>
+    <main class="main">
+      <article class="image-uploader" data-uploader="banner">
+        <input
+          data-image-input
+          type="file"
+          name="image[]"
+          id="files-input"
+          class="image-uploader__files-input"
+          maxlength="30"
+          accept=".jpg,.jpeg,.png"
+          multiple
+        />
+        <div class="flex-between-container">
+          <div class="flex-center-container">
+            <h1 class="image-uploader__title">배너 사진</h1>
+            <span class="image-uploader__image-count" data-image-count>(1/30)</span>
+          </div>
+          <div class="flex-end-container">
+            <label class="image-uploader__add-image-btn" for="files-input" data-add-btn>사진 추가</label>
+          </div>
+        </div>
+        <ol class="image-uploader__image-list" data-image-list></ol>
+        <div class="flex-center-container image-uploader__upload-btn-container">
+          <button class="image-uploader__upload-btn" data-upload-btn>사진 수정</button>
+        </div>
+      </article>
+    </main>
   </body>
 </html>

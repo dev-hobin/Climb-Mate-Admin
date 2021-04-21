@@ -1,0 +1,69 @@
+.image-uploader {
+  padding: 1rem;
+
+  &__files-input {
+    display: none;
+  }
+  &__title {
+    font-size: $font-size-medium;
+  }
+  &__image-count {
+    font-size: $font-size-default;
+    color: $color-gray;
+  }
+
+  &__add-image-btn {
+    font-size: $font-size-default;
+    font-weight: 700;
+    line-height: $font-size-default;
+    border: 2px solid $color-blue;
+    background-color: $color-blue;
+    border-radius: $border-radius-rectangle;
+    color: $color-white;
+    padding: 0.3em 0.5em;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $color-light-blue;
+      border-color: $color-light-blue;
+    }
+  }
+
+  &__image-list {
+    padding: 0.5rem;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    background-color: $color-white;
+    min-height: calc(200px + 1rem);
+    border: 3px dotted $color-light-gray;
+  }
+
+  &__none-info {
+    font-size: $font-size-medium;
+    color: $color-gray;
+    font-weight: 700;
+  }
+
+  &__upload-btn-container {
+    margin-top: 1rem;
+  }
+  &__upload-btn {
+    font-size: $font-size-default;
+    font-weight: 700;
+    line-height: $font-size-default;
+    border: 2px solid $color-red;
+    background-color: $color-red;
+    border-radius: $border-radius-rectangle;
+    color: $color-white;
+    padding: 0.5em 1em;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $color-light-red;
+      border-color: $color-light-red;
+    }
+  }
+}
