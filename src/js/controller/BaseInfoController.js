@@ -32,13 +32,6 @@ const BaseInfoController = class {
     this._modalView.setup(document.querySelector('main'));
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
-    this._bannerImageUploadView //
-      .setup(document.querySelector(`[data-uploader="banner"]`))
-      .on('@addImages', event => this._addImages(event.detail))
-      .on('@changeImageLocation', event => this._changeImageLocation(event.detail))
-      .on('@deleteImage', event => this._deleteImage(event.detail))
-      .on('@uploadImages', () => this._uploadImages());
-
     this._lifeCycle();
   };
 
