@@ -7,6 +7,7 @@ const ImageUploadModel = class extends Model {
     super();
   }
 
+  /* 인터페이스 */
   getBannerImages = async (centerId = '') => {
     // 미리 이미지 아이템이 등록되있다고 가정한 더미 데이터
     return [
@@ -22,7 +23,6 @@ const ImageUploadModel = class extends Model {
       'http://placehold.it/200x200.jpg/F0E68C/ffffff?text=10',
     ];
   };
-
   vaildateImageFiles = (fileList, initialCount) => {
     if (fileList.length === 0) return [];
 
@@ -61,7 +61,15 @@ const ImageUploadModel = class extends Model {
 
     return [validatedFiles, errorList];
   };
+  uploadImages = async (files = []) => {
+    console.log(`${tag} 이미지 업로드 시작`);
+    console.log(`${tag} 업로드 진행중`);
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    console.log(`${tag} 업로드 완료 후 결과 반환`);
+    return true;
+  };
 
+  /* 메소드 */
   _checkImageCount = count => {
     if (count >= 30) return false;
     else return true;

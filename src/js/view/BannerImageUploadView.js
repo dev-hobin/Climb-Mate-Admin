@@ -37,7 +37,7 @@ const BannerImageUploadView = class extends View {
     // 이미지 리스트에 아이템들 추가
     this._imageList.append(...itemsArray);
     // 이미지 개수 설정
-    this._imageCount.textContent = `(${this._imageList.children.length} / 30)`;
+    this._imageCount.textContent = `( ${this._imageList.children.length} / 30 )`;
   };
   addItems = imageFiles => {
     this._removeNoneMessage();
@@ -75,6 +75,8 @@ const BannerImageUploadView = class extends View {
       const closestItemInfo = this._getClosestItemInfo(this._imageList, event.clientX, event.clientY);
       if (closestItemInfo.length === 0) return;
       const draggingItem = document.querySelector('.dragging');
+      // 외부에서 파일 드래그 해왔을 경우
+      if (!draggingItem) return;
       const { appendDirection, item } = closestItemInfo[0];
       if (appendDirection === 'after') item.insertAdjacentElement('afterend', draggingItem);
       else item.insertAdjacentElement('beforebegin', draggingItem);

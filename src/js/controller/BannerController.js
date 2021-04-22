@@ -1,5 +1,6 @@
 import HeaderView from '../view/HeaderView';
 import SidebarView from '../view/SidebarView';
+import ModalView from '../view/ModalView';
 import BannerImageUploadView from '../view/BannerImageUploadView.js';
 
 import ImageUploadModel from '../model/ImageUploadModel.js';
@@ -16,6 +17,7 @@ const BannerController = class {
     // 뷰
     this._headerView = new HeaderView();
     this._sidebarView = new SidebarView();
+    this._modalView = new ModalView();
     this._bannerImageUploadView = new BannerImageUploadView();
 
     // 모델
@@ -36,6 +38,8 @@ const BannerController = class {
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
       .on('@toggleSideMenu', event => this._toggleSideMenu(event.detail));
+
+    this._modalView.setup(document.querySelector('main'));
 
     this._bannerImageUploadView //
       .setup(document.querySelector(`[data-uploader="banner"]`))
@@ -128,9 +132,11 @@ const BannerController = class {
     console.log(this._bannerImageArray);
   };
   // 이미지 업로드
-  _uploadImages = () => {
+  _uploadImages = async () => {
     if (!this._checkImagesChange(this._initialBannerImageArray, this._bannerImageArray))
       return console.log('이미지 변경사항 없음');
+    // 로딩 모달 띄우기
+    this._modalView.showLoadingModal('사진을 수정중입니다');
     console.log('이미지 업로드 진행');
     const orderedList = this._bannerImageArray.map((image, index) => {
       if (typeof image === 'object') return { order: index + 1, file: image };
@@ -149,6 +155,18 @@ const BannerController = class {
     console.log(urls);
     console.log('삭제할 이미지');
     console.log(willDeleted);
+
+    // 사진 업로드 결과 받기
+    const isSuccess = await this._imageUploadModel.uploadImages([]);
+    if (isSuccess) {
+      console.log(`${tag} 업로드 결과 : ${isSuccess}`);
+      this._modalView.removeModal();
+      console.log(`${tag} 사진 수정 완료 후 페이지 reload`);
+    } else {
+      console.log(`${tag} 업로드 결과 : ${isSuccess}`);
+      // todo : 에러 모달 만들어야함
+      console.log('이미지 업로드 실패');
+    }
   };
   // 이미지들을 수정했는지 안했는지 확인
   _checkImagesChange = (initialImages, currentImages) => {
