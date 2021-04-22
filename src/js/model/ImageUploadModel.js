@@ -40,6 +40,7 @@ const ImageUploadModel = class extends Model {
         });
         break;
       }
+      currentImageCount++;
       // 2. 확장자 검사
       if (!this._checkImageExtension(file.name)) {
         errorList.push({
@@ -71,6 +72,7 @@ const ImageUploadModel = class extends Model {
 
   /* 메소드 */
   _checkImageCount = count => {
+    console.log(count);
     if (count >= 30) return false;
     else return true;
   };

@@ -1,6 +1,7 @@
 import HeaderView from '../view/HeaderView';
 import SidebarView from '../view/SidebarView';
 import ModalView from '../view/ModalView';
+import NotificationView from '../view/NotificationView';
 import BannerImageUploadView from '../view/BannerImageUploadView.js';
 
 import ImageUploadModel from '../model/ImageUploadModel.js';
@@ -18,6 +19,7 @@ const BannerController = class {
     this._headerView = new HeaderView();
     this._sidebarView = new SidebarView();
     this._modalView = new ModalView();
+    this._notificationView = new NotificationView();
     this._bannerImageUploadView = new BannerImageUploadView();
 
     // 모델
@@ -40,6 +42,7 @@ const BannerController = class {
       .on('@toggleSideMenu', event => this._toggleSideMenu(event.detail));
 
     this._modalView.setup(document.querySelector('main'));
+    this._notificationView.setup(document.querySelector('[data-notification]'));
 
     this._bannerImageUploadView //
       .setup(document.querySelector(`[data-uploader="banner"]`))
@@ -106,8 +109,10 @@ const BannerController = class {
     }
 
     if (errorList.length === 0) return;
-    // 유효성 검사 통과 못한 파일들 있다면 에러 출력
-    console.log(errorList);
+    for (const errorInfo of errorList) {
+      const { title, description } = errorInfo;
+      this._notificationView.addErrorNotification(title, description);
+    }
   };
   // 이미지 삭제
   _deleteImage = ({ index }) => {
@@ -134,7 +139,7 @@ const BannerController = class {
   // 이미지 업로드
   _uploadImages = async () => {
     if (!this._checkImagesChange(this._initialBannerImageArray, this._bannerImageArray))
-      return console.log('이미지 변경사항 없음');
+      return this._notificationView.addCautionNotification('변경사항 없음', '수정할 사진이 없습니다');
     // 로딩 모달 띄우기
     this._modalView.showLoadingModal('사진을 수정중입니다');
     console.log('이미지 업로드 진행');
