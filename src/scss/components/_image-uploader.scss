@@ -5,7 +5,7 @@
     display: none;
   }
   &__title {
-    font-size: $font-size-medium;
+    font-size: $font-size-large;
   }
   &__image-count {
     font-size: $font-size-default;
@@ -20,7 +20,7 @@
     background-color: $color-blue;
     border-radius: $border-radius-rectangle;
     color: $color-white;
-    padding: 0.3em 0.5em;
+    padding: 0.5em 1em;
     cursor: pointer;
 
     &:hover {
