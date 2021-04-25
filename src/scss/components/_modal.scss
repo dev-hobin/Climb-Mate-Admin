@@ -28,4 +28,67 @@
       padding: 1rem 0 2rem 0;
     }
   }
+  &__contents[data-type='alert'] {
+    background-color: $color-white;
+    border-radius: $border-radius-round;
+    min-width: 15rem;
+    height: fit-content;
+
+    .modal__alert-icon {
+      display: block;
+      font-size: 5rem;
+      padding: 2.5rem 5rem 1.5rem 5rem;
+      color: #ce8500;
+    }
+
+    .modal__alert-message {
+      font-size: 1rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .modal__alert-btn-container {
+      padding: 1rem 0;
+
+      .cancel-btn {
+        max-width: 40%;
+        flex: 1;
+        margin-right: 0.5rem;
+        font-size: $font-size-default;
+        font-weight: 700;
+        line-height: $font-size-default;
+        border: 2px solid $color-gray;
+        background-color: $color-gray;
+        border-radius: $border-radius-rectangle;
+        color: $color-white;
+        padding: 0.5em 1em;
+        cursor: pointer;
+
+        &:hover {
+          background-color: $color-light-black;
+          border-color: $color-light-black;
+        }
+      }
+      .confirm-btn {
+        max-width: 40%;
+        flex: 1;
+        margin-left: 0.5rem;
+        font-size: $font-size-default;
+        font-weight: 700;
+        line-height: $font-size-default;
+        border: 2px solid $color-red;
+        background-color: $color-red;
+        border-radius: $border-radius-rectangle;
+        color: $color-white;
+        padding: 0.5em 1em;
+        cursor: pointer;
+
+        &:hover {
+          background-color: $color-light-red;
+          border-color: $color-light-red;
+        }
+      }
+    }
+  }
 }
