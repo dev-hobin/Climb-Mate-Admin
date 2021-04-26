@@ -41,14 +41,17 @@ const BannerController = class {
       .setup(document.querySelector(`[data-sidebar]`))
       .on('@toggleSideMenu', event => this._toggleSideMenu(event.detail));
 
-    this._modalView.setup(document.querySelector('main'));
+    this._modalView
+      .setup(document.querySelector('main'))
+      .on('@deleteBannerItem', event => this._deleteImage(event.detail));
+
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
     this._bannerImageUploadView //
       .setup(document.querySelector(`[data-uploader="banner"]`))
       .on('@addImages', event => this._addImages(event.detail))
       .on('@changeImageLocation', event => this._changeImageLocation(event.detail))
-      .on('@deleteImage', event => this._deleteImage(event.detail))
+      .on('@showAlert', event => this._showAlertModal(event.detail))
       .on('@uploadImages', () => this._uploadImages());
 
     this._lifeCycle();
@@ -114,7 +117,11 @@ const BannerController = class {
       this._notificationView.addErrorNotification(title, description);
     }
   };
-  // 이미지 삭제
+  // 경고 모달 보여주기
+  _showAlertModal = ({ description, eventInfo }) => {
+    this._modalView.showAlertModal(description, eventInfo);
+  };
+  // 배너 이미지 삭제
   _deleteImage = ({ index }) => {
     // 현재 이미지 배열 업데이트하고 삭제될 이미지 따로 모은다
     const deletedImages = this._bannerImageArray.splice(index, 1);
@@ -122,6 +129,8 @@ const BannerController = class {
     this._deletedImageArray.push(...deletedImages);
     // 업데이트 완료 됐으면 뷰에게 아이템 삭제하라고 요청한다
     this._bannerImageUploadView.removeItem(index);
+    // 이미지 삭제 alert 삭제
+    this._modalView.removeModal();
     console.log('이미지 삭제');
   };
   // 이미지 자리 변경

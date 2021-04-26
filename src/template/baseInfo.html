@@ -63,8 +63,9 @@
       </ul>
     </nav>
     <main class="main">
+      <h1 class="visually-hidden">기본 정보</h1>
       <!-- 체크박스 -->
-      <label class="checkbox">
+      <!-- <label class="checkbox">
         <input class="checkbox__input" type="checkbox" checked />
         <span class="checkbox__check-mark"></span>
         <span class="checkbox__label">체크박스</span>
@@ -73,9 +74,9 @@
         <input class="checkbox__input" type="checkbox" checked />
         <span class="checkbox__check-mark"></span>
         <span class="checkbox__label">체크박스</span>
-      </label>
+      </label> -->
       <!-- 라디오 버튼 -->
-      <label class="radio">
+      <!-- <label class="radio">
         <input class="radio__input" type="radio" name="sample" checked />
         <div class="radio__check-mark"></div>
         <span class="radio__label">라디오 버튼</span>
@@ -84,8 +85,197 @@
         <input class="radio__input" type="radio" name="sample" />
         <div class="radio__check-mark"></div>
         <span class="radio__label">라디오 버튼</span>
-      </label>
+      </label> -->
+      <div class="base-info-container">
+        <article class="center-info">
+          <h2 class="center-info__title">센터 정보</h2>
+          <ul class="center-info__list">
+            <li class="center-info-item" data-type="brand">
+              <h3 class="center-info-item__title">대표 이미지</h3>
+              <label class="center-info-item__img-label">
+                <input class="center-info-item__img-input" type="file" />
+                <figure class="center-info-item__figure">
+                  <img class="center-info-item__img" src="" alt="대표 이미지" />
+                </figure>
+              </label>
+            </li>
+            <li class="center-info-item" data-type="name">
+              <h3 class="center-info-item__title">센터 이름</h3>
+              <input class="center-info-item__name-input" type="text" placeholder="센터 이름" />
+            </li>
+            <li class="center-info-item" data-type="address">
+              <h3 class="center-info-item__title">주소</h3>
+              <div class="flex-column-container center-info-item__address-container">
+                <span class="center-info-item__address">사과 클라이밍장 주소</span>
+                <input class="center-info-item__address-description-input" type="text" placeholder="상세 주소" />
+              </div>
+            </li>
+            <li class="center-info-item" data-type="tel">
+              <h3 class="center-info-item__title">전화번호</h3>
+              <div class="flex-center-container center-info-item__tel-container">
+                <input class="center-info-item__tel-input" type="text" placeholder="000" data-type="first" />
+                <span class="center-info-item__hyphen">-</span>
+                <input class="center-info-item__tel-input" type="text" placeholder="0000" data-type="middle" />
+                <span class="center-info-item__hyphen">-</span>
+                <input class="center-info-item__tel-input" type="text" placeholder="0000" data-type="last" />
+              </div>
+            </li>
+            <li class="center-info-item" data-type="phone">
+              <h3 class="center-info-item__title">휴대전화</h3>
+              <div class="flex-center-container center-info-item__phone-container">
+                <input class="center-info-item__phone-input" type="text" placeholder="000" data-type="first" />
+                <span class="center-info-item__hyphen">-</span>
+                <input class="center-info-item__phone-input" type="text" placeholder="0000" data-type="middle" />
+                <span class="center-info-item__hyphen">-</span>
+                <input class="center-info-item__phone-input" type="text" placeholder="0000" data-type="last" />
+              </div>
+            </li>
+            <li class="center-info-item" data-type="introduce">
+              <h3 class="center-info-item__title">소개</h3>
+              <textarea
+                class="center-info-item__textarea"
+                cols="30"
+                rows="10"
+                placeholder="클라이밍장 소개 내용을 입력해주세요"
+              ></textarea>
+            </li>
+            <li class="center-info-item" data-type="parking-lot">
+              <h3 class="center-info-item__title">주차장</h3>
+              <div class="flex-column-container center-info-item__wrapper">
+                <div class="flex-start-container">
+                  <label class="radio center-info-item__radio">
+                    <input class="radio__input" type="radio" name="parking-lot" checked />
+                    <div class="radio__check-mark"></div>
+                    <span class="radio__label center-info-item__parking-lot-label">있음</span>
+                  </label>
+                  <label class="radio center-info-item__radio">
+                    <input class="radio__input" type="radio" name="parking-lot" />
+                    <div class="radio__check-mark"></div>
+                    <span class="radio__label center-info-item__parking-lot-label">없음</span>
+                  </label>
+                </div>
+                <textarea
+                  class="center-info-item__parking-lot-textarea"
+                  placeholder="주차장 위치를 설명해주세요"
+                  cols="30"
+                  rows="5"
+                ></textarea>
+              </div>
+            </li>
+          </ul>
+        </article>
 
+        <div class="flex-column-container base-info-container__article-wrapper">
+          <article class="setting-info">
+            <h2 class="setting-info__title">세팅 정보</h2>
+            <ul class="setting-info__list">
+              <li class="setting-info-item" data-type="setting-ratio">
+                <h3 class="setting-info-item__title">세팅 비율</h3>
+                <div class="flex-start-container">
+                  <div class="setting-info-item__setting-type-name">볼더링</div>
+                  <input class="setting-info-item__ratio-input" type="text" placeholder="6" data-type="bordering" />
+                  <div class="setting-info-item__colon">:</div>
+                  <div class="setting-info-item__setting-type-name">지구력</div>
+                  <input class="setting-info-item__ratio-input" type="text" placeholder="4" data-type="endurance" />
+                </div>
+              </li>
+              <li class="setting-info-item" data-type="setting-cycle">
+                <h3 class="setting-info-item__title">세팅 주기</h3>
+                <input class="setting-info-item__cycle-input" type="text" placeholder="세팅 주기를 설명해주세요" />
+              </li>
+              <li class="setting-info-item" data-type="next-date">
+                <h3 class="setting-info-item__title">다음 세팅 날짜</h3>
+                <input class="setting-info-item__next-date-input" type="text" placeholder="ex) 2021-04-26" />
+              </li>
+              <li class="setting-info-item" data-type="recent-date">
+                <h3 class="setting-info-item__title">최근 세팅 날짜</h3>
+                <input class="setting-info-item__recent-date-input" type="text" placeholder="ex) 2021-04-26" />
+              </li>
+            </ul>
+          </article>
+
+          <article class="working-time-info">
+            <h2 class="working-time-info__title">운영시간</h2>
+            <ul class="working-time-info__list">
+              <li class="working-time-info-item" data-type="weekday">
+                <h3 class="working-time-info-item__title">평일</h3>
+                <input class="working-time-info-item__time-input" type="text" placeholder="ex) 08:00 - 22:00" />
+              </li>
+              <li class="working-time-info-item" data-type="weekend">
+                <h3 class="working-time-info-item__title">주말</h3>
+                <input class="working-time-info-item__time-input" type="text" placeholder="ex) 08:00 - 22:00" />
+              </li>
+              <li class="working-time-info-item" data-type="holiday">
+                <h3 class="working-time-info-item__title">공휴일</h3>
+                <input class="working-time-info-item__time-input" type="text" placeholder="ex) 08:00 - 22:00" />
+              </li>
+              <li class="working-time-info-item" data-type="notice">
+                <h3 class="working-time-info-item__title">알림</h3>
+                <textarea
+                  class="working-time-info-item__notice-textarea"
+                  cols="30"
+                  rows="5"
+                  placeholder="운영시간에 대해서 추가로 표시할 정보를 적어주세요"
+                ></textarea>
+              </li>
+            </ul>
+          </article>
+
+          <article class="social-info">
+            <h2 class="social-info__title">소셜 정보</h2>
+            <ul class="social-info__list">
+              <li class="social-info-item" data-type="instagram">
+                <label class="checkbox">
+                  <input class="checkbox__input" type="checkbox" />
+                  <span class="checkbox__check-mark"></span>
+                  <h3 class="checkbox__label social-info-item__title">인스타그램</h3>
+                </label>
+                <input class="social-info-item__url-input" type="url" placeholder="url을 입력해주세요" />
+              </li>
+              <li class="social-info-item" data-type="facebook">
+                <label class="checkbox">
+                  <input class="checkbox__input" type="checkbox" />
+                  <span class="checkbox__check-mark"></span>
+                  <h3 class="checkbox__label social-info-item__title">페이스북</h3>
+                </label>
+                <input class="social-info-item__url-input" type="url" placeholder="url을 입력해주세요" />
+              </li>
+              <li class="social-info-item" data-type="naver-band">
+                <label class="checkbox">
+                  <input class="checkbox__input" type="checkbox" />
+                  <span class="checkbox__check-mark"></span>
+                  <h3 class="checkbox__label social-info-item__title">네이버 밴드</h3>
+                </label>
+                <input class="social-info-item__url-input" type="url" placeholder="url을 입력해주세요" />
+              </li>
+              <li class="social-info-item" data-type="naver-cafe">
+                <label class="checkbox">
+                  <input class="checkbox__input" type="checkbox" />
+                  <span class="checkbox__check-mark"></span>
+                  <h3 class="checkbox__label social-info-item__title">네이버 카페</h3>
+                </label>
+                <input class="social-info-item__url-input" type="url" placeholder="url을 입력해주세요" />
+              </li>
+              <li class="social-info-item" data-type="daum-cafe">
+                <label class="checkbox">
+                  <input class="checkbox__input" type="checkbox" />
+                  <span class="checkbox__check-mark"></span>
+                  <h3 class="checkbox__label social-info-item__title">다음 카페</h3>
+                </label>
+                <input class="social-info-item__url-input" type="url" placeholder="url을 입력해주세요" />
+              </li>
+              <li class="social-info-item" data-type="homepage">
+                <label class="checkbox">
+                  <input class="checkbox__input" type="checkbox" />
+                  <span class="checkbox__check-mark"></span>
+                  <h3 class="checkbox__label social-info-item__title">홈 페이지</h3>
+                </label>
+                <input class="social-info-item__url-input" type="url" placeholder="url을 입력해주세요" />
+              </li>
+            </ul>
+          </article>
+        </div>
+      </div>
       <div class="notification" data-notification></div>
     </main>
   </body>

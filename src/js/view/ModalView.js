@@ -23,18 +23,42 @@ const ModalView = class extends View {
 
     this._element.append(modal);
   };
+  showAlertModal = (alertMessage = '', eventInfo = {}) => {
+    const modal = document.createElement('div');
+    modal.setAttribute('class', 'modal');
+    modal.setAttribute('data-modal', '');
+    modal.innerHTML = this._getAlertContentsHtml(alertMessage);
+
+    const cancelBtn = modal.querySelector(`[data-type="cancel"]`);
+    const confirm = modal.querySelector(`[data-type="confirm"]`);
+
+    cancelBtn.addEventListener('click', () => this.removeModal());
+    confirm.addEventListener('click', () => this.trigger('@deleteBannerItem', { index: eventInfo.index }));
+
+    this._element.append(modal);
+  };
   removeModal = () => {
     this._element.querySelector('[data-modal]').remove();
   };
 
   /* 메서드 */
-  _getLoaingContentsHtml = loaingMessage => {
+  _getLoaingContentsHtml = loadingMessage => {
     return `<div class="modal__contents" data-type="loading">
             <div class="loading-spinner modal__loading-spinner">
                 <div class="loading-spinner__item"></div>
                 <div class="loading-spinner__item"></div>
             </div>
-            <p class="modal__loading-message">${loaingMessage}</p>
+            <p class="modal__loading-message">${loadingMessage}</p>
+          </div>`;
+  };
+  _getAlertContentsHtml = alertMessage => {
+    return `<div class="modal__contents" data-type="alert">
+            <i class="fas fa-exclamation-triangle modal__alert-icon"></i>
+            <p class="modal__alert-message">${alertMessage}</p>
+            <div class="flex-center-container modal__alert-btn-container">
+              <button class="cancel-btn" data-type="cancel">취소</button>
+              <button class="confirm-btn" data-type="confirm">확인</button>
+            </div>
           </div>`;
   };
 };

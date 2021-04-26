@@ -1,0 +1,175 @@
+.center-info {
+  border: 1px solid $color-light-black;
+  background-color: $color-white;
+  flex: 1;
+  min-width: calc(10rem + 300px);
+  margin: 0.5rem;
+
+  &__title {
+    font-size: $font-size-medium;
+    font-weight: 700;
+    padding: 1rem;
+    border-bottom: 1px solid $color-light-black;
+  }
+  &__list {
+    padding: 1rem;
+  }
+}
+
+.center-info-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0 1rem 0;
+
+  &__title {
+    min-width: 8rem;
+  }
+
+  &[data-type='brand'] {
+    .center-info-item__img-input {
+      display: none;
+    }
+    .center-info-item__img-label {
+      cursor: pointer;
+      border: 2px dotted $color-light-gray;
+      padding: 0.5rem;
+      min-width: 300px;
+      height: 300px;
+    }
+    .center-info-item__figure {
+      width: 100%;
+      height: 100%;
+      border: 1px solid $color-light-gray;
+    }
+    .center-info-item__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  &[data-type='name'] {
+    .center-info-item__name-input {
+      border: 2px solid $color-light-gray;
+      padding: 0.2rem 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      min-width: 300px;
+      width: 100%;
+
+      &::placeholder {
+        font-weight: 400;
+      }
+    }
+  }
+  &[data-type='address'] {
+    .center-info-item__address-container {
+      width: 100%;
+    }
+    .center-info-item__address {
+      font-size: 1rem;
+      font-weight: 700;
+      min-width: 300px;
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    .center-info-item__address-description-input {
+      border: 2px solid $color-light-gray;
+      padding: 0.2rem 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      min-width: 300px;
+      width: 100%;
+
+      &::placeholder {
+        font-weight: 400;
+      }
+    }
+  }
+
+  &[data-type='tel'] {
+    .center-info-item__tel-container {
+      max-width: 300px;
+    }
+    .center-info-item__tel-input {
+      min-width: 0;
+      border: 2px solid $color-light-gray;
+      padding: 0.2rem 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+
+      &::placeholder {
+        font-weight: 400;
+      }
+    }
+    .center-info-item__hyphen {
+      font-size: 700;
+      font-size: 1.2rem;
+      padding: 0 0.5rem;
+    }
+  }
+  &[data-type='phone'] {
+    .center-info-item__phone-container {
+      max-width: 300px;
+    }
+    .center-info-item__phone-input {
+      min-width: 0;
+      border: 2px solid $color-light-gray;
+      padding: 0.2rem 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+
+      &::placeholder {
+        font-weight: 400;
+      }
+    }
+    .center-info-item__hyphen {
+      font-size: 700;
+      font-size: 1.2rem;
+      padding: 0 0.5rem;
+    }
+  }
+  &[data-type='introduce'] {
+    .center-info-item__textarea {
+      border: 2px solid $color-light-gray;
+      padding: 0.2rem 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      min-width: 300px;
+      width: 100%;
+      resize: none;
+
+      &::placeholder {
+        font-weight: 400;
+      }
+    }
+  }
+
+  &[data-type='parking-lot'] {
+    .center-info-item__wrapper {
+      width: 100%;
+
+      .center-info-item__radio {
+        margin-right: 0.5rem;
+      }
+      .center-info-item__parking-lot-label {
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.2rem;
+      }
+      .center-info-item__parking-lot-textarea {
+        border: 2px solid $color-light-gray;
+        padding: 0.2rem 0.5rem;
+        margin-top: 1rem;
+        font-size: 1rem;
+        font-weight: 700;
+        min-width: 300px;
+        width: 100%;
+        resize: none;
+
+        &::placeholder {
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}

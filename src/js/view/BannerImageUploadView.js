@@ -127,8 +127,11 @@ const BannerImageUploadView = class extends View {
     const deleteBtn = item.querySelector('[data-delete-btn]');
     deleteBtn.addEventListener('click', () => {
       const deletedIndex = Array.from(item.parentNode.children).indexOf(item);
-      this.trigger('@deleteImage', {
-        index: deletedIndex,
+      this.trigger('@showAlert', {
+        description: '정말로 삭제하시겠습니까?',
+        eventInfo: {
+          index: deletedIndex,
+        },
       });
     });
   };

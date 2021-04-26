@@ -11,3 +11,19 @@
 @import './components/modal';
 @import './components/notification';
 @import './components/loading-spinner';
+
+@import './components/center-info';
+@import './components/setting-info';
+@import './components/social-info';
+@import './components/working-time-info';
+
+.base-info-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: 0.5rem;
+
+  &__article-wrapper {
+    flex: 1;
+  }
+}
