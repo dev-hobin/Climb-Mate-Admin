@@ -12,6 +12,8 @@
     margin-bottom: 1rem;
   }
   &__price-name-input {
+    display: block;
+    min-width: 0;
     flex: 1;
     margin-right: 0.5rem;
     border: 2px solid $color-light-gray;
@@ -25,6 +27,8 @@
     }
   }
   &__price-input {
+    display: block;
+    min-width: 0;
     flex: 1;
     margin: 0 0.5rem;
     border: 2px solid $color-light-gray;

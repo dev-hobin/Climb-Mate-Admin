@@ -10,12 +10,13 @@ ul {
 body {
   font-family: 'Noto Sans KR', sans-serif;
   word-break: break-all;
-  overflow: auto;
+  min-width: $bp-tablet;
   min-height: 100vh;
+  overflow: auto;
 }
 main {
+  display: block;
   min-height: 100vh;
-  min-width: $bp-tablet;
 }
 button,
 input,
