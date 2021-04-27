@@ -15,7 +15,7 @@ body {
 }
 main {
   min-height: 100vh;
-  min-width: 768px;
+  min-width: $bp-tablet;
 }
 button,
 input,

@@ -11,6 +11,7 @@ module.exports = {
     banner: './src/js/banner',
     baseInfo: './src/js/baseInfo',
     detailInfo: './src/js/detailInfo',
+    price: './src/js/price',
   },
   module: {
     rules: [
@@ -43,6 +44,11 @@ module.exports = {
       template: paths.src + '/template/detailInfo.html',
       filename: 'detailInfo.html',
       chunks: ['detailInfo'],
+    }),
+    new HtmlWebpackPlugin({
+      template: paths.src + '/template/price.html',
+      filename: 'price.html',
+      chunks: ['price'],
     }),
   ],
 };

@@ -1,0 +1,164 @@
+.extra-price-info {
+  padding: 1rem;
+  &__title {
+    font-size: $font-size-large;
+    margin-bottom: 1rem;
+  }
+  &__add-price-container {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0 20%;
+    margin-bottom: 1rem;
+  }
+  &__price-name-input {
+    flex: 1;
+    margin-right: 0.5rem;
+    border: 2px solid $color-light-gray;
+    padding: 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+
+    &::placeholder {
+      font-weight: 400;
+    }
+  }
+  &__price-input {
+    flex: 1;
+    margin: 0 0.5rem;
+    border: 2px solid $color-light-gray;
+    padding: 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+
+    &::placeholder {
+      font-weight: 400;
+    }
+  }
+  &__add-price-btn {
+    margin-left: 0.5rem;
+    width: 3rem;
+    height: 3rem;
+    background-color: $color-light-blue;
+    min-width: 3rem;
+
+    &:hover {
+      background-color: $color-blue;
+    }
+
+    &-icon {
+      font-size: 1.2rem;
+      color: $color-white;
+    }
+  }
+  &__price-list {
+    background-color: $color-white;
+    border: 2px solid $color-light-gray;
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.extra-price-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+
+  &__title {
+    font-size: 1rem;
+  }
+  &__horizontal-line {
+    flex: 1;
+    height: 1px;
+    min-width: 1rem;
+    background: $color-light-gray;
+    margin: 0 1rem;
+  }
+  &__price {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  &__price-name-input {
+    display: block;
+    min-width: 0;
+    max-width: 12.5rem;
+    margin-right: 0.5rem;
+    border: 2px solid $color-light-gray;
+    padding: 0.2rem 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+
+    &::placeholder {
+      font-weight: 400;
+    }
+  }
+  &__price-input {
+    display: block;
+    min-width: 0;
+    max-width: 6.25rem;
+    margin-right: 0.5rem;
+    border: 2px solid $color-light-gray;
+    padding: 0.2rem 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+
+    &::placeholder {
+      font-weight: 400;
+    }
+  }
+  &__won {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  &__btn-container {
+    margin-left: 1rem;
+  }
+  &__update-btn {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 0.5rem;
+    opacity: 0.7;
+    transition: opacity 200ms ease;
+
+    &-icon {
+      font-size: 1rem;
+      color: $color-light-blue;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+  &__delete-btn {
+    width: 2rem;
+    height: 2rem;
+    opacity: 0.5;
+    transition: opacity 200ms ease;
+
+    &-icon {
+      font-size: 1rem;
+      color: $color-light-red;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  @include mq($bp-desktop) {
+    width: 50%;
+
+    &:nth-child(odd) {
+      padding-right: 1rem;
+    }
+    &:nth-child(even) {
+      padding-left: 1rem;
+    }
+  }
+}

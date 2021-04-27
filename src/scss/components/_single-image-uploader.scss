@@ -1,0 +1,32 @@
+.single-image-uploader {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  &__title {
+    font-size: $font-size-large;
+    margin-bottom: 1rem;
+  }
+  &__image-label {
+    cursor: pointer;
+    border: 2px dotted $color-light-gray;
+    background-color: $color-white;
+    padding: 0.5rem;
+    min-width: 300px;
+    height: 300px;
+  }
+  &__image-input {
+    display: none;
+  }
+  &__figure {
+    width: 100%;
+    height: 100%;
+    border: 1px solid $color-light-gray;
+  }
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
