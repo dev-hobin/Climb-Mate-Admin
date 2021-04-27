@@ -10,6 +10,7 @@ module.exports = {
   entry: {
     banner: './src/js/banner',
     baseInfo: './src/js/baseInfo',
+    detailInfo: './src/js/detailInfo',
   },
   module: {
     rules: [
@@ -37,6 +38,11 @@ module.exports = {
       template: paths.src + '/template/baseInfo.html',
       filename: 'baseInfo.html',
       chunks: ['baseInfo'],
+    }),
+    new HtmlWebpackPlugin({
+      template: paths.src + '/template/detailInfo.html',
+      filename: 'detailInfo.html',
+      chunks: ['detailInfo'],
     }),
   ],
 };

@@ -1,0 +1,21 @@
+.facility-info {
+  padding: 1rem;
+
+  &__title {
+    font-size: $font-size-large;
+    margin-bottom: 1rem;
+  }
+  &__facility-list {
+    padding: 0.5rem;
+    background-color: $color-white;
+    border: 2px solid $color-light-gray;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}
+
+.facility-item {
+  min-width: 10rem;
+  padding: 1rem;
+}

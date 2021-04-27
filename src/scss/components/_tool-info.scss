@@ -1,0 +1,42 @@
+.tool-info {
+  padding: 1rem;
+
+  &__title {
+    font-size: $font-size-large;
+    margin-bottom: 1rem;
+  }
+  &__sub-title {
+    margin-bottom: 0.5rem;
+  }
+  &__tool-list {
+    padding: 0.5rem;
+    background-color: $color-white;
+    border: 2px solid $color-light-gray;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &__health-wrapper {
+    margin-top: 0.5rem;
+  }
+
+  &__health-description-text-area {
+    border: 2px solid $color-light-gray;
+    padding: 0.2rem 0.5rem;
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    width: 100%;
+    resize: none;
+
+    &::placeholder {
+      font-weight: 400;
+    }
+  }
+}
+
+.tool-item {
+  min-width: 10rem;
+  padding: 1rem;
+}
