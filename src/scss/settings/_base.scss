@@ -8,6 +8,7 @@ ul {
   list-style: none;
 }
 body {
+  position: relative;
   font-family: 'Noto Sans KR', sans-serif;
   word-break: break-all;
   min-width: $bp-tablet;
@@ -15,7 +16,6 @@ body {
   overflow: auto;
 }
 main {
-  display: block;
   min-height: 100vh;
 }
 button,
