@@ -6,6 +6,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  z-index: 50;
 
   &__contents[data-type='caution'] {
     background-color: #ffdb9b;

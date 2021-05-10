@@ -32,8 +32,21 @@ const ModalView = class extends View {
     const cancelBtn = modal.querySelector(`[data-type="cancel"]`);
     const confirm = modal.querySelector(`[data-type="confirm"]`);
 
+    const { type, index } = eventInfo;
+    switch (type) {
+      case 'banner':
+        confirm.addEventListener('click', () => this.trigger('@deleteBannerItem', { index }));
+        break;
+      case 'bordering':
+        confirm.addEventListener('click', () => this.trigger('@deleteBorderingItem', { index }));
+        break;
+      case 'endurance':
+        confirm.addEventListener('click', () => this.trigger('@deleteEnduranceItem', { index }));
+        break;
+      default:
+        throw `${tag} showAlertModal() 이벤트 등록 실패`;
+    }
     cancelBtn.addEventListener('click', () => this.removeModal());
-    confirm.addEventListener('click', () => this.trigger('@deleteBannerItem', { index: eventInfo.index }));
 
     this._element.append(modal);
   };

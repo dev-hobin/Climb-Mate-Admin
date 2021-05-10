@@ -12,6 +12,8 @@ module.exports = {
     baseInfo: './src/js/baseInfo',
     detailInfo: './src/js/detailInfo',
     price: './src/js/price',
+    setting: './src/js/setting',
+    notice: './src/js/notice',
   },
   module: {
     rules: [
@@ -49,6 +51,16 @@ module.exports = {
       template: paths.src + '/template/price.html',
       filename: 'price.html',
       chunks: ['price'],
+    }),
+    new HtmlWebpackPlugin({
+      template: paths.src + '/template/setting.html',
+      filename: 'setting.html',
+      chunks: ['setting'],
+    }),
+    new HtmlWebpackPlugin({
+      template: paths.src + '/template/notice.html',
+      filename: 'notice.html',
+      chunks: ['notice'],
     }),
   ],
 };

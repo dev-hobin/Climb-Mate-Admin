@@ -23,6 +23,37 @@ const ImageUploadModel = class extends Model {
       'http://placehold.it/200x200.jpg/F0E68C/ffffff?text=10',
     ];
   };
+  getBoreringImages = async (centerId = '') => {
+    // 미리 이미지 아이템이 등록되있다고 가정한 더미 데이터
+    return [
+      'http://placehold.it/200x200.jpg/ff0000/ffffff?text=1',
+      'http://placehold.it/200x200.jpg/800000/ffffff?text=2',
+      'http://placehold.it/200x200.jpg/808000/ffffff?text=3',
+      'http://placehold.it/200x200.jpg/008080/ffffff?text=4',
+      'http://placehold.it/200x200.jpg/800080/ffffff?text=5',
+      'http://placehold.it/200x200.jpg/0000ff/ffffff?text=6',
+      'http://placehold.it/200x200.jpg/F4A460/ffffff?text=7',
+      'http://placehold.it/200x200.jpg/FFB6C1/ffffff?text=8',
+      'http://placehold.it/200x200.jpg/87CEFA/ffffff?text=9',
+      'http://placehold.it/200x200.jpg/F0E68C/ffffff?text=10',
+    ];
+  };
+  getEnduranceImages = async (centerId = '') => {
+    // 미리 이미지 아이템이 등록되있다고 가정한 더미 데이터
+    return [
+      'http://placehold.it/200x200.jpg/ff0000/ffffff?text=1',
+      'http://placehold.it/200x200.jpg/800000/ffffff?text=2',
+      'http://placehold.it/200x200.jpg/808000/ffffff?text=3',
+      'http://placehold.it/200x200.jpg/008080/ffffff?text=4',
+      'http://placehold.it/200x200.jpg/800080/ffffff?text=5',
+      'http://placehold.it/200x200.jpg/0000ff/ffffff?text=6',
+      'http://placehold.it/200x200.jpg/F4A460/ffffff?text=7',
+      'http://placehold.it/200x200.jpg/FFB6C1/ffffff?text=8',
+      'http://placehold.it/200x200.jpg/87CEFA/ffffff?text=9',
+      'http://placehold.it/200x200.jpg/F0E68C/ffffff?text=10',
+    ];
+  };
+
   vaildateImageFiles = (fileList, initialCount) => {
     if (fileList.length === 0) return [];
 

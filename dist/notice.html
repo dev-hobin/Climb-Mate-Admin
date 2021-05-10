@@ -3,10 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Climb:Mate 관리자 - 배너 사진</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Climb:Mate 관리자 - 공지사항</title>
     <link rel="shortcut icon" href="assets/icon/logo/favicon.ico" type="image/ico" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <script defer="defer" src="js/notice_bundle.6fe6f8fc7d0b690e4684.js"></script>
+    <link href="styles/notice.42e4b53cfe5b2b68dec9.css" rel="stylesheet" />
   </head>
   <body>
     <header class="header" data-header>
@@ -66,31 +68,7 @@
       </ul>
     </nav>
     <main class="main">
-      <article class="image-uploader" data-uploader="banner">
-        <input
-          data-image-input
-          type="file"
-          name="image[]"
-          id="files-input"
-          class="image-uploader__files-input"
-          maxlength="30"
-          accept=".jpg,.jpeg,.png"
-          multiple
-        />
-        <div class="flex-between-container">
-          <div class="flex-center-container">
-            <h1 class="image-uploader__title">배너 사진</h1>
-            <span class="image-uploader__image-count" data-image-count>(0 / 30)</span>
-          </div>
-          <div class="flex-end-container">
-            <label class="image-uploader__add-image-btn" for="files-input" data-add-btn>사진 추가</label>
-          </div>
-        </div>
-        <ol class="image-uploader__image-list" data-image-list></ol>
-        <div class="flex-center-container image-uploader__upload-btn-container">
-          <button class="image-uploader__upload-btn" data-upload-btn>사진 수정</button>
-        </div>
-      </article>
+      <div>공지사항</div>
       <div class="notification" data-notification></div>
     </main>
   </body>

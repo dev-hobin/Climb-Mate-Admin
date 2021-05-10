@@ -1,0 +1,10 @@
+.board {
+  margin: 1rem;
+
+  &__title {
+    font-size: $font-size-large;
+  }
+  &__table {
+    margin-top: 1rem;
+  }
+}

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Climb:Mate 관리자 - 배너 사진</title>
+    <title>Climb:Mate 관리자 - 공지사항</title>
     <link rel="shortcut icon" href="assets/icon/logo/favicon.ico" type="image/ico" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
   </head>
@@ -66,31 +66,60 @@
       </ul>
     </nav>
     <main class="main">
-      <article class="image-uploader" data-uploader="banner">
-        <input
-          data-image-input
-          type="file"
-          name="image[]"
-          id="files-input"
-          class="image-uploader__files-input"
-          maxlength="30"
-          accept=".jpg,.jpeg,.png"
-          multiple
-        />
-        <div class="flex-between-container">
-          <div class="flex-center-container">
-            <h1 class="image-uploader__title">배너 사진</h1>
-            <span class="image-uploader__image-count" data-image-count>(0 / 30)</span>
-          </div>
-          <div class="flex-end-container">
-            <label class="image-uploader__add-image-btn" for="files-input" data-add-btn>사진 추가</label>
-          </div>
-        </div>
-        <ol class="image-uploader__image-list" data-image-list></ol>
-        <div class="flex-center-container image-uploader__upload-btn-container">
-          <button class="image-uploader__upload-btn" data-upload-btn>사진 수정</button>
-        </div>
-      </article>
+      <section class="board" data-type="notice">
+        <h1 class="board__title">공지사항</h1>
+        <table class="table board__table" data-type="notice">
+          <thead class="table__thead">
+            <tr class="table__row">
+              <th class="table__head" data-type="index">번호</th>
+              <th class="table__head" data-type="title">제목</th>
+              <th class="table__head" data-type="date">작성날짜</th>
+              <th class="table__head" data-type="delete"></th>
+            </tr>
+          </thead>
+          <tbody class="table__tbody">
+            <tr class="table__row">
+              <td class="table__data" data-type="index">4</td>
+              <td class="table__data" data-type="title">
+                <a class="table__link" href="#"
+                  >새 지구력 문제 세팅! 새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제
+                  세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제
+                  세팅!</a
+                >
+              </td>
+              <td class="table__data" data-type="date">2021-05-10</td>
+              <td class="table__data" data-type="delete"><button class="table__delete-btn">삭제</button></td>
+            </tr>
+            <tr class="table__row">
+              <td class="table__data" data-type="index">3</td>
+              <td class="table__data" data-type="title"><a class="table__link" href="#">새 볼더링 문제 세팅</a></td>
+              <td class="table__data" data-type="date">2021-05-06</td>
+              <td class="table__data" data-type="delete"><button class="table__delete-btn">삭제</button></td>
+            </tr>
+            <tr class="table__row">
+              <td class="table__data" data-type="index">2</td>
+              <td class="table__data" data-type="title">
+                <a class="table__link" href="#"
+                  >새 지구력 문제 세팅! 새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제
+                  세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제
+                  세팅!</a
+                >
+              </td>
+              <td class="table__data" data-type="date">2021-05-02</td>
+              <td class="table__data" data-type="delete"><button class="table__delete-btn">삭제</button></td>
+            </tr>
+            <tr class="table__row">
+              <td class="table__data" data-type="index">1</td>
+              <td class="table__data" data-type="title"><a class="table__link" href="#">새 볼더링 볼더링 볼더링</a></td>
+              <td class="table__data" data-type="date">2021-04-10</td>
+              <td class="table__data" data-type="delete"><button class="table__delete-btn">삭제</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <article class="pages board__pages">
+          <h2 class="visually-hidden">이전, 다음 페이지 링크</h2>
+        </article>
+      </section>
       <div class="notification" data-notification></div>
     </main>
   </body>

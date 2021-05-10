@@ -1,8 +1,8 @@
 import View from '../core/View.js';
 
-const tag = '[BannerImageUploaderView]';
+const tag = '[EnduranceImageUploadView]';
 
-const BannerImageUploadView = class extends View {
+const EnduranceImageUploadView = class extends View {
   constructor() {
     super();
 
@@ -94,10 +94,10 @@ const BannerImageUploadView = class extends View {
     this._imageInput.addEventListener('change', event => {
       if (event.target.files.length === 0) return;
       const fileList = [...event.target.files];
-      this.trigger('@addBannerImages', { fileList });
+      this.trigger('@addEnduranceImages', { fileList });
     });
     // 업로드 트리거 이벤트 달기
-    this._uploadBtn.addEventListener('click', () => this.trigger('@uploadBannerImages', {}));
+    this._uploadBtn.addEventListener('click', () => this.trigger('@uploadEnduranceImages', {}));
   };
 
   // 리스트 아이템 만들기
@@ -107,7 +107,7 @@ const BannerImageUploadView = class extends View {
     item.setAttribute('data-image-item', '');
 
     const innerHtml = `<figure class="upload-image-item__figure">
-      <img class="upload-image-item__img" src="${imageUrl}" alt="배너 이미지">
+      <img class="upload-image-item__img" src="${imageUrl}" alt="지구력 이미지">
       <button class="upload-image-item__delete-btn" data-delete-btn>X</button>
     </figure>`;
 
@@ -127,7 +127,7 @@ const BannerImageUploadView = class extends View {
       this._dragEndIndex = Array.from(item.parentNode.children).indexOf(item);
       // 아이템간 자리 바뀐게 있다면 컨트롤러에게 자리 바뀌었다고 알림
       if (this._dragStartIndex !== this._dragEndIndex)
-        this.trigger('@changeBannerImageLocation', {
+        this.trigger('@changeEnduranceImageLocation', {
           beforeIndex: this._dragStartIndex,
           afterIndex: this._dragEndIndex,
         });
@@ -142,7 +142,7 @@ const BannerImageUploadView = class extends View {
       this.trigger('@showAlert', {
         description: '정말로 삭제하시겠습니까?',
         eventInfo: {
-          type: 'banner',
+          type: 'endurance',
           index: deletedIndex,
         },
       });
@@ -200,4 +200,4 @@ const BannerImageUploadView = class extends View {
   };
 };
 
-export default BannerImageUploadView;
+export default EnduranceImageUploadView;
