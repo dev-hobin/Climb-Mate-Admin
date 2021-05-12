@@ -50,6 +50,9 @@
             <li class="sidebar__depth-2-item" data-menu="setting">
               <a href="/setting.html" class="sidebar__depth-2-link">세팅 사진</a>
             </li>
+            <li class="sidebar__depth-2-item" data-menu="level">
+              <a href="/level.html" class="sidebar__depth-2-link">난이도 정보</a>
+            </li>
           </ul>
         </li>
         <li class="sidebar__depth-1-item" data-toggle-menu="care">
@@ -81,7 +84,7 @@
             <tr class="table__row">
               <td class="table__data" data-type="index">4</td>
               <td class="table__data" data-type="title">
-                <a class="table__link" href="#"
+                <a class="table__link" href="/noticeInfo.html?id=4"
                   >새 지구력 문제 세팅! 새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제
                   세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제
                   세팅!</a
@@ -92,14 +95,16 @@
             </tr>
             <tr class="table__row">
               <td class="table__data" data-type="index">3</td>
-              <td class="table__data" data-type="title"><a class="table__link" href="#">새 볼더링 문제 세팅</a></td>
+              <td class="table__data" data-type="title">
+                <a class="table__link" href="/noticeInfo.html?id=3">새 볼더링 문제 세팅</a>
+              </td>
               <td class="table__data" data-type="date">2021-05-06</td>
               <td class="table__data" data-type="delete"><button class="table__delete-btn">삭제</button></td>
             </tr>
             <tr class="table__row">
               <td class="table__data" data-type="index">2</td>
               <td class="table__data" data-type="title">
-                <a class="table__link" href="#"
+                <a class="table__link" href="/noticeInfo.html?id=2"
                   >새 지구력 문제 세팅! 새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제
                   세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제 세팅!새 지구력 문제
                   세팅!</a
@@ -110,7 +115,9 @@
             </tr>
             <tr class="table__row">
               <td class="table__data" data-type="index">1</td>
-              <td class="table__data" data-type="title"><a class="table__link" href="#">새 볼더링 볼더링 볼더링</a></td>
+              <td class="table__data" data-type="title">
+                <a class="table__link" href="/noticeInfo.html?id=1">새 볼더링 볼더링 볼더링</a>
+              </td>
               <td class="table__data" data-type="date">2021-04-10</td>
               <td class="table__data" data-type="delete"><button class="table__delete-btn">삭제</button></td>
             </tr>
@@ -118,6 +125,17 @@
         </table>
         <article class="pages board__pages">
           <h2 class="visually-hidden">이전, 다음 페이지 링크</h2>
+          <div class="pages__container">
+            <button class="pages__prev-btn"><i class="fas fa-chevron-left pages__prev-btn-icon"></i></button>
+            <ol class="pages__list">
+              <li class="pages__item"><a class="pages__link active" href="#">1</a></li>
+              <li class="pages__item"><a class="pages__link" href="#">2</a></li>
+              <li class="pages__item"><a class="pages__link" href="#">3</a></li>
+              <li class="pages__item"><a class="pages__link" href="#">4</a></li>
+              <li class="pages__item"><a class="pages__link" href="#">5</a></li>
+            </ol>
+            <button class="pages__next-btn"><i class="fas fa-chevron-right pages__next-btn-icon"></i></button>
+          </div>
         </article>
       </section>
       <div class="notification" data-notification></div>

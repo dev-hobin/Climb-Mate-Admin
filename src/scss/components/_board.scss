@@ -1,10 +1,13 @@
 .board {
-  margin: 1rem;
+  padding: 1rem;
 
   &__title {
     font-size: $font-size-large;
   }
   &__table {
     margin-top: 1rem;
+  }
+  &__pages {
+    padding: 2rem 0;
   }
 }

@@ -3,6 +3,8 @@
 @import './settings/variables';
 @import './settings/base';
 
+@import './components/checkbox';
+@import './components/radio';
 @import './components/header';
 @import './components/main';
 @import './components/sidebar';
@@ -10,6 +12,5 @@
 @import './components/notification';
 @import './components/loading-spinner';
 
-@import './components/board';
-@import './components/table';
-@import './components/pages';
+@import './components/single-image-uploader';
+@import './components/level-info';

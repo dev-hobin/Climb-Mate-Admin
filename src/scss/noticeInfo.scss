@@ -10,6 +10,8 @@
 @import './components/notification';
 @import './components/loading-spinner';
 
-@import './components/board';
-@import './components/table';
-@import './components/pages';
+@import './components/notice-form';
+
+.notice-info-container {
+  padding: 1rem;
+}

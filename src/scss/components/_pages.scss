@@ -1,0 +1,60 @@
+.pages {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+
+  &__container {
+    display: flex;
+    align-items: center;
+  }
+  &__prev-btn {
+    margin-right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    transition: all 200ms ease;
+
+    &:hover,
+    &.active {
+      background-color: $color-light-black;
+      color: $color-white;
+    }
+  }
+  &__list {
+    display: flex;
+    align-items: center;
+  }
+  &__item {
+    margin-right: 1rem;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  &__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    transition: all 200ms ease;
+
+    &:hover,
+    &.active {
+      background-color: $color-light-black;
+      color: $color-white;
+    }
+  }
+  &__next-btn {
+    margin-left: 1rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    transition: all 200ms ease;
+
+    &:hover {
+      background-color: $color-light-black;
+      color: $color-white;
+    }
+  }
+}
