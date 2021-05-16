@@ -15,7 +15,9 @@ const NotificationView = class extends View {
     return this;
   };
 
-  addCautionNotification = (title, description) => {
+  addCautionNotification = (title, description, removeBefore = false) => {
+    if (removeBefore) this._element.innerHTML = '';
+
     const notification = document.createElement('div');
     notification.setAttribute('class', 'notification__contents');
     notification.setAttribute('data-type', 'caution');
@@ -25,7 +27,9 @@ const NotificationView = class extends View {
     notification.querySelector('[data-close-btn]').addEventListener('click', () => notification.remove());
     this._element.append(notification);
   };
-  addErrorNotification = (title, description) => {
+  addErrorNotification = (title, description, removeBefore = false) => {
+    if (removeBefore) this._element.innerHTML = '';
+
     const notification = document.createElement('div');
     notification.setAttribute('class', 'notification__contents');
     notification.setAttribute('data-type', 'error');

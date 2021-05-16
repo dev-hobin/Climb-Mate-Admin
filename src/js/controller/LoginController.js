@@ -1,4 +1,4 @@
-import ModalView from '../view/ModalView';
+import LoginView from '../view/LoginView';
 import NotificationView from '../view/NotificationView';
 
 const tag = '[LoginController]';
@@ -6,7 +6,7 @@ const tag = '[LoginController]';
 const LoginController = class {
   constructor() {
     // 뷰
-    this._modalView = new ModalView();
+    this._loginView = new LoginView();
     this._notificationView = new NotificationView();
   }
 
@@ -14,8 +14,7 @@ const LoginController = class {
   init = () => {
     console.log(`${tag} init()`);
 
-    this._modalView.setup(document.querySelector('main'));
-
+    this._loginView.setup(document.querySelector('[data-login-view]')).on('@login', event => this._login(event.detail));
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
     this._lifeCycle();
@@ -26,10 +25,8 @@ const LoginController = class {
   // 라이프 사이클
   _lifeCycle = async () => {};
 
-  // 경고 모달 보여주기
-  _showAlertModal = ({ description, eventInfo }) => {
-    this._modalView.showAlertModal(description, eventInfo);
-  };
+  // 로그인
+  _login = async ({ id, password }) => console.log({ id, password });
 };
 
 export default LoginController;
