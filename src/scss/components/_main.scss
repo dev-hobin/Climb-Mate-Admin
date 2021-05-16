@@ -9,4 +9,12 @@
   &.hide {
     max-width: 100%;
   }
+
+  &--login {
+    padding-top: 0;
+    max-width: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }

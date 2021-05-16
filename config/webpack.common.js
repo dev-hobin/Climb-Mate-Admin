@@ -8,6 +8,7 @@ module.exports = {
     extensions: ['.js', '.scss'],
   },
   entry: {
+    login: './src/js/login',
     banner: './src/js/banner',
     baseInfo: './src/js/baseInfo',
     detailInfo: './src/js/detailInfo',
@@ -33,6 +34,11 @@ module.exports = {
           to: 'assets',
         },
       ],
+    }),
+    new HtmlWebpackPlugin({
+      template: paths.src + '/template/login.html',
+      filename: 'login.html',
+      chunks: ['login'],
     }),
     new HtmlWebpackPlugin({
       template: paths.src + '/template/banner.html',
