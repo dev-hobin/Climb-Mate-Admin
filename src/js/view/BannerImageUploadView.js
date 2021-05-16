@@ -94,10 +94,10 @@ const BannerImageUploadView = class extends View {
     this._imageInput.addEventListener('change', event => {
       if (event.target.files.length === 0) return;
       const fileList = [...event.target.files];
-      this.trigger('@addBannerImages', { fileList });
+      this.trigger('@addImages', { type: 'banner', fileList });
     });
     // 업로드 트리거 이벤트 달기
-    this._uploadBtn.addEventListener('click', () => this.trigger('@uploadBannerImages', {}));
+    this._uploadBtn.addEventListener('click', () => this.trigger('@uploadImages', { type: 'banner' }));
   };
 
   // 리스트 아이템 만들기
@@ -127,7 +127,8 @@ const BannerImageUploadView = class extends View {
       this._dragEndIndex = Array.from(item.parentNode.children).indexOf(item);
       // 아이템간 자리 바뀐게 있다면 컨트롤러에게 자리 바뀌었다고 알림
       if (this._dragStartIndex !== this._dragEndIndex)
-        this.trigger('@changeBannerImageLocation', {
+        this.trigger('@changeImageLocation', {
+          type: 'banner',
           beforeIndex: this._dragStartIndex,
           afterIndex: this._dragEndIndex,
         });

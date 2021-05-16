@@ -2,56 +2,99 @@ import Model from '../core/Model.js';
 
 const tag = '[ImageUploadModel]';
 
+const dummyImages = [
+  'http://placehold.it/200x200.jpg/ff0000/ffffff?text=1',
+  'http://placehold.it/200x200.jpg/800000/ffffff?text=2',
+  'http://placehold.it/200x200.jpg/808000/ffffff?text=3',
+  'http://placehold.it/200x200.jpg/008080/ffffff?text=4',
+  'http://placehold.it/200x200.jpg/800080/ffffff?text=5',
+  'http://placehold.it/200x200.jpg/0000ff/ffffff?text=6',
+  'http://placehold.it/200x200.jpg/F4A460/ffffff?text=7',
+  'http://placehold.it/200x200.jpg/FFB6C1/ffffff?text=8',
+  'http://placehold.it/200x200.jpg/87CEFA/ffffff?text=9',
+  'http://placehold.it/200x200.jpg/F0E68C/ffffff?text=10',
+];
+
+export const IMAGE_UPLOADER_TYPE = {
+  BANNER: 'banner',
+  BORDERING: 'bordering',
+  ENDURANCE: 'endurance',
+};
+
 const ImageUploadModel = class extends Model {
   constructor() {
     super();
+    this._imageData = {
+      [IMAGE_UPLOADER_TYPE.BANNER]: {
+        initial: [],
+        current: [],
+        deleted: [],
+      },
+      [IMAGE_UPLOADER_TYPE.BORDERING]: {
+        initial: [],
+        current: [],
+        deleted: [],
+      },
+      [IMAGE_UPLOADER_TYPE.ENDURANCE]: {
+        initial: [],
+        current: [],
+        deleted: [],
+      },
+    };
   }
 
   /* 인터페이스 */
-  getBannerImages = async (centerId = '') => {
-    // 미리 이미지 아이템이 등록되있다고 가정한 더미 데이터
-    return [
-      'http://placehold.it/200x200.jpg/ff0000/ffffff?text=1',
-      'http://placehold.it/200x200.jpg/800000/ffffff?text=2',
-      'http://placehold.it/200x200.jpg/808000/ffffff?text=3',
-      'http://placehold.it/200x200.jpg/008080/ffffff?text=4',
-      'http://placehold.it/200x200.jpg/800080/ffffff?text=5',
-      'http://placehold.it/200x200.jpg/0000ff/ffffff?text=6',
-      'http://placehold.it/200x200.jpg/F4A460/ffffff?text=7',
-      'http://placehold.it/200x200.jpg/FFB6C1/ffffff?text=8',
-      'http://placehold.it/200x200.jpg/87CEFA/ffffff?text=9',
-      'http://placehold.it/200x200.jpg/F0E68C/ffffff?text=10',
-    ];
+  initImages = async (centerId, type) => {
+    if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
+    this._imageData[type].initial.push(...dummyImages);
+    this._imageData[type].current.push(...dummyImages);
+    return this._imageData[type].initial;
   };
-  getBoreringImages = async (centerId = '') => {
-    // 미리 이미지 아이템이 등록되있다고 가정한 더미 데이터
-    return [
-      'http://placehold.it/200x200.jpg/ff0000/ffffff?text=1',
-      'http://placehold.it/200x200.jpg/800000/ffffff?text=2',
-      'http://placehold.it/200x200.jpg/808000/ffffff?text=3',
-      'http://placehold.it/200x200.jpg/008080/ffffff?text=4',
-      'http://placehold.it/200x200.jpg/800080/ffffff?text=5',
-      'http://placehold.it/200x200.jpg/0000ff/ffffff?text=6',
-      'http://placehold.it/200x200.jpg/F4A460/ffffff?text=7',
-      'http://placehold.it/200x200.jpg/FFB6C1/ffffff?text=8',
-      'http://placehold.it/200x200.jpg/87CEFA/ffffff?text=9',
-      'http://placehold.it/200x200.jpg/F0E68C/ffffff?text=10',
-    ];
+
+  getInitialImages = type => {
+    if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
+    return this._imageData[type].initial;
   };
-  getEnduranceImages = async (centerId = '') => {
-    // 미리 이미지 아이템이 등록되있다고 가정한 더미 데이터
-    return [
-      'http://placehold.it/200x200.jpg/ff0000/ffffff?text=1',
-      'http://placehold.it/200x200.jpg/800000/ffffff?text=2',
-      'http://placehold.it/200x200.jpg/808000/ffffff?text=3',
-      'http://placehold.it/200x200.jpg/008080/ffffff?text=4',
-      'http://placehold.it/200x200.jpg/800080/ffffff?text=5',
-      'http://placehold.it/200x200.jpg/0000ff/ffffff?text=6',
-      'http://placehold.it/200x200.jpg/F4A460/ffffff?text=7',
-      'http://placehold.it/200x200.jpg/FFB6C1/ffffff?text=8',
-      'http://placehold.it/200x200.jpg/87CEFA/ffffff?text=9',
-      'http://placehold.it/200x200.jpg/F0E68C/ffffff?text=10',
-    ];
+  getCurrentImages = type => {
+    if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
+    return this._imageData[type].current;
+  };
+  getDeletedImages = type => {
+    if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
+    return this._imageData[type].deleted;
+  };
+
+  addCurrentImages = (type, images = []) => {
+    if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
+    this._imageData[type].current.push(...images);
+  };
+  addDeletedImages = (type, index) => {
+    if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
+    const deletedImages = this._imageData[type].current.splice(index, 1);
+    this._imageData[type].deleted.push(...deletedImages);
+  };
+
+  changeImageLocation = (type, beforeIndex, afterIndex) => {
+    if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
+    const draggedItemArray = this._imageData[type].current.splice(beforeIndex, 1);
+    this._imageData[type].current.splice(afterIndex, 0, ...draggedItemArray);
+
+    console.log(type, '자리 변경 전');
+    console.log(this._imageData[type].current);
+    console.log(type, '자리 변경 후');
+    console.log(this._imageData[type].current);
+  };
+
+  isImagesChanged = type => {
+    if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
+    // 1. 배열 길이 비교 -> 다르면 무조건 달라진 것
+    if (this._imageData[type].initial.length !== this._imageData[type].current.length) return true;
+    // 2. 하나 하나 비교
+    for (const [index, image] of this._imageData[type].current.entries()) {
+      if (this._imageData[type].initial[index] === image) continue;
+      else return true;
+    }
+    return false;
   };
 
   vaildateImageFiles = (fileList, initialCount) => {
@@ -93,9 +136,11 @@ const ImageUploadModel = class extends Model {
 
     return [validatedFiles, errorList];
   };
-  uploadImages = async (files = []) => {
-    console.log(`${tag} 이미지 업로드 시작`);
-    console.log(`${tag} 업로드 진행중`);
+  uploadImages = async type => {
+    if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
+    const [files, urls, willDeleted] = this._addExtraInfo(type);
+
+    console.log(`${tag} 업로드 중`);
     await new Promise(resolve => setTimeout(resolve, 3000));
     console.log(`${tag} 업로드 완료 후 결과 반환`);
     return true;
@@ -122,6 +167,38 @@ const ImageUploadModel = class extends Model {
     const maxSize = 10 * 1024 * 1024;
     if (fileSize > maxSize) return false;
     else return true;
+  };
+  _checkType = type => {
+    switch (true) {
+      case type === IMAGE_UPLOADER_TYPE.BANNER:
+      case type === IMAGE_UPLOADER_TYPE.BORDERING:
+      case type === IMAGE_UPLOADER_TYPE.ENDURANCE:
+        return true;
+      default:
+        return false;
+    }
+  };
+
+  _addExtraInfo = type => {
+    const orderedList = this._imageData[type].current.map((image, index) => {
+      if (typeof image === 'object') return { order: index + 1, file: image };
+      else return { order: index + 1, url: image };
+    });
+
+    console.log('순서 정보 추가');
+    console.log(orderedList);
+
+    const files = orderedList.filter(imageObj => imageObj.hasOwnProperty('file'));
+    const urls = orderedList.filter(imageObj => imageObj.hasOwnProperty('url'));
+    const willDeleted = this._imageData[type].deleted.filter(image => typeof image === 'string');
+
+    console.log('업로드할 파일만 뽑아낸 정보');
+    console.log(files);
+    console.log('이미 등록된 url만 뽑아낸 정보');
+    console.log(urls);
+    console.log('삭제할 이미지');
+    console.log(willDeleted);
+    return [files, urls, willDeleted];
   };
 };
 

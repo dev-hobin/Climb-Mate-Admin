@@ -35,13 +35,13 @@ const ModalView = class extends View {
     const { type, index } = eventInfo;
     switch (type) {
       case 'banner':
-        confirm.addEventListener('click', () => this.trigger('@deleteBannerItem', { index }));
+        confirm.addEventListener('click', () => this.trigger('@deleteItem', { type: 'banner', index }));
         break;
       case 'bordering':
-        confirm.addEventListener('click', () => this.trigger('@deleteBorderingItem', { index }));
+        confirm.addEventListener('click', () => this.trigger('@deleteItem', { type: 'bordering', index }));
         break;
       case 'endurance':
-        confirm.addEventListener('click', () => this.trigger('@deleteEnduranceItem', { index }));
+        confirm.addEventListener('click', () => this.trigger('@deleteItem', { type: 'endurance', index }));
         break;
       default:
         throw `${tag} showAlertModal() 이벤트 등록 실패`;

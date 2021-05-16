@@ -15,7 +15,7 @@ const View = class {
   };
 
   // 이벤트 발생시키기
-  trigger = (event, data) => {
+  trigger = (event, data = {}) => {
     const customEvent = new CustomEvent(event, { detail: data });
     this._element.dispatchEvent(customEvent);
     return this;

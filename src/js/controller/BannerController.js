@@ -4,17 +4,12 @@ import ModalView from '../view/ModalView';
 import NotificationView from '../view/NotificationView';
 import BannerImageUploadView from '../view/BannerImageUploadView.js';
 
-import ImageUploadModel from '../model/ImageUploadModel.js';
+import ImageUploadModel, { IMAGE_UPLOADER_TYPE } from '../model/ImageUploadModel.js';
 
 const tag = '[BannerController]';
 
 const BannerController = class {
   constructor() {
-    // 배너 이미지 데이터
-    this._initialBannerImageArray = [];
-    this._bannerImageArray = [];
-    this._deletedBannerImageArray = [];
-
     // 뷰
     this._headerView = new HeaderView();
     this._sidebarView = new SidebarView();
@@ -41,18 +36,16 @@ const BannerController = class {
       .setup(document.querySelector(`[data-sidebar]`))
       .on('@toggleSideMenu', event => this._toggleSideMenu(event.detail));
 
-    this._modalView
-      .setup(document.querySelector('main'))
-      .on('@deleteBannerItem', event => this._deleteBannerImage(event.detail));
+    this._modalView.setup(document.querySelector('main')).on('@deleteItem', event => this._deleteImage(event.detail));
 
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
     this._bannerImageUploadView //
       .setup(document.querySelector(`[data-uploader="banner"]`))
-      .on('@addBannerImages', event => this._addBannerImages(event.detail))
-      .on('@changeBannerImageLocation', event => this._changeBannerImageLocation(event.detail))
+      .on('@addBannerImages', event => this._addImages(event.detail))
+      .on('@changeImageLocation', event => this._changeImageLocation(event.detail))
       .on('@showAlert', event => this._showAlertModal(event.detail))
-      .on('@uploadBannerImages', () => this._uploadBannerImages());
+      .on('@uploadImages', event => this._uploadImages(event.detail));
 
     this._lifeCycle();
   };
@@ -69,14 +62,8 @@ const BannerController = class {
     });
 
     /* 배너 이미지 설정 */
-    // 1. 이미 등록되어 있는 이미지 url 요청
-    const currentBannerUrls = await this._imageUploadModel.getBannerImages();
-    console.log('이미 등록되어있는 사진 정보 가져오기');
-    // 2. 컨트롤러 배너 이미지 리스트 업데이트
-    this._initialBannerImageArray.push(...currentBannerUrls);
-    this._bannerImageArray.push(...currentBannerUrls);
-    // 3. 뷰에 이미지 아이템 리스트 초기화
-    this._bannerImageUploadView.initItems(currentBannerUrls);
+    const initialBannerImages = await this._imageUploadModel.initImages('centerId', IMAGE_UPLOADER_TYPE.BANNER);
+    this._bannerImageUploadView.initItems(initialBannerImages);
     console.log('이미지 리스트에 아이템 설정');
   };
 
@@ -95,19 +82,17 @@ const BannerController = class {
   };
 
   // 이미지 추가
-  _addBannerImages = async ({ fileList }) => {
+  _addImages = async ({ type, fileList }) => {
+    const currentImages = this._imageUploadModel.getCurrentImages(type);
     // 추가한 파일들 유효성 검사하여 유효성 검사 통과한 이미지 파일들과 유효성 검사 실패한 이유가 담긴 에러 리스트 반환
-    const [validatedImageFiles, errorList] = this._imageUploadModel.vaildateImageFiles(
-      fileList,
-      this._bannerImageArray.length
-    );
+    const [validatedImageFiles, errorList] = this._imageUploadModel.vaildateImageFiles(fileList, currentImages.length);
     console.log('이미지 유효성 검사 통과한 것들만 가져온다');
 
     if (validatedImageFiles.length !== 0) {
-      // 현재 이미지 배열 업데이트
-      this._bannerImageArray.push(...validatedImageFiles);
+      // 배너 이미지 추가
+      this._imageUploadModel.addCurrentImages(type, validatedImageFiles);
       // 뷰에 아이템 추가 요청
-      this._bannerImageUploadView.addItems(validatedImageFiles);
+      this[`_${type}ImageUploadView`].addItems(validatedImageFiles);
       console.log('이미지 리스트에 아이템들 추가');
     }
 
@@ -121,57 +106,26 @@ const BannerController = class {
   _showAlertModal = ({ description, eventInfo }) => {
     this._modalView.showAlertModal(description, eventInfo);
   };
-  // 배너 이미지 삭제
-  _deleteBannerImage = ({ index }) => {
-    // 현재 이미지 배열 업데이트하고 삭제될 이미지 따로 모은다
-    const deletedImages = this._bannerImageArray.splice(index, 1);
-    // 삭제될 이미지 리스트 업데이트
-    this._deletedBannerImageArray.push(...deletedImages);
-    // 업데이트 완료 됐으면 뷰에게 아이템 삭제하라고 요청한다
-    this._bannerImageUploadView.removeItem(index);
-    // 이미지 삭제 alert 삭제
+  // 이미지 삭제
+  _deleteImage = ({ type, index }) => {
+    this._imageUploadModel.addDeletedImages(type, index);
+    this[`_${type}ImageUploadView`].removeItem(index);
     this._modalView.removeModal();
     console.log('이미지 삭제');
   };
   // 이미지 자리 변경
-  _changeBannerImageLocation = ({ beforeIndex, afterIndex }) => {
-    // 원래 배열에서 드래그한 이미지 빼고 인덱스 앞으로 당긴다
-    const draggedItemArray = this._bannerImageArray.splice(beforeIndex, 1);
-    // 자리 이동한 인덱스에 아이템 추가후 다른것들 뒤로 민다
-    this._bannerImageArray.splice(afterIndex, 0, ...draggedItemArray);
-
-    console.log('자리 변경 전');
-    console.log(this._bannerImageArray);
-    console.log('자리 변경 후');
-    console.log(this._bannerImageArray);
+  _changeImageLocation = ({ type, beforeIndex, afterIndex }) => {
+    this._imageUploadModel.changeImageLocation(type, beforeIndex, afterIndex);
   };
   // 이미지 업로드
-  _uploadBannerImages = async () => {
-    if (!this._checkImagesChange(this._initialBannerImageArray, this._bannerImageArray))
+  _uploadImages = async ({ type }) => {
+    if (!this._imageUploadModel.isImagesChanged(type))
       return this._notificationView.addCautionNotification('변경사항 없음', '수정할 사진이 없습니다');
     // 로딩 모달 띄우기
     this._modalView.showLoadingModal('사진을 수정중입니다');
-    console.log('이미지 업로드 진행');
-    const orderedList = this._bannerImageArray.map((image, index) => {
-      if (typeof image === 'object') return { order: index + 1, file: image };
-      else return { order: index + 1, url: image };
-    });
-    console.log('순서 정보 추가');
-    console.log(orderedList);
-
-    const files = orderedList.filter(imageObj => imageObj.hasOwnProperty('file'));
-    const urls = orderedList.filter(imageObj => imageObj.hasOwnProperty('url'));
-    const willDeleted = this._deletedBannerImageArray.filter(image => typeof image === 'string');
-
-    console.log('업로드할 파일만 뽑아낸 정보');
-    console.log(files);
-    console.log('이미 등록된 url만 뽑아낸 정보');
-    console.log(urls);
-    console.log('삭제할 이미지');
-    console.log(willDeleted);
 
     // 사진 업로드 결과 받기
-    const isSuccess = await this._imageUploadModel.uploadImages([]);
+    const isSuccess = await this._imageUploadModel.uploadImages(type);
     if (isSuccess) {
       console.log(`${tag} 업로드 결과 : ${isSuccess}`);
       this._modalView.removeModal();
@@ -183,17 +137,6 @@ const BannerController = class {
         '서버 오류로 인해 이미지 업로드에 실패했습니다'
       );
     }
-  };
-  // 이미지들을 수정했는지 안했는지 확인
-  _checkImagesChange = (initialImages, currentImages) => {
-    // 1. 배열 길이 비교 -> 다르면 무조건 달라진 것
-    if (initialImages.length !== currentImages.length) return true;
-    // 2. 하나 하나 비교
-    for (const [index, image] of currentImages.entries()) {
-      if (initialImages[index] === image) continue;
-      else return true;
-    }
-    return false;
   };
 };
 
