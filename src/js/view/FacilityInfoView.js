@@ -1,4 +1,5 @@
 import View from '../core/View';
+import { FACILITY_TYPE, FACILITY_EXTRA_INFO } from '../model/FacilityInfoModel';
 
 const tag = '[FacilityInfoView]';
 
@@ -13,6 +14,10 @@ const FacilityInfoView = class extends View {
 
     this._itemList = element.querySelector('[data-list]');
     this._items = element.querySelectorAll('[data-item]');
+
+    this._parkignLotTextContainer = element.querySelector('[data-parking-lot-description-container]');
+    this._parkignLotTextArea = element.querySelector('[data-parking-lot-description-textarea]');
+
     this._updateBtn = element.querySelector('[data-update-btn]');
 
     this._bindEvents();
@@ -21,12 +26,17 @@ const FacilityInfoView = class extends View {
     return this;
   };
 
-  initItems = itemInfoObj => {
+  initItems = (itemInfoObj, extraInfoObj) => {
     console.log(tag, 'initial 정보대로 체크박스 체크');
+    // 주차장 추가 설명 텍스트 설정
+    this._parkignLotTextArea.value = extraInfoObj[FACILITY_EXTRA_INFO.PARKING_LOT];
+
     this._items.forEach(item => {
       const facilityType = item.dataset.item;
       const checkbox = item.querySelector('[type=checkbox]');
       checkbox.checked = itemInfoObj[facilityType];
+      if (facilityType === FACILITY_TYPE.PARKING_LOT && checkbox.checked)
+        this._parkignLotTextContainer.classList.add('show');
     });
   };
 
@@ -37,6 +47,17 @@ const FacilityInfoView = class extends View {
       const checkbox = event.target;
       const facilityType = event.target.closest('[data-item]').dataset.item;
       this.trigger('@checkFacility', { facilityType, checked: checkbox.checked });
+      // 주차장 체크 해제했을 경우 텍스트 박스 안보이게
+      console.log(facilityType, FACILITY_TYPE.PARKING_LOT, checkbox.checked);
+      if (facilityType === FACILITY_TYPE.PARKING_LOT) {
+        if (checkbox.checked) this._parkignLotTextContainer.classList.add('show');
+        else this._parkignLotTextContainer.classList.remove('show');
+      }
+    });
+
+    this._parkignLotTextArea.addEventListener('keyup', event => {
+      const textValue = event.target.value;
+      this.trigger('@editExtraInfo', { extra: FACILITY_EXTRA_INFO.PARKING_LOT, info: textValue });
     });
 
     this._updateBtn.addEventListener('click', () => this.trigger('@updateFacility'));

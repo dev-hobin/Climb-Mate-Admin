@@ -5,6 +5,10 @@
     font-size: $font-size-large;
     margin-bottom: 1rem;
   }
+  &__sub-title {
+    margin-bottom: 0.5rem;
+  }
+
   &__facility-list {
     padding: 0.5rem;
     background-color: $color-white;
@@ -13,6 +17,28 @@
     align-items: center;
     flex-wrap: wrap;
   }
+
+  &__parking-lot-wrapper {
+    display: none;
+    &.show {
+      margin-top: 0.5rem;
+      display: block;
+    }
+  }
+
+  &__parking-lot-description-text-area {
+    border: 2px solid $color-light-gray;
+    padding: 0.2rem 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    width: 100%;
+    resize: none;
+
+    &::placeholder {
+      font-weight: 400;
+    }
+  }
+
   &__update-btn-container {
     padding: 1rem 0;
   }

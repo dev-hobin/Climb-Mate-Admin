@@ -43,6 +43,7 @@ const DetailInfoController = class {
     this._facilityInfoView //
       .setup(document.querySelector(`[data-facilities]`))
       .on('@checkFacility', event => this._updateFacilityCheckInfo(event.detail))
+      .on('@editExtraInfo', event => this._editFacilityExtraInfo(event.detail))
       .on('@updateFacility', this._updateFacility);
 
     this._toolInfoView //
@@ -69,11 +70,11 @@ const DetailInfoController = class {
     });
 
     // 시설 아이템 체크
-    const initialFacilities = await this._facilityInfoModel.initInfo(999);
-    this._facilityInfoView.initItems(initialFacilities);
+    const [initialFacilities, initialFacilityExtra] = await this._facilityInfoModel.initInfo(999);
+    this._facilityInfoView.initItems(initialFacilities, initialFacilityExtra);
     // 도구 아이템 체크
-    const [initialTools, initialExtra] = await this._toolInfoModel.initInfo(999);
-    this._toolInfoView.initItems(initialTools, initialExtra);
+    const [initialTools, initialToolExtra] = await this._toolInfoModel.initInfo(999);
+    this._toolInfoView.initItems(initialTools, initialToolExtra);
   };
 
   // 헤더 어드민 메뉴 토글
@@ -92,6 +93,9 @@ const DetailInfoController = class {
 
   _updateFacilityCheckInfo = ({ facilityType, checked }) => {
     this._facilityInfoModel.updateCheckInfo(facilityType, checked);
+  };
+  _editFacilityExtraInfo = ({ extra, info }) => {
+    this._facilityInfoModel.updateExtraInfo(extra, info);
   };
   _updateFacility = async () => {
     this._modalView.showLoadingModal('시설 정보 수정중입니다');
