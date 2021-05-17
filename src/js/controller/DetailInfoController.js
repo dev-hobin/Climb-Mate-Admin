@@ -3,8 +3,10 @@ import SidebarView from '../view/SidebarView';
 import ModalView from '../view/ModalView';
 import NotificationView from '../view/NotificationView';
 import FacilityInfoView from '../view/FacilityInfoView';
+import ToolInfoView from '../view/ToolInfoView';
 
-import FacilityUpdateModel from '../model/FacilityUpdateModel';
+import FacilityInfoModel from '../model/FacilityInfoModel';
+import ToolInfoModel from '../model/ToolInfoModel';
 
 const tag = '[DetailInfoController]';
 
@@ -16,9 +18,11 @@ const DetailInfoController = class {
     this._modalView = new ModalView();
     this._notificationView = new NotificationView();
     this._facilityInfoView = new FacilityInfoView();
+    this._toolInfoView = new ToolInfoView();
 
     // 모델
-    this._facilityUpdateModel = new FacilityUpdateModel();
+    this._facilityInfoModel = new FacilityInfoModel();
+    this._toolInfoModel = new ToolInfoModel();
   }
 
   /* 인터페이스 */
@@ -41,6 +45,12 @@ const DetailInfoController = class {
       .on('@checkFacility', event => this._updateFacilityCheckInfo(event.detail))
       .on('@updateFacility', this._updateFacility);
 
+    this._toolInfoView //
+      .setup(document.querySelector(`[data-tools]`))
+      .on('@checkTool', event => this._updateToolCheckInfo(event.detail))
+      .on('@editExtraInfo', event => this._editToolExtraInfo(event.detail))
+      .on('@updateTool', this._updateTool);
+
     this._modalView.setup(document.querySelector('main'));
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
@@ -58,9 +68,12 @@ const DetailInfoController = class {
       depth2: 'detailInfo',
     });
 
-    // 아이템 체크
-    const initialFacilities = await this._facilityUpdateModel.initInfo(999);
+    // 시설 아이템 체크
+    const initialFacilities = await this._facilityInfoModel.initInfo(999);
     this._facilityInfoView.initItems(initialFacilities);
+    // 도구 아이템 체크
+    const [initialTools, initialExtra] = await this._toolInfoModel.initInfo(999);
+    this._toolInfoView.initItems(initialTools, initialExtra);
   };
 
   // 헤더 어드민 메뉴 토글
@@ -78,13 +91,34 @@ const DetailInfoController = class {
   };
 
   _updateFacilityCheckInfo = ({ facilityType, checked }) => {
-    this._facilityUpdateModel.updateCheckInfo(facilityType, checked);
+    this._facilityInfoModel.updateCheckInfo(facilityType, checked);
   };
   _updateFacility = async () => {
     this._modalView.showLoadingModal('시설 정보 수정중입니다');
 
-    const { isSuccess, error } = await this._facilityUpdateModel.update();
+    const { isSuccess, error } = await this._facilityInfoModel.update();
     console.log(tag, '시설 업데이트 결과', { isSuccess, error });
+
+    if (!isSuccess) {
+      this._modalView.removeModal();
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
+      return;
+    }
+
+    this._modalView.removeModal();
+  };
+
+  _updateToolCheckInfo = ({ toolType, checked }) => {
+    this._toolInfoModel.updateCheckInfo(toolType, checked);
+  };
+  _editToolExtraInfo = ({ extra, info }) => {
+    this._toolInfoModel.updateExtraInfo(extra, info);
+  };
+  _updateTool = async () => {
+    this._modalView.showLoadingModal('도구 정보 수정중입니다');
+
+    const { isSuccess, error } = await this._toolInfoModel.update();
+    console.log(tag, '도구 업데이트 결과', { isSuccess, error });
 
     if (!isSuccess) {
       this._modalView.removeModal();

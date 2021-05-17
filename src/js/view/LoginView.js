@@ -8,7 +8,6 @@ const LoginView = class extends View {
   }
 
   /* 인터페이스 */
-
   setup = element => {
     this.init(element);
 

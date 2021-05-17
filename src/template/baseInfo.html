@@ -72,7 +72,10 @@
       <h1 class="visually-hidden">기본 정보</h1>
       <div class="base-info-container">
         <article class="center-info">
-          <h2 class="center-info__title">센터 정보</h2>
+          <div class="flex-between-container center-info__title-container">
+            <h2 class="center-info__title">센터 정보</h2>
+            <button class="center-info__update-btn">수정</button>
+          </div>
           <ul class="center-info__list">
             <li class="center-info-item" data-type="brand">
               <h3 class="center-info-item__title">대표 이미지</h3>
@@ -85,7 +88,7 @@
             </li>
             <li class="center-info-item" data-type="name">
               <h3 class="center-info-item__title">센터 이름</h3>
-              <input class="center-info-item__name-input" type="text" placeholder="센터 이름" />
+              <span class="center-info-item__name">사과 클라이밍</span>
             </li>
             <li class="center-info-item" data-type="address">
               <h3 class="center-info-item__title">주소</h3>
@@ -151,7 +154,10 @@
 
         <div class="flex-column-container base-info-container__article-wrapper">
           <article class="setting-info">
-            <h2 class="setting-info__title">세팅 정보</h2>
+            <div class="flex-between-container setting-info__title-container">
+              <h2 class="setting-info__title">세팅 정보</h2>
+              <button class="setting-info__update-btn">수정</button>
+            </div>
             <ul class="setting-info__list">
               <li class="setting-info-item" data-type="setting-ratio">
                 <h3 class="setting-info-item__title">세팅 비율</h3>
@@ -179,7 +185,11 @@
           </article>
 
           <article class="working-time-info">
-            <h2 class="working-time-info__title">운영시간</h2>
+            <div class="flex-between-container working-time-info__title-container">
+              <h2 class="working-time-info__title">운영시간</h2>
+              <button class="working-time-info__update-btn">수정</button>
+            </div>
+
             <ul class="working-time-info__list">
               <li class="working-time-info-item" data-type="weekday">
                 <h3 class="working-time-info-item__title">평일</h3>
@@ -206,7 +216,10 @@
           </article>
 
           <article class="social-info">
-            <h2 class="social-info__title">소셜 정보</h2>
+            <div class="flex-between-container social-info__title-container">
+              <h2 class="social-info__title">소셜 정보</h2>
+              <button class="social-info__update-btn">수정</button>
+            </div>
             <ul class="social-info__list">
               <li class="social-info-item" data-type="instagram">
                 <label class="checkbox">

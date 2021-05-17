@@ -18,7 +18,11 @@
   }
 
   &__health-wrapper {
-    margin-top: 0.5rem;
+    display: none;
+    &.show {
+      margin-top: 0.5rem;
+      display: block;
+    }
   }
 
   &__health-description-text-area {

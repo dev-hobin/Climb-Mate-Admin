@@ -1,6 +1,6 @@
 import Model from '../core/Model.js';
 
-const tag = '[FacilityUpdateModel]';
+const tag = '[FacilityInfoModel]';
 
 export const FACILITY_TYPE = {
   SHOWER_ROOM: 'shower-room',
@@ -22,7 +22,7 @@ const dummyCheckInfo = {
   [FACILITY_TYPE.LEAD_WALL]: false,
 };
 
-const FacilityUpdateModel = class extends Model {
+const FacilityInfoModel = class extends Model {
   constructor() {
     super();
     this._checkInfo = {
@@ -41,7 +41,6 @@ const FacilityUpdateModel = class extends Model {
     this._checkInfo.current[facility] = checked;
     console.log(tag, '체크 정보 수정', this._checkInfo.current);
   };
-
   update = async () => {
     const isChanged = this._isInfoChanged();
     if (!isChanged)
@@ -49,6 +48,9 @@ const FacilityUpdateModel = class extends Model {
         isSuccess: false,
         error: { sort: 'caution', title: '변경된 정보가 없습니다', description: '시설 정보를 변경해주세요' },
       };
+    console.group(tag, '서버로 보낼 수 있는 정보');
+    console.log('체크된 시설 정보', this._checkInfo.current);
+    console.groupEnd();
     console.log(tag, '시설 업데이트 중');
     await new Promise(resolve => setTimeout(resolve, 3000));
     console.log(tag, '업데이트된 시설정보로 기존 정보 업데이트');
@@ -60,6 +62,7 @@ const FacilityUpdateModel = class extends Model {
     };
   };
 
+  // 메소드
   _isInfoChanged = () => {
     const initial = this._checkInfo.initial;
     const current = this._checkInfo.current;
@@ -71,4 +74,4 @@ const FacilityUpdateModel = class extends Model {
   };
 };
 
-export default FacilityUpdateModel;
+export default FacilityInfoModel;

@@ -139,7 +139,7 @@ const SettingController = class {
   _uploadImages = async ({ type }) => {
     console.log(type);
     if (!this._imageUploadModel.isImagesChanged(type))
-      return this._notificationView.addCautionNotification('변경사항 없음', '수정할 사진이 없습니다');
+      return this._notificationView.addNotification('caution', '변경사항 없음', '수정할 사진이 없습니다', true);
     // 로딩 모달 띄우기
     this._modalView.showLoadingModal('사진을 수정중입니다');
 
@@ -151,7 +151,8 @@ const SettingController = class {
       console.log(`${tag} 사진 수정 완료 후 페이지 reload`);
     } else {
       console.log(tag, type, `이미지 업로드 결과 : ${isSuccess}`);
-      this._notificationView.addErrorNotification(
+      this._notificationView.addNotification(
+        'error',
         '이미지 업로드 실패',
         '서버 오류로 인해 이미지 업로드에 실패했습니다'
       );

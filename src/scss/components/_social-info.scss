@@ -4,11 +4,27 @@
   flex: 1;
   margin: 0.5rem;
 
+  &__title-container {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid $color-light-black;
+  }
   &__title {
     font-size: $font-size-medium;
     font-weight: 700;
-    padding: 1rem;
-    border-bottom: 1px solid $color-light-black;
+  }
+  &__update-btn {
+    font-size: 1rem;
+    line-height: 1rem;
+    font-weight: 700;
+    background-color: $color-red;
+    border-radius: 4px;
+    color: $color-white;
+    padding: 0.5em 1em;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $color-light-red;
+    }
   }
   &__list {
     padding: 1rem;
