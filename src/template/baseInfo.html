@@ -71,88 +71,55 @@
     <main class="main">
       <h1 class="visually-hidden">기본 정보</h1>
       <div class="base-info-container">
-        <article class="center-info">
-          <div class="flex-between-container center-info__title-container">
-            <h2 class="center-info__title">센터 정보</h2>
-            <button class="center-info__update-btn">수정</button>
-          </div>
-          <ul class="center-info__list">
-            <li class="center-info-item" data-type="brand">
-              <h3 class="center-info-item__title">대표 이미지</h3>
-              <label class="center-info-item__img-label">
-                <input class="center-info-item__img-input" type="file" />
-                <figure class="center-info-item__figure">
-                  <img class="center-info-item__img" src="http://placehold.it/300x300" alt="대표 이미지" />
-                </figure>
-              </label>
-            </li>
-            <li class="center-info-item" data-type="name">
-              <h3 class="center-info-item__title">센터 이름</h3>
-              <span class="center-info-item__name">사과 클라이밍</span>
-            </li>
-            <li class="center-info-item" data-type="address">
-              <h3 class="center-info-item__title">주소</h3>
-              <div class="flex-column-container center-info-item__address-container">
-                <span class="center-info-item__address">사과 클라이밍장 주소</span>
-                <input class="center-info-item__address-description-input" type="text" placeholder="상세 주소" />
-              </div>
-            </li>
-            <li class="center-info-item" data-type="tel">
-              <h3 class="center-info-item__title">전화번호</h3>
-              <div class="flex-center-container center-info-item__tel-container">
-                <input class="center-info-item__tel-input" type="text" placeholder="000" data-type="first" />
-                <span class="center-info-item__hyphen">-</span>
-                <input class="center-info-item__tel-input" type="text" placeholder="0000" data-type="middle" />
-                <span class="center-info-item__hyphen">-</span>
-                <input class="center-info-item__tel-input" type="text" placeholder="0000" data-type="last" />
-              </div>
-            </li>
-            <li class="center-info-item" data-type="phone">
-              <h3 class="center-info-item__title">휴대전화</h3>
-              <div class="flex-center-container center-info-item__phone-container">
-                <input class="center-info-item__phone-input" type="text" placeholder="000" data-type="first" />
-                <span class="center-info-item__hyphen">-</span>
-                <input class="center-info-item__phone-input" type="text" placeholder="0000" data-type="middle" />
-                <span class="center-info-item__hyphen">-</span>
-                <input class="center-info-item__phone-input" type="text" placeholder="0000" data-type="last" />
-              </div>
-            </li>
-            <li class="center-info-item" data-type="introduce">
-              <h3 class="center-info-item__title">소개</h3>
-              <textarea
-                class="center-info-item__textarea"
-                cols="30"
-                rows="10"
-                placeholder="클라이밍장 소개 내용을 입력해주세요"
-              ></textarea>
-            </li>
-            <li class="center-info-item" data-type="parking-lot">
-              <h3 class="center-info-item__title">주차장</h3>
-              <div class="flex-column-container center-info-item__wrapper">
-                <div class="flex-start-container">
-                  <label class="radio center-info-item__radio">
-                    <input class="radio__input" type="radio" name="parking-lot" checked />
-                    <div class="radio__check-mark"></div>
-                    <span class="radio__label center-info-item__parking-lot-label">있음</span>
-                  </label>
-                  <label class="radio center-info-item__radio">
-                    <input class="radio__input" type="radio" name="parking-lot" />
-                    <div class="radio__check-mark"></div>
-                    <span class="radio__label center-info-item__parking-lot-label">없음</span>
-                  </label>
-                </div>
-                <textarea
-                  class="center-info-item__parking-lot-textarea"
-                  placeholder="주차장 위치를 설명해주세요"
-                  cols="30"
-                  rows="5"
-                ></textarea>
-              </div>
-            </li>
-          </ul>
-        </article>
-
         <div class="flex-column-container base-info-container__article-wrapper">
+          <article class="center-info">
+            <div class="flex-between-container center-info__title-container">
+              <h2 class="center-info__title">센터 정보</h2>
+              <button class="center-info__update-btn">수정</button>
+            </div>
+            <ul class="center-info__list">
+              <li class="center-info-item" data-type="name">
+                <h3 class="center-info-item__title">센터 이름</h3>
+                <span class="center-info-item__name">사과 클라이밍</span>
+              </li>
+              <li class="center-info-item" data-type="address">
+                <h3 class="center-info-item__title">주소</h3>
+                <div class="flex-column-container center-info-item__address-container">
+                  <span class="center-info-item__address">사과 클라이밍장 주소</span>
+                  <input class="center-info-item__address-description-input" type="text" placeholder="상세 주소" />
+                </div>
+              </li>
+              <li class="center-info-item" data-type="tel">
+                <h3 class="center-info-item__title">전화번호</h3>
+                <div class="flex-center-container center-info-item__tel-container">
+                  <input class="center-info-item__tel-input" type="text" placeholder="000" data-type="first" />
+                  <span class="center-info-item__hyphen">-</span>
+                  <input class="center-info-item__tel-input" type="text" placeholder="0000" data-type="middle" />
+                  <span class="center-info-item__hyphen">-</span>
+                  <input class="center-info-item__tel-input" type="text" placeholder="0000" data-type="last" />
+                </div>
+              </li>
+              <li class="center-info-item" data-type="phone">
+                <h3 class="center-info-item__title">휴대전화</h3>
+                <div class="flex-center-container center-info-item__phone-container">
+                  <input class="center-info-item__phone-input" type="text" placeholder="000" data-type="first" />
+                  <span class="center-info-item__hyphen">-</span>
+                  <input class="center-info-item__phone-input" type="text" placeholder="0000" data-type="middle" />
+                  <span class="center-info-item__hyphen">-</span>
+                  <input class="center-info-item__phone-input" type="text" placeholder="0000" data-type="last" />
+                </div>
+              </li>
+              <li class="center-info-item" data-type="introduce">
+                <h3 class="center-info-item__title">소개</h3>
+                <textarea
+                  class="center-info-item__textarea"
+                  cols="30"
+                  rows="10"
+                  placeholder="클라이밍장 소개 내용을 입력해주세요"
+                ></textarea>
+              </li>
+            </ul>
+          </article>
           <article class="setting-info">
             <div class="flex-between-container setting-info__title-container">
               <h2 class="setting-info__title">세팅 정보</h2>
@@ -183,7 +150,9 @@
               </li>
             </ul>
           </article>
+        </div>
 
+        <div class="flex-column-container base-info-container__article-wrapper">
           <article class="working-time-info">
             <div class="flex-between-container working-time-info__title-container">
               <h2 class="working-time-info__title">운영시간</h2>

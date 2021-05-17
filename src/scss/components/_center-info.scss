@@ -41,28 +41,6 @@
     min-width: 8rem;
   }
 
-  &[data-type='brand'] {
-    .center-info-item__img-input {
-      display: none;
-    }
-    .center-info-item__img-label {
-      cursor: pointer;
-      border: 2px dotted $color-light-gray;
-      padding: 0.5rem;
-      min-width: 300px;
-      height: 300px;
-    }
-    .center-info-item__figure {
-      width: 100%;
-      height: 100%;
-      border: 1px solid $color-light-gray;
-    }
-    .center-info-item__img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
   &[data-type='name'] {
     .center-info-item__name {
       font-size: 1rem;
@@ -150,35 +128,6 @@
 
       &::placeholder {
         font-weight: 400;
-      }
-    }
-  }
-
-  &[data-type='parking-lot'] {
-    .center-info-item__wrapper {
-      width: 100%;
-
-      .center-info-item__radio {
-        margin-right: 0.5rem;
-      }
-      .center-info-item__parking-lot-label {
-        font-size: 1rem;
-        font-weight: 700;
-        line-height: 1.2rem;
-      }
-      .center-info-item__parking-lot-textarea {
-        border: 2px solid $color-light-gray;
-        padding: 0.2rem 0.5rem;
-        margin-top: 1rem;
-        font-size: 1rem;
-        font-weight: 700;
-        min-width: 300px;
-        width: 100%;
-        resize: none;
-
-        &::placeholder {
-          font-weight: 400;
-        }
       }
     }
   }
