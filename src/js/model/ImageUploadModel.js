@@ -79,10 +79,12 @@ const ImageUploadModel = class extends Model {
     const draggedItemArray = this._imageData[type].current.splice(beforeIndex, 1);
     this._imageData[type].current.splice(afterIndex, 0, ...draggedItemArray);
 
-    console.log(type, '자리 변경 전');
+    console.group(tag, type, '이미지 자리 변경 정보');
+    console.log('자리 변경 전');
     console.log(this._imageData[type].current);
-    console.log(type, '자리 변경 후');
+    console.log('자리 변경 후');
     console.log(this._imageData[type].current);
+    console.groupEnd();
   };
 
   isImagesChanged = type => {
@@ -140,15 +142,14 @@ const ImageUploadModel = class extends Model {
     if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
     const [files, urls, willDeleted] = this._addExtraInfo(type);
 
-    console.log(`${tag} 업로드 중`);
+    console.log(tag, type, '이미지 업로드 중');
     await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log(`${tag} 업로드 완료 후 결과 반환`);
+    console.log(tag, type, '업로드 완료 후 결과 반환');
     return true;
   };
 
   /* 메소드 */
   _checkImageCount = count => {
-    console.log(count);
     if (count >= 30) return false;
     else return true;
   };
@@ -185,18 +186,18 @@ const ImageUploadModel = class extends Model {
       else return { order: index + 1, url: image };
     });
 
-    console.log('순서 정보 추가');
+    console.log(tag, type, '이미지에 순서 정보 추가');
     console.log(orderedList);
 
     const files = orderedList.filter(imageObj => imageObj.hasOwnProperty('file'));
     const urls = orderedList.filter(imageObj => imageObj.hasOwnProperty('url'));
     const willDeleted = this._imageData[type].deleted.filter(image => typeof image === 'string');
 
-    console.log('업로드할 파일만 뽑아낸 정보');
+    console.log(tag, type, '업로드할 파일만 뽑아낸 정보');
     console.log(files);
-    console.log('이미 등록된 url만 뽑아낸 정보');
+    console.log(tag, type, '이미 등록된 url만 뽑아낸 정보');
     console.log(urls);
-    console.log('삭제할 이미지');
+    console.log(tag, type, '삭제할 이미지');
     console.log(willDeleted);
     return [files, urls, willDeleted];
   };
