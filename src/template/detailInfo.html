@@ -70,52 +70,52 @@
     </nav>
     <main class="main">
       <h1 class="visually-hidden">시설 및 도구</h1>
-      <article class="facility-info">
+      <article class="facility-info" data-facilities>
         <h2 class="facility-info__title">시설</h2>
-        <ul class="facility-info__facility-list">
-          <li class="facility-item" data-type="shower-room">
+        <ul class="facility-info__facility-list" data-list>
+          <li class="facility-item" data-item="shower-room">
             <label class="checkbox">
               <input class="checkbox__input" type="checkbox" />
               <span class="checkbox__check-mark"></span>
               <span class="checkbox__label">샤워실</span>
             </label>
           </li>
-          <li class="facility-item" data-type="fitting-room">
+          <li class="facility-item" data-item="fitting-room">
             <label class="checkbox">
               <input class="checkbox__input" type="checkbox" />
               <span class="checkbox__check-mark"></span>
               <span class="checkbox__label">탈의실</span>
             </label>
           </li>
-          <li class="facility-item" data-type="washroom">
+          <li class="facility-item" data-item="washroom">
             <label class="checkbox">
               <input class="checkbox__input" type="checkbox" />
               <span class="checkbox__check-mark"></span>
               <span class="checkbox__label">세족실</span>
             </label>
           </li>
-          <li class="facility-item" data-type="restroom">
+          <li class="facility-item" data-item="restroom">
             <label class="checkbox">
               <input class="checkbox__input" type="checkbox" />
               <span class="checkbox__check-mark"></span>
               <span class="checkbox__label">휴게실</span>
             </label>
           </li>
-          <li class="facility-item" data-type="locker">
+          <li class="facility-item" data-item="locker">
             <label class="checkbox">
               <input class="checkbox__input" type="checkbox" />
               <span class="checkbox__check-mark"></span>
               <span class="checkbox__label">락커</span>
             </label>
           </li>
-          <li class="facility-item" data-type="towel">
+          <li class="facility-item" data-item="towel">
             <label class="checkbox">
               <input class="checkbox__input" type="checkbox" />
               <span class="checkbox__check-mark"></span>
               <span class="checkbox__label">수건</span>
             </label>
           </li>
-          <li class="facility-item" data-type="lead-wall">
+          <li class="facility-item" data-item="lead-wall">
             <label class="checkbox">
               <input class="checkbox__input" type="checkbox" />
               <span class="checkbox__check-mark"></span>
@@ -123,33 +123,36 @@
             </label>
           </li>
         </ul>
+        <div class="flex-center-container facility-info__update-btn-container">
+          <button class="facility-info__update-btn" data-update-btn>시설 수정</button>
+        </div>
       </article>
 
-      <article class="tool-info">
+      <article class="tool-info" data-tools>
         <h2 class="tool-info__title">도구</h2>
-        <ul class="tool-info__tool-list">
-          <li class="tool-item" data-type="health">
+        <ul class="tool-info__tool-list" data-list>
+          <li class="tool-item" data-item="health">
             <label class="checkbox">
               <input class="checkbox__input" type="checkbox" />
               <span class="checkbox__check-mark"></span>
               <span class="checkbox__label">헬스 도구</span>
             </label>
           </li>
-          <li class="facility-item" data-type="training-board">
+          <li class="facility-item" data-item="training-board">
             <label class="checkbox">
               <input class="checkbox__input" type="checkbox" />
               <span class="checkbox__check-mark"></span>
               <span class="checkbox__label">트레이닝 보드</span>
             </label>
           </li>
-          <li class="facility-item" data-type="moon-board">
+          <li class="facility-item" data-item="moon-board">
             <label class="checkbox">
               <input class="checkbox__input" type="checkbox" />
               <span class="checkbox__check-mark"></span>
               <span class="checkbox__label">문 보드</span>
             </label>
           </li>
-          <li class="facility-item" data-type="killter-board">
+          <li class="facility-item" data-item="killter-board">
             <label class="checkbox">
               <input class="checkbox__input" type="checkbox" />
               <span class="checkbox__check-mark"></span>
@@ -166,11 +169,10 @@
             placeholder="헬스 도구에 대해서 설명해주세요"
           ></textarea>
         </div>
+        <div class="flex-center-container tool-info__update-btn-container">
+          <button class="tool-info__update-btn" data-update-btn>도구 수정</button>
+        </div>
       </article>
-
-      <div class="flex-center-container update-btn-container">
-        <button class="update-btn" data-update-btn>시설 및 도구 수정</button>
-      </div>
 
       <div class="notification" data-notification></div>
     </main>

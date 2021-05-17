@@ -2,6 +2,7 @@ import HeaderView from '../view/HeaderView';
 import SidebarView from '../view/SidebarView';
 import ModalView from '../view/ModalView';
 import NotificationView from '../view/NotificationView';
+import FacilityInfoView from '../view/FacilityInfoView';
 
 const tag = '[DetailInfoController]';
 
@@ -12,6 +13,7 @@ const DetailInfoController = class {
     this._sidebarView = new SidebarView();
     this._modalView = new ModalView();
     this._notificationView = new NotificationView();
+    this._facilityInfoView = new FacilityInfoView();
   }
 
   /* 인터페이스 */
@@ -29,6 +31,9 @@ const DetailInfoController = class {
       .setup(document.querySelector(`[data-sidebar]`))
       .on('@toggleSideMenu', event => this._toggleSideMenu(event.detail));
 
+    this._facilityInfoView //
+      .setup(document.querySelector(`[data-facilities]`));
+
     this._modalView.setup(document.querySelector('main'));
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
@@ -45,6 +50,9 @@ const DetailInfoController = class {
       depth1: 'centerInfo',
       depth2: 'detailInfo',
     });
+
+    // 아이템 체크
+    this._facilityInfoView.initItems();
   };
 
   // 헤더 어드민 메뉴 토글

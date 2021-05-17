@@ -33,6 +33,27 @@
       font-weight: 400;
     }
   }
+
+  &__update-btn-container {
+    padding: 1rem 0;
+  }
+
+  &__update-btn {
+    font-size: $font-size-default;
+    font-weight: 700;
+    line-height: $font-size-default;
+    border: 2px solid $color-red;
+    background-color: $color-red;
+    border-radius: $border-radius-rectangle;
+    color: $color-white;
+    padding: 0.5em 1em;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $color-light-red;
+      border-color: $color-light-red;
+    }
+  }
 }
 
 .tool-item {
