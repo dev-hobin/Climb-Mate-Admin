@@ -15,25 +15,24 @@ const NotificationView = class extends View {
     return this;
   };
 
-  addCautionNotification = (title, description, removeBefore = false) => {
+  addNotification = (sort, title, description, removeBefore = false) => {
     if (removeBefore) this._element.innerHTML = '';
 
     const notification = document.createElement('div');
     notification.setAttribute('class', 'notification__contents');
-    notification.setAttribute('data-type', 'caution');
-    notification.innerHTML = this._getCautionContentsHtml(title, description);
+    notification.setAttribute('data-type', sort);
 
-    // 닫기 이벤트 달아주기
-    notification.querySelector('[data-close-btn]').addEventListener('click', () => notification.remove());
-    this._element.append(notification);
-  };
-  addErrorNotification = (title, description, removeBefore = false) => {
-    if (removeBefore) this._element.innerHTML = '';
-
-    const notification = document.createElement('div');
-    notification.setAttribute('class', 'notification__contents');
-    notification.setAttribute('data-type', 'error');
-    notification.innerHTML = this._getErrorContentsHtml(title, description);
+    switch (true) {
+      case sort === 'caution':
+        notification.innerHTML = this._getCautionContentsHtml(title, description);
+        break;
+      case sort === 'error':
+        notification.innerHTML = this._getErrorContentsHtml(title, description);
+        break;
+      default:
+        notification.innerHTML = this._getErrorContentsHtml(title, description);
+        break;
+    }
 
     // 닫기 이벤트 달아주기
     notification.querySelector('[data-close-btn]').addEventListener('click', () => notification.remove());

@@ -102,7 +102,7 @@ const BannerController = class {
     if (errorList.length === 0) return;
     for (const errorInfo of errorList) {
       const { title, description } = errorInfo;
-      this._notificationView.addErrorNotification(title, description);
+      this._notificationView.addNotification('error', title, description);
     }
   };
   // 경고 모달 보여주기
@@ -123,7 +123,7 @@ const BannerController = class {
   // 이미지 업로드
   _uploadImages = async ({ type }) => {
     if (!this._imageUploadModel.isImagesChanged(type))
-      return this._notificationView.addCautionNotification('변경사항 없음', '수정할 사진이 없습니다');
+      return this._notificationView.addNotification('caution', '변경사항 없음', '수정할 사진이 없습니다');
     // 로딩 모달 띄우기
     this._modalView.showLoadingModal('사진을 수정중입니다');
 
@@ -134,7 +134,8 @@ const BannerController = class {
       this._modalView.removeModal();
     } else {
       console.log(tag, type, `이미지 업로드 결과 : ${isSuccess}`);
-      this._notificationView.addErrorNotification(
+      this._notificationView.addNotification(
+        'error',
         '이미지 업로드 실패',
         '서버 오류로 인해 이미지 업로드에 실패했습니다'
       );

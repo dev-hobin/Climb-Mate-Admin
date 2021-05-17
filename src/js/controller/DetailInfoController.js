@@ -4,6 +4,8 @@ import ModalView from '../view/ModalView';
 import NotificationView from '../view/NotificationView';
 import FacilityInfoView from '../view/FacilityInfoView';
 
+import FacilityUpdateModel from '../model/FacilityUpdateModel';
+
 const tag = '[DetailInfoController]';
 
 const DetailInfoController = class {
@@ -14,6 +16,9 @@ const DetailInfoController = class {
     this._modalView = new ModalView();
     this._notificationView = new NotificationView();
     this._facilityInfoView = new FacilityInfoView();
+
+    // 모델
+    this._facilityUpdateModel = new FacilityUpdateModel();
   }
 
   /* 인터페이스 */
@@ -32,7 +37,9 @@ const DetailInfoController = class {
       .on('@toggleSideMenu', event => this._toggleSideMenu(event.detail));
 
     this._facilityInfoView //
-      .setup(document.querySelector(`[data-facilities]`));
+      .setup(document.querySelector(`[data-facilities]`))
+      .on('@checkFacility', event => this._updateFacilityCheckInfo(event.detail))
+      .on('@updateFacility', this._updateFacility);
 
     this._modalView.setup(document.querySelector('main'));
     this._notificationView.setup(document.querySelector('[data-notification]'));
@@ -52,7 +59,8 @@ const DetailInfoController = class {
     });
 
     // 아이템 체크
-    this._facilityInfoView.initItems();
+    const initialFacilities = await this._facilityUpdateModel.initInfo(999);
+    this._facilityInfoView.initItems(initialFacilities);
   };
 
   // 헤더 어드민 메뉴 토글
@@ -67,6 +75,24 @@ const DetailInfoController = class {
   // 사이드 메뉴 토글
   _toggleSideMenu = ({ menu }) => {
     this._sidebarView.toggleSideMenu(menu);
+  };
+
+  _updateFacilityCheckInfo = ({ facilityType, checked }) => {
+    this._facilityUpdateModel.updateCheckInfo(facilityType, checked);
+  };
+  _updateFacility = async () => {
+    this._modalView.showLoadingModal('시설 정보 수정중입니다');
+
+    const { isSuccess, error } = await this._facilityUpdateModel.update();
+    console.log(tag, '시설 업데이트 결과', { isSuccess, error });
+
+    if (!isSuccess) {
+      this._modalView.removeModal();
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
+      return;
+    }
+
+    this._modalView.removeModal();
   };
 };
 
