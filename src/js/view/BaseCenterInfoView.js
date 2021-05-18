@@ -1,9 +1,9 @@
 import View from '../core/View';
-import { CENTER_INFO_TYPE } from '../model/CenterInfoModel';
+import { BASE_CENTER_INFO_TYPE } from '../model/BaseCenterInfoModel';
 
-const tag = '[CenterInfoView]';
+const tag = '[BaseCenterInfoView]';
 
-const CenterInfoView = class extends View {
+const BaseCenterInfoView = class extends View {
   constructor() {
     super();
   }
@@ -32,18 +32,18 @@ const CenterInfoView = class extends View {
   initItems = infoObj => {
     console.log(tag, 'initial 정보대로 기본 정보 설정');
 
-    this._name.textContent = infoObj[CENTER_INFO_TYPE.CENTER_NAME];
-    this._address.textContent = infoObj[CENTER_INFO_TYPE.CENTER_ADDRESS];
-    this._extraAddressInput.value = infoObj[CENTER_INFO_TYPE.EXTRA_CENTER_ADDRESS];
+    this._name.textContent = infoObj[BASE_CENTER_INFO_TYPE.CENTER_NAME];
+    this._address.textContent = infoObj[BASE_CENTER_INFO_TYPE.CENTER_ADDRESS];
+    this._extraAddressInput.value = infoObj[BASE_CENTER_INFO_TYPE.EXTRA_CENTER_ADDRESS];
 
     Array.from(this._callNumberInputs).forEach((input, index) => {
-      input.value = infoObj[CENTER_INFO_TYPE.CALL_NUMBER][index];
+      input.value = infoObj[BASE_CENTER_INFO_TYPE.CALL_NUMBER][index];
     });
     Array.from(this._phoneCallNumberInputs).forEach((input, index) => {
-      input.value = infoObj[CENTER_INFO_TYPE.PHONE_CALL_NUMBER][index];
+      input.value = infoObj[BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER][index];
     });
 
-    this._introduceTextarea.value = infoObj[CENTER_INFO_TYPE.CENTER_INTRODUCE];
+    this._introduceTextarea.value = infoObj[BASE_CENTER_INFO_TYPE.CENTER_INTRODUCE];
   };
 
   /* 메서드 */
@@ -82,4 +82,4 @@ const CenterInfoView = class extends View {
   };
 };
 
-export default CenterInfoView;
+export default BaseCenterInfoView;

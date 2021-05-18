@@ -141,7 +141,7 @@
               </li>
             </ul>
           </article>
-          <article class="setting-info">
+          <article class="setting-info" data-setting-info>
             <div class="flex-between-container setting-info__title-container">
               <h2 class="setting-info__title">세팅 정보</h2>
               <button class="setting-info__update-btn" data-update-btn>수정</button>
@@ -159,15 +159,30 @@
               </li>
               <li class="setting-info-item" data-type="setting-cycle">
                 <h3 class="setting-info-item__title">세팅 주기</h3>
-                <input class="setting-info-item__cycle-input" type="text" placeholder="세팅 주기를 설명해주세요" />
+                <input
+                  class="setting-info-item__cycle-input"
+                  type="text"
+                  placeholder="세팅 주기를 설명해주세요"
+                  data-setting-cycle
+                />
               </li>
               <li class="setting-info-item" data-type="next-date">
                 <h3 class="setting-info-item__title">다음 세팅 날짜</h3>
-                <input class="setting-info-item__next-date-input" type="text" placeholder="ex) 2021-04-26" />
+                <input
+                  class="setting-info-item__next-date-input"
+                  type="text"
+                  placeholder="ex) 2021-04-26"
+                  data-next-setting-date
+                />
               </li>
               <li class="setting-info-item" data-type="recent-date">
                 <h3 class="setting-info-item__title">최근 세팅 날짜</h3>
-                <input class="setting-info-item__recent-date-input" type="text" placeholder="ex) 2021-04-26" />
+                <input
+                  class="setting-info-item__recent-date-input"
+                  type="text"
+                  placeholder="ex) 2021-04-26"
+                  data-recent-setting-date
+                />
               </li>
             </ul>
           </article>

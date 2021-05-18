@@ -1,8 +1,8 @@
 import Model from '../core/Model.js';
 
-const tag = '[CenterInfoModel]';
+const tag = '[BaseCenterInfoModel]';
 
-export const CENTER_INFO_TYPE = {
+export const BASE_CENTER_INFO_TYPE = {
   CENTER_NAME: 'CENTER_NAME',
   CENTER_ADDRESS: 'CENTER_ADDRESS',
   EXTRA_CENTER_ADDRESS: 'EXTRA_CENTER_ADDRESS',
@@ -12,15 +12,15 @@ export const CENTER_INFO_TYPE = {
 };
 
 const dummyInfo = {
-  [CENTER_INFO_TYPE.CENTER_NAME]: '사과 클라이밍',
-  [CENTER_INFO_TYPE.CENTER_ADDRESS]: '사과 클라이밍장 주소 123',
-  [CENTER_INFO_TYPE.EXTRA_CENTER_ADDRESS]: '사과 클라이밍장 상세 주소 123',
-  [CENTER_INFO_TYPE.CALL_NUMBER]: ['031', '1234', '5678'],
-  [CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: ['010', '1234', '1234'],
-  [CENTER_INFO_TYPE.CENTER_INTRODUCE]: '사과 클라이밍장 소개입니다',
+  [BASE_CENTER_INFO_TYPE.CENTER_NAME]: '사과 클라이밍',
+  [BASE_CENTER_INFO_TYPE.CENTER_ADDRESS]: '사과 클라이밍장 주소 123',
+  [BASE_CENTER_INFO_TYPE.EXTRA_CENTER_ADDRESS]: '사과 클라이밍장 상세 주소 123',
+  [BASE_CENTER_INFO_TYPE.CALL_NUMBER]: ['031', '1234', '5678'],
+  [BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: ['010', '1234', '1234'],
+  [BASE_CENTER_INFO_TYPE.CENTER_INTRODUCE]: '사과 클라이밍장 소개입니다',
 };
 
-const CenterInfoModel = class extends Model {
+const BaseCenterInfoModel = class extends Model {
   constructor() {
     super();
 
@@ -34,13 +34,15 @@ const CenterInfoModel = class extends Model {
   initInfo = async centerId => {
     this._info.initial = {
       ...dummyInfo,
-      [CENTER_INFO_TYPE.CALL_NUMBER]: [...dummyInfo[CENTER_INFO_TYPE.CALL_NUMBER]],
-      [CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [...dummyInfo[CENTER_INFO_TYPE.PHONE_CALL_NUMBER]],
+      // 깊은 복사를 위함
+      [BASE_CENTER_INFO_TYPE.CALL_NUMBER]: [...dummyInfo[BASE_CENTER_INFO_TYPE.CALL_NUMBER]],
+      [BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [...dummyInfo[BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]],
     };
     this._info.current = {
       ...dummyInfo,
-      [CENTER_INFO_TYPE.CALL_NUMBER]: [...dummyInfo[CENTER_INFO_TYPE.CALL_NUMBER]],
-      [CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [...dummyInfo[CENTER_INFO_TYPE.PHONE_CALL_NUMBER]],
+      // 깊은 복사를 위함
+      [BASE_CENTER_INFO_TYPE.CALL_NUMBER]: [...dummyInfo[BASE_CENTER_INFO_TYPE.CALL_NUMBER]],
+      [BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [...dummyInfo[BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]],
     };
 
     console.log(tag, '정보 init 완료');
@@ -78,8 +80,8 @@ const CenterInfoModel = class extends Model {
     console.log(tag, '업데이트된 센터 정보로 기존 정보 업데이트');
     this._info.initial = {
       ...this._info.current,
-      [CENTER_INFO_TYPE.CALL_NUMBER]: [...this._info.current[CENTER_INFO_TYPE.CALL_NUMBER]],
-      [CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [...this._info.current[CENTER_INFO_TYPE.PHONE_CALL_NUMBER]],
+      [BASE_CENTER_INFO_TYPE.CALL_NUMBER]: [...this._info.current[BASE_CENTER_INFO_TYPE.CALL_NUMBER]],
+      [BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [...this._info.current[BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]],
     };
     console.log(tag, '센터 정보 업데이트 완료 후 결과 반환');
     return {
@@ -106,4 +108,4 @@ const CenterInfoModel = class extends Model {
   };
 };
 
-export default CenterInfoModel;
+export default BaseCenterInfoModel;

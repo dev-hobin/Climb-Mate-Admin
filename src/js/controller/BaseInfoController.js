@@ -3,9 +3,11 @@ import SidebarView from '../view/SidebarView';
 import ModalView from '../view/ModalView';
 import NotificationView from '../view/NotificationView';
 
-import CenterInfoView from '../view/CenterInfoView';
+import BaseCenterInfoView from '../view/BaseCenterInfoView';
+import BaseSettingInfoView from '../view/BaseSettingInfoView';
 
-import CenterInfoModel from '../model/CenterInfoModel';
+import BaseCenterInfoModel from '../model/BaseCenterInfoModel';
+import BaseSettingInfoModel from '../model/BaseSettingInfoModel';
 
 const tag = '[BaseInfoController]';
 
@@ -16,10 +18,12 @@ const BaseInfoController = class {
     this._sidebarView = new SidebarView();
     this._modalView = new ModalView();
     this._notificationView = new NotificationView();
-    this._centerInfoView = new CenterInfoView();
+    this._baseCenterInfoView = new BaseCenterInfoView();
+    this._baseSettingInfoView = new BaseSettingInfoView();
 
     // 모델
-    this._centerInfoModel = new CenterInfoModel();
+    this._baseCenterInfoModel = new BaseCenterInfoModel();
+    this._baseSettingInfoModel = new BaseSettingInfoModel();
   }
 
   /* 인터페이스 */
@@ -40,13 +44,21 @@ const BaseInfoController = class {
     this._modalView.setup(document.querySelector('main'));
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
-    this._centerInfoView
+    this._baseCenterInfoView //
       .setup(document.querySelector(`[data-center-info]`))
       .on('@chageExtraAddress', event => this._changeExtraAddress(event.detail))
       .on('@changeCallNum', event => this._changeCallNum(event.detail))
       .on('@changePhoneCallNum', event => this._changePhoneCallNum(event.detail))
       .on('@changeIntroduce', event => this._changeIntroduce(event.detail))
       .on('@updateCenterInfo', this._updateCenterInfo);
+
+    this._baseSettingInfoView
+      .setup(document.querySelector('[data-setting-info]'))
+      .on('@changeSettingRatio', event => this._changeSettingRatio(event.detail))
+      .on('@changeSettingCycle', event => this._changeSettingCycle(event.detail))
+      .on('@chageNextSettingDate', event => this._chageNextSettingDate(event.detail))
+      .on('@chageRecentSettingDate', event => this._chageRecentSettingDate(event.detail))
+      .on('@updateSettingInfo', this._updateSettingInfo);
 
     this._lifeCycle();
   };
@@ -63,8 +75,11 @@ const BaseInfoController = class {
     });
 
     // 기본 정보 세팅
-    const initialCenterInfo = await this._centerInfoModel.initInfo(999);
-    this._centerInfoView.initItems(initialCenterInfo);
+    const initialCenterInfo = await this._baseCenterInfoModel.initInfo(999);
+    this._baseCenterInfoView.initItems(initialCenterInfo);
+
+    const initialSettingInfo = await this._baseSettingInfoModel.initInfo(999);
+    this._baseSettingInfoView.initItems(initialSettingInfo);
   };
 
   // 헤더 어드민 메뉴 토글
@@ -82,16 +97,38 @@ const BaseInfoController = class {
   };
 
   // 센터 기본 정보 변경
-  _changeExtraAddress = ({ value }) => this._centerInfoModel.changeExtraAddress(value);
-  _changeCallNum = ({ number, index }) => this._centerInfoModel.changeCallNum(number, index);
-  _changePhoneCallNum = ({ number, index }) => this._centerInfoModel.changePhoneCallNum(number, index);
-  _changeIntroduce = ({ value }) => this._centerInfoModel.changeIntroduce(value);
+  _changeExtraAddress = ({ value }) => this._baseCenterInfoModel.changeExtraAddress(value);
+  _changeCallNum = ({ number, index }) => this._baseCenterInfoModel.changeCallNum(number, index);
+  _changePhoneCallNum = ({ number, index }) => this._baseCenterInfoModel.changePhoneCallNum(number, index);
+  _changeIntroduce = ({ value }) => this._baseCenterInfoModel.changeIntroduce(value);
 
   _updateCenterInfo = async () => {
     this._modalView.showLoadingModal('센터 정보 수정중입니다');
 
-    const { isSuccess, error } = await this._centerInfoModel.update();
+    const { isSuccess, error } = await this._baseCenterInfoModel.update();
     console.log(tag, '센터 정보 업데이트 결과', { isSuccess, error });
+
+    if (!isSuccess) {
+      this._modalView.removeModal();
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
+      return;
+    }
+
+    this._modalView.removeModal();
+  };
+
+  // 센터 세팅 정보 변경
+  _changeSettingRatio = ({ bordering, endurance }) =>
+    this._baseSettingInfoModel.changeSettingRatio(bordering, endurance);
+  _changeSettingCycle = ({ value }) => this._baseSettingInfoModel.changeSettingCycle(value);
+  _chageNextSettingDate = ({ value }) => this._baseSettingInfoModel.chageNextSettingDate(value);
+  _chageRecentSettingDate = ({ value }) => this._baseSettingInfoModel.chageRecentSettingDate(value);
+
+  _updateSettingInfo = async () => {
+    this._modalView.showLoadingModal('세팅 정보 수정중입니다');
+
+    const { isSuccess, error } = await this._baseSettingInfoModel.update();
+    console.log(tag, '세팅 정보 업데이트 결과', { isSuccess, error });
 
     if (!isSuccess) {
       this._modalView.removeModal();

@@ -17,6 +17,8 @@
 @import './components/social-info';
 @import './components/working-time-info';
 
+@import '/node_modules/flatpickr/dist/flatpickr.min.css';
+
 .base-info-container {
   display: flex;
   flex-wrap: wrap;
