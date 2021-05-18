@@ -6,10 +6,12 @@ import NotificationView from '../view/NotificationView';
 import BaseCenterInfoView from '../view/BaseCenterInfoView';
 import BaseSettingInfoView from '../view/BaseSettingInfoView';
 import BaseWorkingTimeInfoView from '../view/BaseWorkingTimeInfoView';
+import BaseSocialInfoView from '../view/BaseSocialInfoView';
 
 import BaseCenterInfoModel from '../model/BaseCenterInfoModel';
 import BaseSettingInfoModel from '../model/BaseSettingInfoModel';
-import BaseWorkingTimeInfoModel from '../model/BaseWoringTimeInfoModel';
+import BaseWorkingTimeInfoModel from '../model/BaseWorkingTimeInfoModel';
+import BaseSocialInfoModel from '../model/BaseSocialInfoModel';
 
 const tag = '[BaseInfoController]';
 
@@ -20,21 +22,22 @@ const BaseInfoController = class {
     this._sidebarView = new SidebarView();
     this._modalView = new ModalView();
     this._notificationView = new NotificationView();
+
     this._baseCenterInfoView = new BaseCenterInfoView();
     this._baseSettingInfoView = new BaseSettingInfoView();
     this._baseWorkingTimeInfoView = new BaseWorkingTimeInfoView();
+    this._baseSocialInfoView = new BaseSocialInfoView();
 
     // 모델
     this._baseCenterInfoModel = new BaseCenterInfoModel();
     this._baseSettingInfoModel = new BaseSettingInfoModel();
     this._baseWorkingTimeInfoModel = new BaseWorkingTimeInfoModel();
+    this._baseSocialInfoModel = new BaseSocialInfoModel();
   }
 
   /* 인터페이스 */
 
   init = () => {
-    console.log(`${tag} init()`);
-
     this._headerView //
       .setup(document.querySelector(`[data-header]`))
       .on('@toggleSidebar', () => this._toggleSidebar())
@@ -56,7 +59,7 @@ const BaseInfoController = class {
       .on('@changeIntroduce', event => this._changeIntroduce(event.detail))
       .on('@updateCenterInfo', this._updateCenterInfo);
 
-    this._baseSettingInfoView
+    this._baseSettingInfoView //
       .setup(document.querySelector('[data-setting-info]'))
       .on('@changeSettingRatio', event => this._changeSettingRatio(event.detail))
       .on('@changeSettingCycle', event => this._changeSettingCycle(event.detail))
@@ -64,13 +67,21 @@ const BaseInfoController = class {
       .on('@chageRecentSettingDate', event => this._chageRecentSettingDate(event.detail))
       .on('@updateSettingInfo', this._updateSettingInfo);
 
-    this._baseWorkingTimeInfoView
+    this._baseWorkingTimeInfoView //
       .setup(document.querySelector('[data-working-time-info]'))
       .on('@changeWeekdayTime', event => this._changeWeekdayTime(event.detail))
       .on('@changeWeekendTime', event => this._changeWeekendTime(event.detail))
       .on('@changeHolidayTime', event => this._changeHolidayTime(event.detail))
       .on('@changeNoticeTime', event => this._changeNoticeTime(event.detail))
       .on('@updateWorkingTimeInfo', this._updateWorkingTimeInfo);
+
+    this._baseSocialInfoView //
+      .setup(document.querySelector('[data-social-info]'))
+      .on('@checkSocial', event => this._checkSocial(event.detail))
+      .on('@changeSocialUrl', event => this._changeSocialUrl(event.detail))
+      .on('@updateSocialInfo', this._updateSocialInfo);
+
+    console.log(`${tag} init()`);
 
     this._lifeCycle();
   };
@@ -95,6 +106,9 @@ const BaseInfoController = class {
 
     const initialWoringTimeInfo = await this._baseWorkingTimeInfoModel.initInfo(999);
     this._baseWorkingTimeInfoView.initItems(initialWoringTimeInfo);
+
+    const [initialSocialCheckInfo, initialSocialUrlInfo] = await this._baseSocialInfoModel.initInfo(999);
+    this._baseSocialInfoView.initItems(initialSocialCheckInfo, initialSocialUrlInfo);
   };
 
   // 헤더 어드민 메뉴 토글
@@ -165,6 +179,36 @@ const BaseInfoController = class {
 
     const { isSuccess, error } = await this._baseWorkingTimeInfoModel.update();
     console.log(tag, '운영시간 정보 업데이트 결과', { isSuccess, error });
+
+    if (!isSuccess) {
+      this._modalView.removeModal();
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
+      return;
+    }
+
+    this._modalView.removeModal();
+  };
+
+  // 소셜 정보 변경
+  _checkSocial = ({ socialType, overCount }) => {
+    if (overCount) {
+      this._notificationView.addNotification(
+        'caution',
+        '소셜 아이템 선택 실패',
+        '소셜 아이템은 2개까지 선택 가능합니다'
+      );
+    } else {
+      this._baseSocialInfoModel.checkSocial(socialType);
+    }
+  };
+  _changeSocialUrl = ({ socialType, url }) => {
+    this._baseSocialInfoModel.changeSocialUrl(socialType, url);
+  };
+  _updateSocialInfo = async () => {
+    this._modalView.showLoadingModal('소셜 정보를 수정중입니다');
+
+    const { isSuccess, error } = await this._baseSocialInfoModel.update();
+    console.log(tag, '소셜 정보 업데이트 결과', { isSuccess, error });
 
     if (!isSuccess) {
       this._modalView.removeModal();

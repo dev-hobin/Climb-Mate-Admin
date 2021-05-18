@@ -1,10 +1,10 @@
 import View from '../core/View';
 
-import { BASE_WORKING_TIME_INFO_TYPE } from '../model/BaseWoringTimeInfoModel';
+import { BASE_WORKING_TIME_INFO_TYPE } from '../model/BaseWorkingTimeInfoModel';
 
 const tag = '[BaseWoringTimeInfoView]';
 
-const BaseWoringTimeInfoView = class extends View {
+const BaseWorkingTimeInfoView = class extends View {
   constructor() {
     super();
   }
@@ -56,4 +56,4 @@ const BaseWoringTimeInfoView = class extends View {
   };
 };
 
-export default BaseWoringTimeInfoView;
+export default BaseWorkingTimeInfoView;
