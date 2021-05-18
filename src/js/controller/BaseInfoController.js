@@ -3,6 +3,10 @@ import SidebarView from '../view/SidebarView';
 import ModalView from '../view/ModalView';
 import NotificationView from '../view/NotificationView';
 
+import CenterInfoView from '../view/CenterInfoView';
+
+import CenterInfoModel from '../model/CenterInfoModel';
+
 const tag = '[BaseInfoController]';
 
 const BaseInfoController = class {
@@ -12,6 +16,10 @@ const BaseInfoController = class {
     this._sidebarView = new SidebarView();
     this._modalView = new ModalView();
     this._notificationView = new NotificationView();
+    this._centerInfoView = new CenterInfoView();
+
+    // 모델
+    this._centerInfoModel = new CenterInfoModel();
   }
 
   /* 인터페이스 */
@@ -32,6 +40,14 @@ const BaseInfoController = class {
     this._modalView.setup(document.querySelector('main'));
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
+    this._centerInfoView
+      .setup(document.querySelector(`[data-center-info]`))
+      .on('@chageExtraAddress', event => this._changeExtraAddress(event.detail))
+      .on('@changeCallNum', event => this._changeCallNum(event.detail))
+      .on('@changePhoneCallNum', event => this._changePhoneCallNum(event.detail))
+      .on('@changeIntroduce', event => this._changeIntroduce(event.detail))
+      .on('@updateCenterInfo', this._updateCenterInfo);
+
     this._lifeCycle();
   };
 
@@ -45,6 +61,10 @@ const BaseInfoController = class {
       depth1: 'centerInfo',
       depth2: 'baseInfo',
     });
+
+    // 기본 정보 세팅
+    const initialCenterInfo = await this._centerInfoModel.initInfo(999);
+    this._centerInfoView.initItems(initialCenterInfo);
   };
 
   // 헤더 어드민 메뉴 토글
@@ -59,6 +79,27 @@ const BaseInfoController = class {
   // 사이드 메뉴 토글
   _toggleSideMenu = ({ menu }) => {
     this._sidebarView.toggleSideMenu(menu);
+  };
+
+  // 센터 기본 정보 변경
+  _changeExtraAddress = ({ value }) => this._centerInfoModel.changeExtraAddress(value);
+  _changeCallNum = ({ number, index }) => this._centerInfoModel.changeCallNum(number, index);
+  _changePhoneCallNum = ({ number, index }) => this._centerInfoModel.changePhoneCallNum(number, index);
+  _changeIntroduce = ({ value }) => this._centerInfoModel.changeIntroduce(value);
+
+  _updateCenterInfo = async () => {
+    this._modalView.showLoadingModal('센터 정보 수정중입니다');
+
+    const { isSuccess, error } = await this._centerInfoModel.update();
+    console.log(tag, '센터 정보 업데이트 결과', { isSuccess, error });
+
+    if (!isSuccess) {
+      this._modalView.removeModal();
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
+      return;
+    }
+
+    this._modalView.removeModal();
   };
 };
 

@@ -72,41 +72,61 @@
       <h1 class="visually-hidden">기본 정보</h1>
       <div class="base-info-container">
         <div class="flex-column-container base-info-container__article-wrapper">
-          <article class="center-info">
+          <article class="center-info" data-center-info>
             <div class="flex-between-container center-info__title-container">
               <h2 class="center-info__title">센터 정보</h2>
-              <button class="center-info__update-btn">수정</button>
+              <button class="center-info__update-btn" data-update-btn>수정</button>
             </div>
             <ul class="center-info__list">
               <li class="center-info-item" data-type="name">
                 <h3 class="center-info-item__title">센터 이름</h3>
-                <span class="center-info-item__name">사과 클라이밍</span>
+                <span class="center-info-item__name" data-center-name>사과 클라이밍</span>
               </li>
               <li class="center-info-item" data-type="address">
                 <h3 class="center-info-item__title">주소</h3>
                 <div class="flex-column-container center-info-item__address-container">
-                  <span class="center-info-item__address">사과 클라이밍장 주소</span>
-                  <input class="center-info-item__address-description-input" type="text" placeholder="상세 주소" />
+                  <span class="center-info-item__address" data-center-address>사과 클라이밍장 주소</span>
+                  <input
+                    class="center-info-item__address-description-input"
+                    type="text"
+                    placeholder="상세 주소"
+                    data-extra-address-input
+                  />
                 </div>
               </li>
               <li class="center-info-item" data-type="tel">
                 <h3 class="center-info-item__title">전화번호</h3>
                 <div class="flex-center-container center-info-item__tel-container">
-                  <input class="center-info-item__tel-input" type="text" placeholder="000" data-type="first" />
+                  <input class="center-info-item__tel-input" type="text" placeholder="000" data-call-number="first" />
                   <span class="center-info-item__hyphen">-</span>
-                  <input class="center-info-item__tel-input" type="text" placeholder="0000" data-type="middle" />
+                  <input class="center-info-item__tel-input" type="text" placeholder="0000" data-call-number="middle" />
                   <span class="center-info-item__hyphen">-</span>
-                  <input class="center-info-item__tel-input" type="text" placeholder="0000" data-type="last" />
+                  <input class="center-info-item__tel-input" type="text" placeholder="0000" data-call-number="last" />
                 </div>
               </li>
               <li class="center-info-item" data-type="phone">
                 <h3 class="center-info-item__title">휴대전화</h3>
                 <div class="flex-center-container center-info-item__phone-container">
-                  <input class="center-info-item__phone-input" type="text" placeholder="000" data-type="first" />
+                  <input
+                    class="center-info-item__phone-input"
+                    type="text"
+                    placeholder="000"
+                    data-phone-call-number="first"
+                  />
                   <span class="center-info-item__hyphen">-</span>
-                  <input class="center-info-item__phone-input" type="text" placeholder="0000" data-type="middle" />
+                  <input
+                    class="center-info-item__phone-input"
+                    type="text"
+                    placeholder="0000"
+                    data-phone-call-number="middle"
+                  />
                   <span class="center-info-item__hyphen">-</span>
-                  <input class="center-info-item__phone-input" type="text" placeholder="0000" data-type="last" />
+                  <input
+                    class="center-info-item__phone-input"
+                    type="text"
+                    placeholder="0000"
+                    data-phone-call-number="last"
+                  />
                 </div>
               </li>
               <li class="center-info-item" data-type="introduce">
@@ -116,6 +136,7 @@
                   cols="30"
                   rows="10"
                   placeholder="클라이밍장 소개 내용을 입력해주세요"
+                  data-center-introduce
                 ></textarea>
               </li>
             </ul>
@@ -123,7 +144,7 @@
           <article class="setting-info">
             <div class="flex-between-container setting-info__title-container">
               <h2 class="setting-info__title">세팅 정보</h2>
-              <button class="setting-info__update-btn">수정</button>
+              <button class="setting-info__update-btn" data-update-btn>수정</button>
             </div>
             <ul class="setting-info__list">
               <li class="setting-info-item" data-type="setting-ratio">
@@ -156,7 +177,7 @@
           <article class="working-time-info">
             <div class="flex-between-container working-time-info__title-container">
               <h2 class="working-time-info__title">운영시간</h2>
-              <button class="working-time-info__update-btn">수정</button>
+              <button class="working-time-info__update-btn" data-update-btn>수정</button>
             </div>
 
             <ul class="working-time-info__list">
@@ -187,7 +208,7 @@
           <article class="social-info">
             <div class="flex-between-container social-info__title-container">
               <h2 class="social-info__title">소셜 정보</h2>
-              <button class="social-info__update-btn">수정</button>
+              <button class="social-info__update-btn" data-update-btn>수정</button>
             </div>
             <ul class="social-info__list">
               <li class="social-info-item" data-type="instagram">
