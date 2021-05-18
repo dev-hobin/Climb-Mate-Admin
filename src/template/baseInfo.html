@@ -189,7 +189,7 @@
         </div>
 
         <div class="flex-column-container base-info-container__article-wrapper">
-          <article class="working-time-info">
+          <article class="working-time-info" data-working-time-info>
             <div class="flex-between-container working-time-info__title-container">
               <h2 class="working-time-info__title">운영시간</h2>
               <button class="working-time-info__update-btn" data-update-btn>수정</button>
@@ -198,15 +198,30 @@
             <ul class="working-time-info__list">
               <li class="working-time-info-item" data-type="weekday">
                 <h3 class="working-time-info-item__title">평일</h3>
-                <input class="working-time-info-item__time-input" type="text" placeholder="ex) 08:00 - 22:00" />
+                <input
+                  class="working-time-info-item__time-input"
+                  type="text"
+                  placeholder="ex) 08:00 - 22:00"
+                  data-input="weekday"
+                />
               </li>
               <li class="working-time-info-item" data-type="weekend">
                 <h3 class="working-time-info-item__title">주말</h3>
-                <input class="working-time-info-item__time-input" type="text" placeholder="ex) 08:00 - 22:00" />
+                <input
+                  class="working-time-info-item__time-input"
+                  type="text"
+                  placeholder="ex) 08:00 - 22:00"
+                  data-input="weekend"
+                />
               </li>
               <li class="working-time-info-item" data-type="holiday">
                 <h3 class="working-time-info-item__title">공휴일</h3>
-                <input class="working-time-info-item__time-input" type="text" placeholder="ex) 08:00 - 22:00" />
+                <input
+                  class="working-time-info-item__time-input"
+                  type="text"
+                  placeholder="ex) 08:00 - 22:00"
+                  data-input="holiday"
+                />
               </li>
               <li class="working-time-info-item" data-type="notice">
                 <h3 class="working-time-info-item__title">알림</h3>
@@ -215,6 +230,7 @@
                   cols="30"
                   rows="5"
                   placeholder="운영시간에 대해서 추가로 표시할 정보를 적어주세요"
+                  data-textarea="notice"
                 ></textarea>
               </li>
             </ul>

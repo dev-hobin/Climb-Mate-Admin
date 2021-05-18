@@ -5,9 +5,11 @@ import NotificationView from '../view/NotificationView';
 
 import BaseCenterInfoView from '../view/BaseCenterInfoView';
 import BaseSettingInfoView from '../view/BaseSettingInfoView';
+import BaseWorkingTimeInfoView from '../view/BaseWorkingTimeInfoView';
 
 import BaseCenterInfoModel from '../model/BaseCenterInfoModel';
 import BaseSettingInfoModel from '../model/BaseSettingInfoModel';
+import BaseWorkingTimeInfoModel from '../model/BaseWoringTimeInfoModel';
 
 const tag = '[BaseInfoController]';
 
@@ -20,10 +22,12 @@ const BaseInfoController = class {
     this._notificationView = new NotificationView();
     this._baseCenterInfoView = new BaseCenterInfoView();
     this._baseSettingInfoView = new BaseSettingInfoView();
+    this._baseWorkingTimeInfoView = new BaseWorkingTimeInfoView();
 
     // 모델
     this._baseCenterInfoModel = new BaseCenterInfoModel();
     this._baseSettingInfoModel = new BaseSettingInfoModel();
+    this._baseWorkingTimeInfoModel = new BaseWorkingTimeInfoModel();
   }
 
   /* 인터페이스 */
@@ -60,6 +64,14 @@ const BaseInfoController = class {
       .on('@chageRecentSettingDate', event => this._chageRecentSettingDate(event.detail))
       .on('@updateSettingInfo', this._updateSettingInfo);
 
+    this._baseWorkingTimeInfoView
+      .setup(document.querySelector('[data-working-time-info]'))
+      .on('@changeWeekdayTime', event => this._changeWeekdayTime(event.detail))
+      .on('@changeWeekendTime', event => this._changeWeekendTime(event.detail))
+      .on('@changeHolidayTime', event => this._changeHolidayTime(event.detail))
+      .on('@changeNoticeTime', event => this._changeNoticeTime(event.detail))
+      .on('@updateWorkingTimeInfo', this._updateWorkingTimeInfo);
+
     this._lifeCycle();
   };
 
@@ -80,6 +92,9 @@ const BaseInfoController = class {
 
     const initialSettingInfo = await this._baseSettingInfoModel.initInfo(999);
     this._baseSettingInfoView.initItems(initialSettingInfo);
+
+    const initialWoringTimeInfo = await this._baseWorkingTimeInfoModel.initInfo(999);
+    this._baseWorkingTimeInfoView.initItems(initialWoringTimeInfo);
   };
 
   // 헤더 어드민 메뉴 토글
@@ -129,6 +144,27 @@ const BaseInfoController = class {
 
     const { isSuccess, error } = await this._baseSettingInfoModel.update();
     console.log(tag, '세팅 정보 업데이트 결과', { isSuccess, error });
+
+    if (!isSuccess) {
+      this._modalView.removeModal();
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
+      return;
+    }
+
+    this._modalView.removeModal();
+  };
+
+  // 운영시간 정보 변경
+  _changeWeekdayTime = ({ value }) => this._baseWorkingTimeInfoModel.changeWeekdayTime(value);
+  _changeWeekendTime = ({ value }) => this._baseWorkingTimeInfoModel.changeWeekendTime(value);
+  _changeHolidayTime = ({ value }) => this._baseWorkingTimeInfoModel.changeHolidayTime(value);
+  _changeNoticeTime = ({ value }) => this._baseWorkingTimeInfoModel.changeNoticeTime(value);
+
+  _updateWorkingTimeInfo = async () => {
+    this._modalView.showLoadingModal('운영시간 정보 수정중입니다');
+
+    const { isSuccess, error } = await this._baseWorkingTimeInfoModel.update();
+    console.log(tag, '운영시간 정보 업데이트 결과', { isSuccess, error });
 
     if (!isSuccess) {
       this._modalView.removeModal();

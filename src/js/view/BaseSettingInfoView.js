@@ -13,7 +13,6 @@ const BaseSettingInfoView = class extends View {
 
   /* 인터페이스 */
   setup = element => {
-    console.log(element);
     this.init(element);
 
     this._borderingRatioInput = element.querySelector(`input[data-type="bordering"]`);
