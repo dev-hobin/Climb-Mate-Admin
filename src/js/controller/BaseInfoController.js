@@ -139,7 +139,12 @@ const BaseInfoController = class {
     this._modalView.removeModal();
 
     if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-    // todo: 성공 노티 띄우기
+    return this._notificationView.addNotification(
+      'success',
+      '센터 정보 수정',
+      '센터 정보가 정상적으로 수정되었습니다',
+      true
+    );
   };
 
   // 센터 세팅 정보 변경
@@ -156,7 +161,7 @@ const BaseInfoController = class {
     console.log(tag, '세팅 정보 업데이트 결과', { isSuccess, error });
     this._modalView.removeModal();
     if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-    // todo: 성공 노티 띄우기
+    this._notificationView.addNotification('success', '세팅 정보 수정', '성공적으로 세팅 정보를 수정했습니다', true);
   };
 
   // 운영시간 정보 변경
@@ -172,7 +177,12 @@ const BaseInfoController = class {
     console.log(tag, '운영시간 정보 업데이트 결과', { isSuccess, error });
     this._modalView.removeModal();
     if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-    // todo: 성공 노티 띄우기
+    this._notificationView.addNotification(
+      'success',
+      '운영시간 정보 수정',
+      '성공적으로 운영시간 정보를 수정했습니다',
+      true
+    );
   };
 
   // 소셜 정보 변경
@@ -197,8 +207,7 @@ const BaseInfoController = class {
     console.log(tag, '소셜 정보 업데이트 결과', { isSuccess, error });
     this._modalView.removeModal();
     if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-
-    // todo: 성공 노티 띄우기
+    this._notificationView.addNotification('success', '소셜 정보 수정', '성공적으로 소셜 정보를 수정했습니다', true);
   };
 };
 

@@ -76,25 +76,18 @@ const SettingController = class {
     console.log(tag, '볼더링 initial 이미지 추가');
 
     /* 지구력 이미지 설정 */
-    // 1. 이미 등록되어 있는 이미지 url 요청
     const initialEnduranceImages = await this._imageUploadModel.initImages('centerId', IMAGE_UPLOADER_TYPE.ENDURANCE);
     this._enduranceImageUploadView.initItems(initialEnduranceImages);
     console.log(tag, '지구력 initial 이미지 추가');
   };
 
   // 헤더 어드민 메뉴 토글
-  _toggleAdminMenu = () => {
-    this._headerView.toggleAdminMenu();
-  };
+  _toggleAdminMenu = () => this._headerView.toggleAdminMenu();
 
   // 사이드바 토글
-  _toggleSidebar = () => {
-    this._sidebarView.toggleSidebar();
-  };
+  _toggleSidebar = () => this._sidebarView.toggleSidebar();
   // 사이드 메뉴 토글
-  _toggleSideMenu = ({ menu }) => {
-    this._sidebarView.toggleSideMenu(menu);
-  };
+  _toggleSideMenu = ({ menu }) => this._sidebarView.toggleSideMenu(menu);
 
   // 이미지 추가
   _addImages = async ({ type, fileList }) => {
@@ -121,9 +114,7 @@ const SettingController = class {
     }
   };
   // 경고 모달 보여주기
-  _showAlertModal = ({ description, eventInfo }) => {
-    this._modalView.showAlertModal(description, eventInfo);
-  };
+  _showAlertModal = ({ description, eventInfo }) => this._modalView.showAlertModal(description, eventInfo);
   // 이미지 삭제
   _deleteImage = ({ type, index }) => {
     this._imageUploadModel.addDeletedImages(type, index);
@@ -146,8 +137,9 @@ const SettingController = class {
     // 사진 업로드 결과 받기
     const isSuccess = await this._imageUploadModel.uploadImages(type);
     if (isSuccess) {
-      console.log(tag, type, `이미지 업로드 결과 : ${isSuccess}`);
       this._modalView.removeModal();
+      this._notificationView.addNotification('success', '사진 수정에 성공', '성공적으로 사진을 수정했습니다', true);
+      console.log(tag, type, `이미지 업로드 결과 : ${isSuccess}`);
       console.log(`${tag} 사진 수정 완료 후 데이터 수정`);
     } else {
       console.log(tag, type, `이미지 업로드 결과 : ${isSuccess}`);

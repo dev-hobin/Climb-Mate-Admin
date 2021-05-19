@@ -42,7 +42,7 @@ const BannerController = class {
 
     this._bannerImageUploadView //
       .setup(document.querySelector(`[data-uploader="banner"]`))
-      .on('@addBannerImages', event => this._addImages(event.detail))
+      .on('@addImages', event => this._addImages(event.detail))
       .on('@changeImageLocation', event => this._changeImageLocation(event.detail))
       .on('@showAlert', event => this._showAlertModal(event.detail))
       .on('@uploadImages', event => this._uploadImages(event.detail));
@@ -131,6 +131,7 @@ const BannerController = class {
     if (isSuccess) {
       console.log(tag, type, `이미지 업로드 결과 : ${isSuccess}`);
       this._modalView.removeModal();
+      this._notificationView.addNotification('success', '배너 사진 수정', '성공적으로 배너 사진을 수정했습니다', true);
     } else {
       console.log(tag, type, `이미지 업로드 결과 : ${isSuccess}`);
       this._notificationView.addNotification(

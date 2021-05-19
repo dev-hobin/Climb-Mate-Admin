@@ -95,7 +95,6 @@ const SingleImageUploadModel = class extends Model {
 
     this._imageData[type].current = '';
 
-    console.log(tag, this._imageData[type].current);
     console.log(tag, type, '이미지 삭제중');
     await new Promise(resolve => setTimeout(resolve, 3000));
     console.log(tag, type, '삭제 완료 후 데이터 수정');

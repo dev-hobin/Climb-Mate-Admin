@@ -54,9 +54,7 @@ const ModalView = class extends View {
 
     this._element.append(modal);
   };
-  removeModal = () => {
-    this._element.querySelector('[data-modal]').remove();
-  };
+  removeModal = () => this._element.querySelector('[data-modal]').remove();
 
   /* 메서드 */
   _getLoaingContentsHtml = loadingMessage => {
@@ -100,10 +98,15 @@ const ModalView = class extends View {
   _addSingleImageUploaderDeleteImageEvent = (confirm, { type }) => {
     switch (type) {
       case SINGLE_IMAGE_UPLOADER_TYPE.PRICE:
+        confirm.addEventListener('click', () => {
+          this.removeModal();
+          this.trigger('@confirmPriceImageDelete', { type });
+        });
+        break;
       case SINGLE_IMAGE_UPLOADER_TYPE.LEVEL:
         confirm.addEventListener('click', () => {
-          this.trigger('@confirmPriceImageDelete', { type });
           this.removeModal();
+          this.trigger('@confirmLevelImageDelete', { type });
         });
         break;
       default:

@@ -105,8 +105,7 @@ const DetailInfoController = class {
     this._modalView.removeModal();
 
     if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-
-    // todo : 성공 노티 띄우기
+    this._notificationView.addNotification('success', '시설 정보 수정', '성공적으로 시설 정보를 수정했습니다', true);
   };
 
   _updateToolCheckInfo = ({ toolType, checked }) => {
@@ -123,8 +122,7 @@ const DetailInfoController = class {
     this._modalView.removeModal();
 
     if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-
-    // todo : 성공 노티 띄우기
+    this._notificationView.addNotification('success', '도구 정보 수정', '성공적으로 도구 정보를 수정했습니다', true);
   };
 };
 
