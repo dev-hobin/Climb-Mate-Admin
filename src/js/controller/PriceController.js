@@ -4,8 +4,10 @@ import ModalView from '../view/ModalView';
 import NotificationView from '../view/NotificationView';
 
 import PriceImageInfoView from '../view/PriceImageInfoView';
+import NecessaryPriceInfoView from '../view/NecessaryPriceInfoView';
 
 import SingleImageUploadModel, { SINGLE_IMAGE_UPLOADER_TYPE } from '../model/SingleImageUploadModel';
+import NecessaryPriceInfoModel from '../model/NecessaryPriceInfoModel';
 
 const tag = '[PriceController]';
 
@@ -16,10 +18,13 @@ const PriceController = class {
     this._sidebarView = new SidebarView();
     this._modalView = new ModalView();
     this._notificationView = new NotificationView();
+
     this._priceImageInfoView = new PriceImageInfoView();
+    this._necessaryPriceInfoView = new NecessaryPriceInfoView();
 
     // 모델
     this._singleImageUploadModel = new SingleImageUploadModel();
+    this._necessaryPriceInfoModel = new NecessaryPriceInfoModel();
   }
 
   /* 인터페이스 */
@@ -49,6 +54,8 @@ const PriceController = class {
       .on('@changeImage', event => this._changePriceImage(event.detail))
       .on('@confirmImage', event => this._confirmPriceImage(event.detail))
       .on('@cancelImage', event => this._cancelPriceImage(event.detail));
+
+    this._necessaryPriceInfoView.setup(document.querySelector('[data-necessary-price-info]'));
 
     this._lifeCycle();
   };

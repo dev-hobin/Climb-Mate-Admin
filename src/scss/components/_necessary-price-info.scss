@@ -59,7 +59,39 @@
   &__btn-container {
     margin-left: 1rem;
   }
-  &__update-btn {
+  &__confirm-btn {
+    width: 2rem;
+    height: 2rem;
+    opacity: 0.7;
+    transition: opacity 200ms ease;
+
+    &-icon {
+      font-size: 1.2rem;
+      color: $color-green;
+      pointer-events: none;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+  &__edit-btn {
+    width: 2rem;
+    height: 2rem;
+    opacity: 0.7;
+    transition: opacity 200ms ease;
+
+    &-icon {
+      font-size: 1.2rem;
+      color: $color-light-blue;
+      pointer-events: none;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+  &__cancel-btn {
     width: 2rem;
     height: 2rem;
     opacity: 0.7;
@@ -67,7 +99,8 @@
 
     &-icon {
       font-size: 1rem;
-      color: $color-light-blue;
+      color: $color-red;
+      pointer-events: none;
     }
 
     &:hover {
