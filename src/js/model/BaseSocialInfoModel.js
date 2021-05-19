@@ -119,7 +119,7 @@ const BaseSocialInfoModel = class extends Model {
 
     for (const [socialName, check] of Object.entries(currentCheckInfo)) {
       if (!check) continue;
-      if (currentUrlInfo[socialName].length === 0) return true;
+      if (currentUrlInfo[socialName].trim().length === 0) return true;
     }
     return false;
   };

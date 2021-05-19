@@ -3,6 +3,10 @@ import SidebarView from '../view/SidebarView';
 import ModalView from '../view/ModalView';
 import NotificationView from '../view/NotificationView';
 
+import PriceImageInfoView from '../view/PriceImageInfoView';
+
+import SingleImageUploadModel, { SINGLE_IMAGE_UPLOADER_TYPE } from '../model/SingleImageUploadModel';
+
 const tag = '[PriceController]';
 
 const PriceController = class {
@@ -12,6 +16,10 @@ const PriceController = class {
     this._sidebarView = new SidebarView();
     this._modalView = new ModalView();
     this._notificationView = new NotificationView();
+    this._priceImageInfoView = new PriceImageInfoView();
+
+    // 모델
+    this._singleImageUploadModel = new SingleImageUploadModel();
   }
 
   /* 인터페이스 */
@@ -29,8 +37,18 @@ const PriceController = class {
       .setup(document.querySelector(`[data-sidebar]`))
       .on('@toggleSideMenu', event => this._toggleSideMenu(event.detail));
 
-    this._modalView.setup(document.querySelector('main'));
+    this._modalView
+      .setup(document.querySelector('main'))
+      .on('@confirmPriceImageDelete', event => this._deleteImage(event.detail));
+
     this._notificationView.setup(document.querySelector('[data-notification]'));
+
+    this._priceImageInfoView //
+      .setup(document.querySelector('[data-price-image-info]'))
+      .on('@showAlert', event => this._showAlertModal(event.detail))
+      .on('@changeImage', event => this._changePriceImage(event.detail))
+      .on('@confirmImage', event => this._confirmPriceImage(event.detail))
+      .on('@cancelImage', event => this._cancelImage(event.detail));
 
     this._lifeCycle();
   };
@@ -45,6 +63,12 @@ const PriceController = class {
       depth1: 'centerInfo',
       depth2: 'price',
     });
+
+    const initialPriceImage = await this._singleImageUploadModel.initImage(
+      'centerId',
+      SINGLE_IMAGE_UPLOADER_TYPE.PRICE
+    );
+    this._priceImageInfoView.setImage(initialPriceImage);
   };
 
   // 헤더 어드민 메뉴 토글
@@ -59,6 +83,49 @@ const PriceController = class {
   // 사이드 메뉴 토글
   _toggleSideMenu = ({ menu }) => {
     this._sidebarView.toggleSideMenu(menu);
+  };
+  // 경고 모달 보여주기
+  _showAlertModal = ({ description, eventInfo }) => {
+    this._modalView.showAlertModal(description, eventInfo);
+  };
+
+  // 가격표 이미지 변경
+  _changePriceImage = ({ type, fileList }) => {
+    this._singleImageUploadModel.changeCurrentImage(type, fileList);
+    this._priceImageInfoView.setTempImage(fileList[0]);
+  };
+  // 가격 이미지 변경 확인 (가격표, 난이도)
+  _confirmPriceImage = async ({ type }) => {
+    // 로딩 모달 띄우기
+    this._modalView.showLoadingModal('사진을 변경중입니다');
+    const isSuccess = await this._singleImageUploadModel.uploadImage(type);
+    if (!isSuccess) {
+      this._notificationView.addNotification('error', '사진 변경 실패', '서버 오류로 인해 사진 변경에 실패했습니다');
+      this._modalView.removeModal();
+    } else {
+      console.log(tag, '가격표 사진 업데이트 성공');
+      this._modalView.removeModal();
+    }
+    // todo: 성공 노티 띄우기
+  };
+  // 싱글 이미지 변경 취소 (가격표, 난이도)
+  _cancelImage = ({ type }) => {
+    const initialImageUrl = this._singleImageUploadModel.cancelImage(type);
+    this._priceImageInfoView.setImage(initialImageUrl);
+  };
+  // 싱글 이미지 삭제 (가격표, 난이도)
+  _deleteImage = async ({ type }) => {
+    // 로딩 모달 띄우기
+    this._modalView.showLoadingModal('사진을 삭제중입니다');
+    const isSuccess = await this._singleImageUploadModel.deleteImage(type);
+    if (!isSuccess) {
+      this._notificationView.addNotification('error', '사진 삭제 실패', '서버 오류로 인해 사진 삭제에 실패했습니다');
+      this._modalView.removeModal();
+    } else {
+      this._priceImageInfoView.setEmptyImage();
+      this._modalView.removeModal();
+    }
+    // todo: 성공 노티 띄우기
   };
 };
 

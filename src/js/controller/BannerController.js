@@ -113,7 +113,6 @@ const BannerController = class {
   _deleteImage = ({ type, index }) => {
     this._imageUploadModel.addDeletedImages(type, index);
     this[`_${type}ImageUploadView`].removeItem(index);
-    this._modalView.removeModal();
     console.log(tag, type, '이미지 삭제');
   };
   // 이미지 자리 변경

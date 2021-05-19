@@ -136,14 +136,10 @@ const BaseInfoController = class {
 
     const { isSuccess, error } = await this._baseCenterInfoModel.update();
     console.log(tag, '센터 정보 업데이트 결과', { isSuccess, error });
-
-    if (!isSuccess) {
-      this._modalView.removeModal();
-      this._notificationView.addNotification(error.sort, error.title, error.description, true);
-      return;
-    }
-
     this._modalView.removeModal();
+
+    if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
+    // todo: 성공 노티 띄우기
   };
 
   // 센터 세팅 정보 변경
@@ -158,14 +154,9 @@ const BaseInfoController = class {
 
     const { isSuccess, error } = await this._baseSettingInfoModel.update();
     console.log(tag, '세팅 정보 업데이트 결과', { isSuccess, error });
-
-    if (!isSuccess) {
-      this._modalView.removeModal();
-      this._notificationView.addNotification(error.sort, error.title, error.description, true);
-      return;
-    }
-
     this._modalView.removeModal();
+    if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
+    // todo: 성공 노티 띄우기
   };
 
   // 운영시간 정보 변경
@@ -179,14 +170,9 @@ const BaseInfoController = class {
 
     const { isSuccess, error } = await this._baseWorkingTimeInfoModel.update();
     console.log(tag, '운영시간 정보 업데이트 결과', { isSuccess, error });
-
-    if (!isSuccess) {
-      this._modalView.removeModal();
-      this._notificationView.addNotification(error.sort, error.title, error.description, true);
-      return;
-    }
-
     this._modalView.removeModal();
+    if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
+    // todo: 성공 노티 띄우기
   };
 
   // 소셜 정보 변경
@@ -209,14 +195,10 @@ const BaseInfoController = class {
 
     const { isSuccess, error } = await this._baseSocialInfoModel.update();
     console.log(tag, '소셜 정보 업데이트 결과', { isSuccess, error });
-
-    if (!isSuccess) {
-      this._modalView.removeModal();
-      this._notificationView.addNotification(error.sort, error.title, error.description, true);
-      return;
-    }
-
     this._modalView.removeModal();
+    if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
+
+    // todo: 성공 노티 띄우기
   };
 };
 

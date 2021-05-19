@@ -70,14 +70,26 @@
     </nav>
     <main class="main">
       <h1 class="visually-hidden">가격 정보</h1>
-      <article class="single-image-uploader">
+      <article class="single-image-uploader" data-price-image-info>
         <h2 class="single-image-uploader__title">가격표 이미지</h2>
-        <label class="single-image-uploader__image-label">
-          <input class="single-image-uploader__image-input" type="file" />
-          <figure class="single-image-uploader__figure">
-            <img class="single-image-uploader__image" src="http://placehold.it/300x300" alt="가격표 이미지" />
-          </figure>
-        </label>
+        <div class="single-image-uploader__container">
+          <label class="single-image-uploader__image-label">
+            <input class="single-image-uploader__image-input" type="file" data-price-image-input />
+            <figure class="single-image-uploader__figure">
+              <img
+                class="single-image-uploader__image"
+                src="http://placehold.it/300x300"
+                alt="가격표 이미지"
+                data-price-image
+              />
+            </figure>
+          </label>
+          <div class="single-image-uploader__btn-container" data-btn-container>
+            <!-- <button class="single-image-uploader__btn" data-btn="confirm">확인</button>
+            <button class="single-image-uploader__btn" data-btn="cancel">취소</button>
+            <button class="single-image-uploader__btn" data-btn="delete">삭제</button> -->
+          </div>
+        </div>
       </article>
 
       <article class="necessary-price-info">

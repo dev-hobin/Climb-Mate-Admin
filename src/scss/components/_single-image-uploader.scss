@@ -1,12 +1,13 @@
 .single-image-uploader {
   padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 
   &__title {
     font-size: $font-size-large;
     margin-bottom: 1rem;
+  }
+  &__container {
+    display: flex;
+    justify-content: flex-start;
   }
   &__image-label {
     cursor: pointer;
@@ -28,5 +29,38 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
+  }
+
+  &__btn-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  &__btn {
+    font-size: 1rem;
+    color: $color-white;
+    padding: 0.25em 0.75em;
+    margin-left: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    &[data-btn='confirm'] {
+      background-color: $color-red;
+      &:hover {
+        background-color: $color-light-red;
+      }
+    }
+    &[data-btn='cancel'] {
+      background-color: $color-blue;
+      &:hover {
+        background-color: $color-light-blue;
+      }
+    }
+    &[data-btn='delete'] {
+      background-color: $color-gray;
+      &:hover,
+      &:focus {
+        background-color: $color-light-black;
+      }
+    }
   }
 }

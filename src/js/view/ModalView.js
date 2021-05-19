@@ -1,5 +1,7 @@
 import View from '../core/View';
 
+import { SINGLE_IMAGE_UPLOADER_TYPE } from '../model/SingleImageUploadModel';
+
 const tag = '[ModalView]';
 
 const ModalView = class extends View {
@@ -32,20 +34,22 @@ const ModalView = class extends View {
     const cancelBtn = modal.querySelector(`[data-type="cancel"]`);
     const confirm = modal.querySelector(`[data-type="confirm"]`);
 
-    const { type, index } = eventInfo;
-    switch (type) {
-      case 'banner':
-        confirm.addEventListener('click', () => this.trigger('@deleteItem', { type: 'banner', index }));
+    const { eventName } = eventInfo;
+    console.log(eventInfo);
+
+    switch (true) {
+      case eventName === 'image-uploader__delete-image':
+        this._addImageUploaderDeleteImageEvent(confirm, eventInfo);
         break;
-      case 'bordering':
-        confirm.addEventListener('click', () => this.trigger('@deleteItem', { type: 'bordering', index }));
+
+      case eventName === 'single-image-uploader__delete-image':
+        this._addSingleImageUploaderDeleteImageEvent(confirm, eventInfo);
         break;
-      case 'endurance':
-        confirm.addEventListener('click', () => this.trigger('@deleteItem', { type: 'endurance', index }));
-        break;
+
       default:
-        throw `${tag} showAlertModal() 이벤트 등록 실패`;
+        throw `${tag} 올바른 이벤트 정보가 아닙니다 :${eventName}`;
     }
+
     cancelBtn.addEventListener('click', () => this.removeModal());
 
     this._element.append(modal);
@@ -73,6 +77,38 @@ const ModalView = class extends View {
               <button class="confirm-btn" data-type="confirm">확인</button>
             </div>
           </div>`;
+  };
+
+  // 이벤트들
+
+  // 멀티 이미지 업로더에서 이미지 삭제하는 이벤트
+  _addImageUploaderDeleteImageEvent = (confirm, { type, index }) => {
+    switch (type) {
+      case 'banner':
+      case 'bordering':
+      case 'endurance':
+        confirm.addEventListener('click', () => {
+          this.trigger('@deleteItem', { type, index });
+          this.removeModal();
+        });
+        break;
+      default:
+        throw `${tag} showAlertModal() 이벤트 등록 실패`;
+    }
+  };
+  // 싱글 이미지 업로더에서 이미지 삭제하는 이벤트 (가격표, 난이도)
+  _addSingleImageUploaderDeleteImageEvent = (confirm, { type }) => {
+    switch (type) {
+      case SINGLE_IMAGE_UPLOADER_TYPE.PRICE:
+      case SINGLE_IMAGE_UPLOADER_TYPE.LEVEL:
+        confirm.addEventListener('click', () => {
+          this.trigger('@confirmPriceImageDelete', { type });
+          this.removeModal();
+        });
+        break;
+      default:
+        throw `${tag} showAlertModal() 이벤트 등록 실패`;
+    }
   };
 };
 

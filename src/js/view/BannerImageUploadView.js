@@ -143,6 +143,7 @@ const BannerImageUploadView = class extends View {
       this.trigger('@showAlert', {
         description: '정말로 삭제하시겠습니까?',
         eventInfo: {
+          eventName: 'image-uploader__delete-image',
           type: 'banner',
           index: deletedIndex,
         },

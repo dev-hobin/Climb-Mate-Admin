@@ -148,7 +148,7 @@ const SettingController = class {
     if (isSuccess) {
       console.log(tag, type, `이미지 업로드 결과 : ${isSuccess}`);
       this._modalView.removeModal();
-      console.log(`${tag} 사진 수정 완료 후 페이지 reload`);
+      console.log(`${tag} 사진 수정 완료 후 데이터 수정`);
     } else {
       console.log(tag, type, `이미지 업로드 결과 : ${isSuccess}`);
       this._notificationView.addNotification(

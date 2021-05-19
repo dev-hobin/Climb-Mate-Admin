@@ -102,14 +102,11 @@ const DetailInfoController = class {
 
     const { isSuccess, error } = await this._facilityInfoModel.update();
     console.log(tag, '시설 업데이트 결과', { isSuccess, error });
-
-    if (!isSuccess) {
-      this._modalView.removeModal();
-      this._notificationView.addNotification(error.sort, error.title, error.description, true);
-      return;
-    }
-
     this._modalView.removeModal();
+
+    if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
+
+    // todo : 성공 노티 띄우기
   };
 
   _updateToolCheckInfo = ({ toolType, checked }) => {
@@ -123,14 +120,11 @@ const DetailInfoController = class {
 
     const { isSuccess, error } = await this._toolInfoModel.update();
     console.log(tag, '도구 업데이트 결과', { isSuccess, error });
-
-    if (!isSuccess) {
-      this._modalView.removeModal();
-      this._notificationView.addNotification(error.sort, error.title, error.description, true);
-      return;
-    }
-
     this._modalView.removeModal();
+
+    if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
+
+    // todo : 성공 노티 띄우기
   };
 };
 

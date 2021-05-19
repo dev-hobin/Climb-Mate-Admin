@@ -142,9 +142,17 @@ const ImageUploadModel = class extends Model {
     if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
     const [files, urls, willDeleted] = this._addExtraInfo(type);
 
+    console.log(tag, type, '업로드할 파일만 뽑아낸 정보');
+    console.log(files);
+    console.log(tag, type, '이미 등록된 url만 뽑아낸 정보');
+    console.log(urls);
+    console.log(tag, type, '삭제할 이미지');
+    console.log(willDeleted);
+
     console.log(tag, type, '이미지 업로드 중');
     await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log(tag, type, '업로드 완료 후 결과 반환');
+    console.log(tag, type, '업로드 완료 후 데이터 재설정');
+    console.log(tag, type, '성공 결과 반환');
     return true;
   };
 
@@ -193,12 +201,6 @@ const ImageUploadModel = class extends Model {
     const urls = orderedList.filter(imageObj => imageObj.hasOwnProperty('url'));
     const willDeleted = this._imageData[type].deleted.filter(image => typeof image === 'string');
 
-    console.log(tag, type, '업로드할 파일만 뽑아낸 정보');
-    console.log(files);
-    console.log(tag, type, '이미 등록된 url만 뽑아낸 정보');
-    console.log(urls);
-    console.log(tag, type, '삭제할 이미지');
-    console.log(willDeleted);
     return [files, urls, willDeleted];
   };
 };
