@@ -42,10 +42,22 @@ const NecessaryPriceInfoModel = class extends Model {
     this._info = { ...dummyInfo };
     return this._info;
   };
-
-  update = async () => {};
-
+  editPrice = async (goodsType, priceType, price) => {
+    this._info[goodsType] = price;
+    console.log(tag, '가격 수정중...');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log(tag, '가격 수정 완료');
+    console.log(tag, '성공 결과 반환');
+    return {
+      isSuccess: true,
+      error: {},
+      data: {
+        price: this._addCommas(price),
+      },
+    };
+  };
   /* 메소드 */
+  _addCommas = price => price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
 export default NecessaryPriceInfoModel;

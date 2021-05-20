@@ -21,6 +21,20 @@ const NecessaryPriceInfoView = class extends View {
     console.log(`${tag} setup()`);
     return this;
   };
+  initInfo = infoObj => {
+    this._items.forEach((item, index) => {
+      item.querySelector('[data-price]').textContent = infoObj[index + 1];
+    });
+    console.log(infoObj);
+  };
+  setPrice = (priceType, price) => {
+    const item = this._items.filter(item => item.dataset.item === priceType)[0];
+    const priceContainer = item.querySelector('[data-price-container]');
+    const btnContainer = item.querySelector('[data-btn-container]');
+
+    priceContainer.innerHTML = this._template.getPriceHtml(price);
+    btnContainer.innerHTML = this._template.getEditBtn();
+  };
 
   /* 메소드 */
   _bindEvents = () => {
@@ -28,11 +42,9 @@ const NecessaryPriceInfoView = class extends View {
       const btnType = event.target.dataset.btn;
       if (!btnType) return;
       const item = event.target.closest('[data-item]');
-      console.log(item);
       const priceType = item.dataset.item;
       const priceContainer = item.querySelector('[data-price-container]');
       const btnContainer = item.querySelector('[data-btn-container]');
-      const btn = event.target;
       const goodsType = NECESSARY_GOODS_TYPE[priceType];
 
       switch (true) {
@@ -42,7 +54,8 @@ const NecessaryPriceInfoView = class extends View {
           btnContainer.innerHTML = this._template.getEditStateBtnsHtml();
           break;
         case btnType === 'confirm':
-          // todo: 수정 과정 만들고 인풋값에 숫자만 입력가능하게 바꿔라
+          const priceInputValue = priceContainer.querySelector('[data-price-input]').value;
+          this.trigger('@confirmPriceEdit', { goodsType, priceType, price: priceInputValue });
           break;
         case btnType === 'cancel':
           const initialPrice = priceContainer.querySelector('[data-initial-price]').dataset.initialPrice;
@@ -52,6 +65,16 @@ const NecessaryPriceInfoView = class extends View {
         default:
           throw `${tag} 사용 불가능한 버튼 타입입니다`;
       }
+    });
+
+    this._itemList.addEventListener('input', event => {
+      const priceInput = event.target;
+      // 숫자만 입력
+      priceInput.value = priceInput.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+      // 둘째자리 이상일때 맨앞에 0 제거
+      if (priceInput.value.length > 1) priceInput.value = priceInput.value.replace(/(^0+)/, '');
+      // 초기값은 0
+      if (priceInput.value.length === 0) priceInput.value = 0;
     });
   };
 };
@@ -66,7 +89,7 @@ class Template {
   getPriceInputHtml = price => {
     const priceNum = price.replace(/,/, '');
     return `
-        <input class="necessary-price-item__price-input" type="text" placeholder="가격 입력" value="${priceNum}" data-initial-price="${price}" />
+        <input class="necessary-price-item__price-input" type="text" placeholder="가격 입력" value="${priceNum}" data-initial-price="${price}" data-price-input/>
       `;
   };
   getEditStateBtnsHtml = () => {

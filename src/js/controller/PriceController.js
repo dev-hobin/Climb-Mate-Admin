@@ -55,7 +55,9 @@ const PriceController = class {
       .on('@confirmImage', event => this._confirmPriceImage(event.detail))
       .on('@cancelImage', event => this._cancelPriceImage(event.detail));
 
-    this._necessaryPriceInfoView.setup(document.querySelector('[data-necessary-price-info]'));
+    this._necessaryPriceInfoView //
+      .setup(document.querySelector('[data-necessary-price-info]'))
+      .on('@confirmPriceEdit', event => this._editNecessaryPrice(event.detail));
 
     this._lifeCycle();
   };
@@ -76,6 +78,9 @@ const PriceController = class {
       SINGLE_IMAGE_UPLOADER_TYPE.PRICE
     );
     this._priceImageInfoView.setImage(initialPriceImage);
+
+    const initialNecessaryPriceInfo = await this._necessaryPriceInfoModel.initInfo('centerId');
+    this._necessaryPriceInfoView.initInfo(initialNecessaryPriceInfo);
   };
 
   // 헤더 어드민 메뉴 토글
@@ -134,6 +139,19 @@ const PriceController = class {
         true
       );
     }
+  };
+
+  // 필수 상품 정보 수정
+  _editNecessaryPrice = async ({ goodsType, priceType, price }) => {
+    this._modalView.showLoadingModal('상품 정보를 수정중입니다');
+    const { isSuccess, error, data } = await this._necessaryPriceInfoModel.editPrice(goodsType, priceType, price);
+    this._modalView.removeModal();
+    if (!isSuccess) {
+      const { sort, title, description } = error;
+      return this._notificationView.addNotification(sort, title, description);
+    }
+    const { price: priceString } = data;
+    this._necessaryPriceInfoView.setPrice(priceType, priceString);
   };
 };
 
