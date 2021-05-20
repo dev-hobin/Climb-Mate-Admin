@@ -63,7 +63,9 @@ const PriceController = class {
       .setup(document.querySelector('[data-necessary-price-info]'))
       .on('@confirmPriceEdit', event => this._editNecessaryPrice(event.detail));
 
-    this._extraPriceInfoView.setup(document.querySelector('[data-extra-price-info]'));
+    this._extraPriceInfoView //
+      .setup(document.querySelector('[data-extra-price-info]'))
+      .on('@addItem', event => this._addExtraItem(event.detail));
 
     this._lifeCycle();
   };
@@ -163,6 +165,25 @@ const PriceController = class {
     const { price: priceString } = data;
     this._necessaryPriceInfoView.setPrice(priceType, priceString);
     this._notificationView.addNotification('success', '필수 상품 정보 수정 성공', '상품 정보가 수정되었습니다', true);
+  };
+
+  // 추가 상품 정보 아이템 추가
+  _addExtraItem = async ({ goodsName, goodsPrice }) => {
+    this._modalView.showLoadingModal('상품을 추가중입니다');
+    const { isSuccess, error, data } = await this._extraPriceInfoModel.addItem(
+      'centerId',
+      'accessKey',
+      goodsName,
+      goodsPrice
+    );
+    this._modalView.removeModal();
+    if (!isSuccess) {
+      const { sort, title, description } = error;
+      return this._notificationView.addNotification(sort, title, description, true);
+    }
+    const { goodsName: name, goodsPrice: price } = data;
+    this._extraPriceInfoView.addItem(name, price);
+    this._notificationView.addNotification('success', '상품 정보 추가 성공', '성공적으로 상품을 추가했습니다', true);
   };
 };
 

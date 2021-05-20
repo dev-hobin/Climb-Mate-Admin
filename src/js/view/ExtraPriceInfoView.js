@@ -27,6 +27,16 @@ const ExtraPriceInfoView = class extends View {
     if (infoArray.length === 0) return (this._itemList.innerHTML = this._template.getEmptyItemHtml());
     this._itemList.innerHTML = this._template.getItemsHtml(infoArray);
   };
+  addItem = (goodsName, goodsPrice) => {
+    const item = document.createElement('li');
+    item.setAttribute('class', 'extra-price-item');
+    item.setAttribute('data-item', '');
+
+    const itemHtml = this._template.getItemHtml(goodsName, goodsPrice);
+    item.innerHTML = itemHtml;
+
+    this._itemList.append(item);
+  };
 
   /* 메소드 */
   _bindEvents = () => {
@@ -41,7 +51,13 @@ const ExtraPriceInfoView = class extends View {
     });
 
     this._addBtn.addEventListener('click', () => {
-      console.log('아이템 추가');
+      const goodsName = this._nameInput.value.trim();
+      const goodsPrice = this._priceInput.value;
+
+      if (goodsName.length === 0) return this._nameInput.focus();
+      if (goodsPrice.length === 0) return this._priceInput.focus();
+
+      this.trigger('@addItem', { goodsName, goodsPrice });
     });
 
     this._itemList.addEventListener('click', event => {
@@ -113,6 +129,27 @@ class Template {
         <li class="extra-price-empty-item" data-empty-item>상품을 추가해주세요</li>
         `;
   };
+  getItemHtml = (name, price) => {
+    return `
+      <div class="extra-price-item__title-container" data-goods-name-container>
+        <h3 class="extra-price-item__title" data-goods-name>${name}</h3>
+      </div>
+      <div class="extra-price-item__horizontal-line"></div>
+      <div class="flex-start-container" data-price-container>
+        <span class="extra-price-item__price" data-price>${price}</span>
+        <span class="extra-price-item__won">원</span>
+      </div>
+      <div class="flex-start-container extra-price-item__btn-container" data-btn-container>
+        <button class="extra-price-item__edit-btn" data-btn="edit">
+          <i class="far fa-edit extra-price-item__edit-btn-icon"></i>
+        </button>
+        <button class="extra-price-item__delete-btn" data-btn="delete">
+          <i class="fas fa-trash extra-price-item__delete-btn-icon"></i>
+        </button>
+      </div>
+    `;
+  };
+
   getItemsHtml = infoArray => {
     let initialHtml = '';
     return infoArray.reduce((html, item) => {
