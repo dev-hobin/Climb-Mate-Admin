@@ -94,6 +94,35 @@ const ExtraPriceInfoModel = class extends Model {
       },
     };
   };
+  editItem = async (accessKey, initialGoodsName, edittedGoodsName, edittedPrice) => {
+    if (!this._hasNamedItem(initialGoodsName))
+      return {
+        isSuccess: false,
+        error: { sort: 'caution', title: '상품 수정 실패', description: '해당 상품이 존재하지 않습니다' },
+        data: {},
+      };
+
+    this._info = this._info.map(info => {
+      if (info.goodsName !== initialGoodsName) return info;
+      info.goodsName = edittedGoodsName;
+      info.goodsPrice = this._addCommas(edittedPrice);
+      return info;
+    });
+    console.log(tag, '아이템 수정중...');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log(tag, '수정된 정보', this._info);
+    console.log(tag, '아이템 수정 성공');
+    console.log(tag, '성공 결과 반환');
+    return {
+      isSuccess: true,
+      error: {},
+      data: {
+        initialGoodsName,
+        edittedGoodsName,
+        edittedPrice: this._addCommas(edittedPrice),
+      },
+    };
+  };
 
   /* 메소드 */
   _addCommas = price => price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');

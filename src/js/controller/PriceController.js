@@ -67,6 +67,7 @@ const PriceController = class {
     this._extraPriceInfoView //
       .setup(document.querySelector('[data-extra-price-info]'))
       .on('@addItem', event => this._addExtraItem(event.detail))
+      .on('@confirmEditItem', event => this._editItem(event.detail))
       .on('@showAlert', event => this._showAlertModal(event.detail));
 
     this._lifeCycle();
@@ -199,6 +200,24 @@ const PriceController = class {
     const { goodsName: name } = data;
     this._extraPriceInfoView.deleteItem(name);
     this._notificationView.addNotification('success', '상품 정보 삭제 성공', '성공적으로 상품을 삭제했습니다', true);
+  };
+  // 추가 상품 정보 수정
+  _editItem = async ({ initialGoodsName, edittedGoodsName, edittedPrice }) => {
+    this._modalView.showLoadingModal('상품을 수정중입니다');
+    const { isSuccess, error, data } = await this._extraPriceInfoModel.editItem(
+      'accessKey',
+      initialGoodsName,
+      edittedGoodsName,
+      edittedPrice
+    );
+    this._modalView.removeModal();
+    if (!isSuccess) {
+      const { sort, title, description } = error;
+      return this._notificationView.addNotification(sort, title, description, true);
+    }
+    const { initialGoodsName: initialName, edittedGoodsName: edittedName, edittedPrice: edittedPriceString } = data;
+    this._extraPriceInfoView.editItem(initialName, edittedName, edittedPriceString);
+    this._notificationView.addNotification('success', '상품 정보 수정 성공', '성공적으로 상품을 수정했습니다', true);
   };
 };
 

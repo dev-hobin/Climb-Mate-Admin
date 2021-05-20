@@ -28,6 +28,8 @@ const ExtraPriceInfoView = class extends View {
     this._itemList.innerHTML = this._template.getItemsHtml(infoArray);
   };
   addItem = (goodsName, goodsPrice) => {
+    if (this._itemList.querySelector('[data-empty-item]')) this._itemList.querySelector('[data-empty-item]').remove();
+
     const item = document.createElement('li');
     item.setAttribute('class', 'extra-price-item');
     item.setAttribute('data-item', '');
@@ -42,6 +44,14 @@ const ExtraPriceInfoView = class extends View {
       item => item.querySelector('[data-goods-name]').textContent === goodsName
     )[0];
     item.remove();
+    if (this._itemList.childElementCount === 0) this._itemList.innerHTML = this._template.getEmptyItemHtml();
+  };
+  editItem = (goodsInitialName, goodsEdittedName, goodsEdittedPrice) => {
+    const nameInput = this._itemList.querySelector(`[data-initial-name="${goodsInitialName}"]`);
+    const item = nameInput.closest('[data-item]');
+    const itemHtml = this._template.getItemHtml(goodsEdittedName, goodsEdittedPrice);
+
+    item.innerHTML = itemHtml;
   };
 
   /* 메소드 */
@@ -74,30 +84,48 @@ const ExtraPriceInfoView = class extends View {
       const priceContainer = item.querySelector('[data-price-container]');
       const btnContainer = item.querySelector('[data-btn-container]');
 
+      let initialGoodsName;
+      let edittedGoodsName;
+      let initialPriceString;
+      let edittedPrice;
       switch (true) {
         case btnType === 'edit':
-          goodsNameContainer.innerHTML = this._template.getEditStateNameInputHtml(
-            goodsNameContainer.querySelector('[data-goods-name]').textContent
-          );
+          initialGoodsName = goodsNameContainer.querySelector('[data-goods-name]').textContent;
+          goodsNameContainer.innerHTML = this._template.getEditStateNameInputHtml(initialGoodsName);
 
-          const price = priceContainer.querySelector('[data-price]').textContent;
-          priceContainer.innerHTML = this._template.getEditStatePriceInputHtml(price);
+          initialPriceString = priceContainer.querySelector('[data-price]').textContent;
+          priceContainer.innerHTML = this._template.getEditStatePriceInputHtml(initialPriceString);
 
           btnContainer.innerHTML = this._template.getEditStateBtnsHtml();
           break;
         case btnType === 'delete':
+          initialGoodsName = goodsNameContainer.querySelector('[data-goods-name]').textContent;
           this.trigger('@showAlert', {
             description: '정말로 삭제하시겠습니까?',
             eventInfo: {
               eventName: 'extra-price-info__delete-item',
-              goodsName: goodsNameContainer.querySelector('[data-goods-name]').textContent,
+              goodsName: initialGoodsName,
             },
           });
           break;
         case btnType === 'confirm':
-          // const priceInputValue = priceContainer.querySelector('[data-price-input]').value;
-          // this.trigger('@confirmPriceEdit', { goodsType, priceType, price: priceInputValue });
-          console.log('confirm');
+          initialGoodsName = goodsNameContainer.querySelector('[data-initial-name]').dataset.initialName;
+          edittedGoodsName = goodsNameContainer.querySelector('[data-name-input]').value.trim();
+          edittedPrice = priceContainer.querySelector('[data-price-input]').value.trim();
+
+          if (edittedGoodsName.length === 0) return goodsNameContainer.querySelector('[data-name-input]').focus();
+          if (edittedPrice.length === 0) return priceContainer.querySelector('[data-price-input]').focus();
+
+          this.trigger('@confirmEditItem', {
+            initialGoodsName,
+            edittedGoodsName,
+            edittedPrice,
+          });
+          console.log({
+            initialGoodsName,
+            edittedGoodsName,
+            edittedPrice,
+          });
           break;
         case btnType === 'cancel':
           goodsNameContainer.innerHTML = this._template.getGoodsNameHtml(
