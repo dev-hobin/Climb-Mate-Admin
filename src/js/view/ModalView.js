@@ -46,6 +46,10 @@ const ModalView = class extends View {
         this._addSingleImageUploaderDeleteImageEvent(confirm, eventInfo);
         break;
 
+      case eventName === 'extra-price-info__delete-item':
+        this._addExtraPriceInfoDeleteItemEvent(confirm, eventInfo);
+        break;
+
       default:
         throw `${tag} 올바른 이벤트 정보가 아닙니다 :${eventName}`;
     }
@@ -112,6 +116,13 @@ const ModalView = class extends View {
       default:
         throw `${tag} showAlertModal() 이벤트 등록 실패`;
     }
+  };
+  // 추가 상품 정보에서 아이템 삭제하는 이벤트
+  _addExtraPriceInfoDeleteItemEvent = (confirm, { goodsName }) => {
+    confirm.addEventListener('click', () => {
+      this.removeModal();
+      this.trigger('@confirmExtraPriceItemDelete', { goodsName });
+    });
   };
 };
 

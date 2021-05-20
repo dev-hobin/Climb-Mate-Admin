@@ -53,12 +53,11 @@ const ExtraPriceInfoModel = class extends Model {
         error: { sort: 'caution', title: '상품 추가 실패', description: '같은 이름의 상품이 있습니다' },
         data: {},
       };
-    if (this._info.filter(info => info.goodsName === goodsName).length > 0)
-      this._info.push({
-        id: '서버에서 받아온 id',
-        goodsName,
-        goodsPrice,
-      });
+    this._info.push({
+      id: '서버에서 받아온 id',
+      goodsName,
+      goodsPrice,
+    });
     console.log(tag, '아이템 추가중...');
     await new Promise(resolve => setTimeout(resolve, 1000));
     console.log(tag, '수정된 정보 { id, goodsName, goodsPrice }', this._info);
@@ -73,11 +72,37 @@ const ExtraPriceInfoModel = class extends Model {
       },
     };
   };
+  deleteItem = async (centerId, accessKey, goodsName) => {
+    if (!this._hasNamedItem(goodsName))
+      return {
+        isSuccess: false,
+        error: { sort: 'caution', title: '상품 삭제 실패', description: '해당 상품이 존재하지 않습니다' },
+        data: {},
+      };
+    this._info = this._info.filter(info => info.goodsName !== goodsName);
+    console.log(this._info);
+    console.log(tag, '아이템 삭제중...');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log(tag, '수정된 정보', this._info);
+    console.log(tag, '아이템 삭제 성공');
+    console.log(tag, '성공 결과 반환');
+    return {
+      isSuccess: true,
+      error: {},
+      data: {
+        goodsName,
+      },
+    };
+  };
 
   /* 메소드 */
   _addCommas = price => price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   _hasSameName = goodsName => {
+    if (this._info.filter(info => info.goodsName === goodsName).length > 0) return true;
+    return false;
+  };
+  _hasNamedItem = goodsName => {
     if (this._info.filter(info => info.goodsName === goodsName).length > 0) return true;
     return false;
   };

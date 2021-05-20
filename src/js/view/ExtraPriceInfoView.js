@@ -37,6 +37,12 @@ const ExtraPriceInfoView = class extends View {
 
     this._itemList.append(item);
   };
+  deleteItem = goodsName => {
+    const item = Array.from(this._itemList.querySelectorAll('[data-item]')).filter(
+      item => item.querySelector('[data-goods-name]').textContent === goodsName
+    )[0];
+    item.remove();
+  };
 
   /* 메소드 */
   _bindEvents = () => {
@@ -70,8 +76,9 @@ const ExtraPriceInfoView = class extends View {
 
       switch (true) {
         case btnType === 'edit':
-          const name = goodsNameContainer.querySelector('[data-goods-name]').textContent;
-          goodsNameContainer.innerHTML = this._template.getEditStateNameInputHtml(name);
+          goodsNameContainer.innerHTML = this._template.getEditStateNameInputHtml(
+            goodsNameContainer.querySelector('[data-goods-name]').textContent
+          );
 
           const price = priceContainer.querySelector('[data-price]').textContent;
           priceContainer.innerHTML = this._template.getEditStatePriceInputHtml(price);
@@ -79,7 +86,13 @@ const ExtraPriceInfoView = class extends View {
           btnContainer.innerHTML = this._template.getEditStateBtnsHtml();
           break;
         case btnType === 'delete':
-          console.log('delete');
+          this.trigger('@showAlert', {
+            description: '정말로 삭제하시겠습니까?',
+            eventInfo: {
+              eventName: 'extra-price-info__delete-item',
+              goodsName: goodsNameContainer.querySelector('[data-goods-name]').textContent,
+            },
+          });
           break;
         case btnType === 'confirm':
           // const priceInputValue = priceContainer.querySelector('[data-price-input]').value;
@@ -87,11 +100,13 @@ const ExtraPriceInfoView = class extends View {
           console.log('confirm');
           break;
         case btnType === 'cancel':
-          const initialGoodsName = goodsNameContainer.querySelector('[data-initial-name]').dataset.initialName;
-          goodsNameContainer.innerHTML = this._template.getGoodsNameHtml(initialGoodsName);
+          goodsNameContainer.innerHTML = this._template.getGoodsNameHtml(
+            goodsNameContainer.querySelector('[data-initial-name]').dataset.initialName
+          );
 
-          const initialPrice = priceContainer.querySelector('[data-initial-price]').dataset.initialPrice;
-          priceContainer.innerHTML = this._template.getPriceHtml(initialPrice);
+          priceContainer.innerHTML = this._template.getPriceHtml(
+            priceContainer.querySelector('[data-initial-price]').dataset.initialPrice
+          );
 
           btnContainer.innerHTML = this._template.getBtnsHtml();
           break;

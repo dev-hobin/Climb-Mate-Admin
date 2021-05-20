@@ -48,7 +48,8 @@ const PriceController = class {
 
     this._modalView //
       .setup(document.querySelector('main'))
-      .on('@confirmPriceImageDelete', event => this._deletePriceImage(event.detail));
+      .on('@confirmPriceImageDelete', event => this._deletePriceImage(event.detail))
+      .on('@confirmExtraPriceItemDelete', event => this._deleteExtraItem(event.detail));
 
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
@@ -65,7 +66,8 @@ const PriceController = class {
 
     this._extraPriceInfoView //
       .setup(document.querySelector('[data-extra-price-info]'))
-      .on('@addItem', event => this._addExtraItem(event.detail));
+      .on('@addItem', event => this._addExtraItem(event.detail))
+      .on('@showAlert', event => this._showAlertModal(event.detail));
 
     this._lifeCycle();
   };
@@ -184,6 +186,19 @@ const PriceController = class {
     const { goodsName: name, goodsPrice: price } = data;
     this._extraPriceInfoView.addItem(name, price);
     this._notificationView.addNotification('success', '상품 정보 추가 성공', '성공적으로 상품을 추가했습니다', true);
+  };
+  // 추가 상품 정보 삭제
+  _deleteExtraItem = async ({ goodsName }) => {
+    this._modalView.showLoadingModal('상품을 삭제중입니다');
+    const { isSuccess, error, data } = await this._extraPriceInfoModel.deleteItem('centerId', 'accessKey', goodsName);
+    this._modalView.removeModal();
+    if (!isSuccess) {
+      const { sort, title, description } = error;
+      return this._notificationView.addNotification(sort, title, description, true);
+    }
+    const { goodsName: name } = data;
+    this._extraPriceInfoView.deleteItem(name);
+    this._notificationView.addNotification('success', '상품 정보 삭제 성공', '성공적으로 상품을 삭제했습니다', true);
   };
 };
 
