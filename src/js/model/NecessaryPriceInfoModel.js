@@ -46,6 +46,7 @@ const NecessaryPriceInfoModel = class extends Model {
     this._info[goodsType] = price;
     console.log(tag, '가격 수정중...');
     await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log(tag, '수정된 정보 { goodsType, price }', this._info);
     console.log(tag, '가격 수정 완료');
     console.log(tag, '성공 결과 반환');
     return {

@@ -174,132 +174,50 @@
         </ul>
       </article>
 
-      <article class="extra-price-info">
+      <article class="extra-price-info" data-extra-price-info>
         <h2 class="extra-price-info__title">추가 상품 정보</h2>
         <div class="extra-price-info__add-price-container">
-          <input class="extra-price-info__price-name-input" type="text" placeholder="상품 이름" />
-          <input class="extra-price-info__price-input" type="text" placeholder="상품 가격" />
-          <button class="extra-price-info__add-price-btn">
+          <input class="extra-price-info__price-name-input" type="text" placeholder="상품 이름" data-add-input="name" />
+          <input class="extra-price-info__price-input" type="text" placeholder="상품 가격" data-add-input="price" />
+          <button class="extra-price-info__add-price-btn" data-add-btn>
             <i class="fas fa-plus extra-price-info__add-price-btn-icon"></i>
           </button>
         </div>
-        <ul class="extra-price-info__price-list">
-          <li class="extra-price-item">
-            <!-- <h3 class="extra-price-item__title">추가 아이템 1</h3> -->
+        <ul class="extra-price-info__price-list" data-item-list>
+          <!-- <li class="extra-price-empty-item" data-empty-item>상품을 추가해주세요</li> -->
+          <li class="extra-price-item" data-item>
+            <div class="extra-price-item__title-container" data-goods-container>
+              <h3 class="extra-price-item__title" data-goods-name>추가 아이템 1</h3>
+            </div>
             <input class="extra-price-item__price-name-input" type="text" placeholder="상품 이름 입력" />
             <div class="extra-price-item__horizontal-line"></div>
-            <div class="flex-start-container">
-              <input class="extra-price-item__price-input" type="text" placeholder="가격 입력" />
-              <!-- <span class="extra-price-item__price">50,000</span> -->
+            <div class="flex-start-container" data-price-container>
+              <!-- <input class="extra-price-item__price-input" type="text" placeholder="가격 입력" /> -->
+              <span class="extra-price-item__price" data-price>50,000</span>
               <span class="extra-price-item__won">원</span>
             </div>
-            <div class="flex-start-container extra-price-item__btn-container">
-              <button class="extra-price-item__update-btn">
-                <i class="far fa-edit extra-price-item__update-btn-icon"></i>
+            <div class="flex-start-container extra-price-item__btn-container" data-btn-container>
+              <button class="extra-price-item__confirm-btn" data-btn="confirm">
+                <i class="far fa-check-square extra-price-item__confirm-btn-icon"></i>
               </button>
-              <button class="extra-price-item__delete-btn">
-                <i class="fas fa-trash extra-price-item__delete-btn-icon"></i>
+              <button class="extra-price-item__cancel-btn" data-btn="cancel">
+                <i class="fas fa-redo extra-price-item__cancel-btn-icon"></i>
               </button>
             </div>
           </li>
-          <li class="extra-price-item">
-            <h3 class="extra-price-item__title">추가 아이템 2</h3>
+          <li class="extra-price-item" data-item>
+            <h3 class="extra-price-item__title" data-goods-name>추가 아이템 2</h3>
             <div class="extra-price-item__horizontal-line"></div>
-            <div class="flex-start-container">
+            <div class="flex-start-container" data-price-container>
               <!-- <input class="extra-price-item__price-input" type="text" placeholder="가격 입력" /> -->
-              <span class="extra-price-item__price">100,000</span>
+              <span class="extra-price-item__price" data-price>100,000</span>
               <span class="extra-price-item__won">원</span>
             </div>
-            <div class="flex-start-container extra-price-item__btn-container">
-              <button class="extra-price-item__update-btn">
-                <i class="far fa-edit extra-price-item__update-btn-icon"></i>
+            <div class="flex-start-container extra-price-item__btn-container" data-btn-container>
+              <button class="extra-price-item__edit-btn" data-btn="edit">
+                <i class="far fa-edit extra-price-item__edit-btn-icon"></i>
               </button>
-              <button class="extra-price-item__delete-btn">
-                <i class="fas fa-trash extra-price-item__delete-btn-icon"></i>
-              </button>
-            </div>
-          </li>
-          <li class="extra-price-item">
-            <h3 class="extra-price-item__title">추가 아이템 3</h3>
-            <div class="extra-price-item__horizontal-line"></div>
-            <div class="flex-start-container">
-              <!-- <input class="extra-price-item__price-input" type="text" placeholder="가격 입력" /> -->
-              <span class="extra-price-item__price">70,000</span>
-              <span class="extra-price-item__won">원</span>
-            </div>
-            <div class="flex-start-container extra-price-item__btn-container">
-              <button class="extra-price-item__update-btn">
-                <i class="far fa-edit extra-price-item__update-btn-icon"></i>
-              </button>
-              <button class="extra-price-item__delete-btn">
-                <i class="fas fa-trash extra-price-item__delete-btn-icon"></i>
-              </button>
-            </div>
-          </li>
-          <li class="extra-price-item">
-            <h3 class="extra-price-item__title">추가 아이템 4</h3>
-            <div class="extra-price-item__horizontal-line"></div>
-            <div class="flex-start-container">
-              <!-- <input class="extra-price-item__price-input" type="text" placeholder="가격 입력" /> -->
-              <span class="extra-price-item__price">120,000</span>
-              <span class="extra-price-item__won">원</span>
-            </div>
-            <div class="flex-start-container extra-price-item__btn-container">
-              <button class="extra-price-item__update-btn">
-                <i class="far fa-edit extra-price-item__update-btn-icon"></i>
-              </button>
-              <button class="extra-price-item__delete-btn">
-                <i class="fas fa-trash extra-price-item__delete-btn-icon"></i>
-              </button>
-            </div>
-          </li>
-          <li class="extra-price-item">
-            <h3 class="extra-price-item__title">추가 아이템 5</h3>
-            <div class="extra-price-item__horizontal-line"></div>
-            <div class="flex-start-container">
-              <!-- <input class="extra-price-item__price-input" type="text" placeholder="가격 입력" /> -->
-              <span class="extra-price-item__price">160,000</span>
-              <span class="extra-price-item__won">원</span>
-            </div>
-            <div class="flex-start-container extra-price-item__btn-container">
-              <button class="extra-price-item__update-btn">
-                <i class="far fa-edit extra-price-item__update-btn-icon"></i>
-              </button>
-              <button class="extra-price-item__delete-btn">
-                <i class="fas fa-trash extra-price-item__delete-btn-icon"></i>
-              </button>
-            </div>
-          </li>
-          <li class="extra-price-item">
-            <h3 class="extra-price-item__title">추가 아이템 6</h3>
-            <div class="extra-price-item__horizontal-line"></div>
-            <div class="flex-start-container">
-              <!-- <input class="extra-price-item__price-input" type="text" placeholder="가격 입력" /> -->
-              <span class="extra-price-item__price">200,000</span>
-              <span class="extra-price-item__won">원</span>
-            </div>
-            <div class="flex-start-container extra-price-item__btn-container">
-              <button class="extra-price-item__update-btn">
-                <i class="far fa-edit extra-price-item__update-btn-icon"></i>
-              </button>
-              <button class="extra-price-item__delete-btn">
-                <i class="fas fa-trash extra-price-item__delete-btn-icon"></i>
-              </button>
-            </div>
-          </li>
-          <li class="extra-price-item">
-            <h3 class="extra-price-item__title">추가 아이템 7</h3>
-            <div class="extra-price-item__horizontal-line"></div>
-            <div class="flex-start-container">
-              <!-- <input class="extra-price-item__price-input" type="text" placeholder="가격 입력" /> -->
-              <span class="extra-price-item__price">250,000</span>
-              <span class="extra-price-item__won">원</span>
-            </div>
-            <div class="flex-start-container extra-price-item__btn-container">
-              <button class="extra-price-item__update-btn">
-                <i class="far fa-edit extra-price-item__update-btn-icon"></i>
-              </button>
-              <button class="extra-price-item__delete-btn">
+              <button class="extra-price-item__delete-btn" data-btn="delete">
                 <i class="fas fa-trash extra-price-item__delete-btn-icon"></i>
               </button>
             </div>

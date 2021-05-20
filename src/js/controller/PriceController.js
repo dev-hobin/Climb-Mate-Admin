@@ -5,9 +5,11 @@ import NotificationView from '../view/NotificationView';
 
 import PriceImageInfoView from '../view/PriceImageInfoView';
 import NecessaryPriceInfoView from '../view/NecessaryPriceInfoView';
+import ExtraPriceInfoView from '../view/ExtraPriceInfoView';
 
 import SingleImageUploadModel, { SINGLE_IMAGE_UPLOADER_TYPE } from '../model/SingleImageUploadModel';
 import NecessaryPriceInfoModel from '../model/NecessaryPriceInfoModel';
+import ExtraPriceInfoModel from '../model/ExtraPriceInfoModel';
 
 const tag = '[PriceController]';
 
@@ -21,10 +23,12 @@ const PriceController = class {
 
     this._priceImageInfoView = new PriceImageInfoView();
     this._necessaryPriceInfoView = new NecessaryPriceInfoView();
+    this._extraPriceInfoView = new ExtraPriceInfoView();
 
     // 모델
     this._singleImageUploadModel = new SingleImageUploadModel();
     this._necessaryPriceInfoModel = new NecessaryPriceInfoModel();
+    this._extraPriceInfoModel = new ExtraPriceInfoModel();
   }
 
   /* 인터페이스 */
@@ -59,6 +63,8 @@ const PriceController = class {
       .setup(document.querySelector('[data-necessary-price-info]'))
       .on('@confirmPriceEdit', event => this._editNecessaryPrice(event.detail));
 
+    this._extraPriceInfoView.setup(document.querySelector('[data-extra-price-info]'));
+
     this._lifeCycle();
   };
 
@@ -81,6 +87,10 @@ const PriceController = class {
 
     const initialNecessaryPriceInfo = await this._necessaryPriceInfoModel.initInfo('centerId');
     this._necessaryPriceInfoView.initInfo(initialNecessaryPriceInfo);
+
+    const initialExtraPriceInfo = await this._extraPriceInfoModel.initInfo('centerId');
+    this._extraPriceInfoView.initInfo(initialExtraPriceInfo);
+    console.log(initialExtraPriceInfo);
   };
 
   // 헤더 어드민 메뉴 토글
@@ -152,6 +162,7 @@ const PriceController = class {
     }
     const { price: priceString } = data;
     this._necessaryPriceInfoView.setPrice(priceType, priceString);
+    this._notificationView.addNotification('success', '필수 상품 정보 수정 성공', '상품 정보가 수정되었습니다', true);
   };
 };
 

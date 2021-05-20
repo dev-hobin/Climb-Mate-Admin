@@ -90,6 +90,7 @@
   &__price-name-input {
     display: block;
     min-width: 0;
+    width: 100%;
     max-width: 12.5rem;
     margin-right: 0.5rem;
     border: 2px solid $color-light-gray;
@@ -123,7 +124,7 @@
   &__btn-container {
     margin-left: 1rem;
   }
-  &__update-btn {
+  &__edit-btn {
     width: 2rem;
     height: 2rem;
     margin-right: 0.5rem;
@@ -131,8 +132,9 @@
     transition: opacity 200ms ease;
 
     &-icon {
-      font-size: 1rem;
+      font-size: 1.2rem;
       color: $color-light-blue;
+      pointer-events: none;
     }
 
     &:hover {
@@ -146,8 +148,44 @@
     transition: opacity 200ms ease;
 
     &-icon {
-      font-size: 1rem;
+      font-size: 1.2rem;
       color: $color-light-red;
+      pointer-events: none;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__confirm-btn {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 0.5rem;
+    opacity: 0.7;
+    transition: opacity 200ms ease;
+
+    &-icon {
+      font-size: 1.2rem;
+      color: $color-green;
+      pointer-events: none;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__cancel-btn {
+    width: 2rem;
+    height: 2rem;
+    opacity: 0.7;
+    transition: opacity 200ms ease;
+
+    &-icon {
+      font-size: 1rem;
+      color: $color-red;
+      pointer-events: none;
     }
 
     &:hover {
@@ -165,4 +203,12 @@
       padding-left: 1rem;
     }
   }
+}
+
+.extra-price-empty-item {
+  width: 100%;
+  text-align: center;
+  padding: 2rem 0;
+  font-weight: 700;
+  color: $color-gray;
 }
