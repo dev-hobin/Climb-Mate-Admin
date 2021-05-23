@@ -8,7 +8,7 @@ import BorderingLevelInfoView from '../view/BorderingLevelInfoView';
 import EnduranceLevelInfoView from '../view/EnduranceLevelInfoView';
 
 import SingleImageUploadModel, { SINGLE_IMAGE_UPLOADER_TYPE } from '../model/SingleImageUploadModel';
-import LevelInfoModel from '../model/LevelInfoModel';
+import LevelInfoModel, { LEVEL_INFO_TYPE } from '../model/LevelInfoModel';
 
 const tag = '[LevelController]';
 
@@ -56,8 +56,12 @@ const LevelController = class {
       .on('@confirmImage', event => this._confirmLevelImage(event.detail))
       .on('@cancelImage', event => this._cancelLevelImage(event.detail));
 
-    this._borderingLevelInfoView.setup(document.querySelector(`[data-level-info="bordering"]`));
-    this._enduranceLevelInfoView.setup(document.querySelector(`[data-level-info="endurance"]`));
+    this._borderingLevelInfoView //
+      .setup(document.querySelector(`[data-level-info="bordering"]`))
+      .on('@addItem', event => this._addLevelItem(event.detail));
+    this._enduranceLevelInfoView //
+      .setup(document.querySelector(`[data-level-info="endurance"]`))
+      .on('@addItem', event => this._addLevelItem(event.detail));
 
     this._lifeCycle();
   };
@@ -130,6 +134,44 @@ const LevelController = class {
       this._modalView.removeModal();
       this._notificationView.addNotification('success', '사진 삭제 성공', '성공적으로 사진을 삭제했습니다', true);
     }
+  };
+
+  // 난이도 아이템 추가
+  _addLevelItem = async ({ type, color, colorName, levelName }) => {
+    this._modalView.showLoadingModal('난이도 정보 추가중입니다');
+    const { isSuccess, error, data } = await this._levelInfoModel.addItem(
+      'centerId',
+      'accessKey',
+      type,
+      color,
+      colorName,
+      levelName
+    );
+    this._modalView.removeModal();
+    if (!isSuccess) {
+      const { sort, title, description } = error;
+      return this._notificationView.addNotification(sort, title, description, true);
+    }
+
+    const { color: addedColor, colorName: addedColorName, levelName: addedLevelName } = data;
+
+    switch (true) {
+      case type === LEVEL_INFO_TYPE.BORDERING:
+        this._borderingLevelInfoView.addItem(addedColor, addedColorName, addedLevelName);
+        break;
+      case type === LEVEL_INFO_TYPE.ENDURANCE:
+        this._enduranceLevelInfoView.addItem(addedColor, addedColorName, addedLevelName);
+        break;
+      default:
+        throw '사용할 수 없는 난이도 타입입니다';
+    }
+
+    this._notificationView.addNotification(
+      'success',
+      '난이도 정보 추가 성공',
+      '성공적으로 난이도 정보를 추가했습니다',
+      true
+    );
   };
 };
 

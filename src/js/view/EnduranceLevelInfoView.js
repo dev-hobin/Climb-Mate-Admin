@@ -1,6 +1,8 @@
 import View from '../core/View';
 import Pickr from '@simonwep/pickr';
 
+import { LEVEL_INFO_TYPE } from '../model/LevelInfoModel';
+
 const tag = '[EnduranceLevelInfoView]';
 
 const EnduranceLevelInfoView = class extends View {
@@ -72,12 +74,39 @@ const EnduranceLevelInfoView = class extends View {
     this._itemList.innerHTML = this._template.getItemsHtml(infoArray);
   };
 
+  addItem = (color, colorName, levelName) => {
+    const emptyItem = this._itemList.querySelector('[data-empty-item]');
+    if (emptyItem) emptyItem.remove();
+
+    const level = this._itemList.childElementCount + 1;
+
+    const item = document.createElement('li');
+    item.setAttribute('class', 'level-item');
+    item.setAttribute('data-item', '');
+
+    const itemHtml = this._template.getItemHtml(level, color, colorName, levelName);
+    item.innerHTML = itemHtml;
+
+    this._itemList.append(item);
+  };
+
   /* 메서드 */
   _bindEvents = () => {
     this._colorPicker.on('init', instance => {
       const { save: saveBtn } = instance.getRoot().interaction;
       saveBtn.value = '저장';
       saveBtn.addEventListener('click', () => instance.hide());
+    });
+
+    this._addBtn.addEventListener('click', () => {
+      const color = this._colorPicker.getSelectedColor().toHEXA().toString();
+      const colorName = this._colorNameInput.value.trim();
+      const levelName = this._levelNameInput.value.trim();
+
+      if (!colorName) return this._colorNameInput.focus();
+      if (!levelName) return this._levelNameInput.focus();
+
+      this.trigger('@addItem', { type: LEVEL_INFO_TYPE.ENDURANCE, color, colorName, levelName });
     });
   };
 };
@@ -87,6 +116,24 @@ class Template {
     return `
         <li class="empty-level-item" data-empty-item>상품을 추가해주세요</li>
         `;
+  };
+  getItemHtml = (level, color, colorName, levelName) => {
+    return `
+      <div class="level-item__level" data-item-level>Level - ${level}</div>
+        <div class="level-item__color-container">
+        <div class="level-item__color" style="background-color: ${color};" data-item-color></div>
+        <div class="level-item__color-name" data-item-color-name>${colorName}</div>
+      </div>
+      <div class="level-item__level-name" data-item-level-name>${levelName}</div>
+      <div class="flex-start-container level-item__btn-container" data-btn-container>
+        <button class="level-item__edit-btn" data-btn="edit">
+          <i class="far fa-edit level-item__edit-btn-icon"></i>
+        </button>
+        <button class="level-item__delete-btn" data-btn="delete">
+          <i class="fas fa-trash level-item__delete-btn-icon"></i>
+        </button>
+      </div>
+    `;
   };
   getItemsHtml = infoArray => {
     let initialHtml = '';
