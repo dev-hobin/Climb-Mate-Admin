@@ -93,6 +93,20 @@ const EnduranceLevelInfoView = class extends View {
     if (itemList.length === 0) return (this._itemList.innerHTML = this._template.getEmptyItemHtml());
     this._itemList.innerHTML = this._template.getItemsHtml(itemList);
   };
+  editItem = (initialColor, edittedColor, edittedColorName, edittedLevelName) => {
+    const item = this._itemList.querySelector(`[data-initial-color="${initialColor}"]`).closest(`[data-item]`);
+
+    const colorContainer = item.querySelector('[data-color-container]');
+    const levelNameContainer = item.querySelector('[data-level-name-container]');
+    const btnContainer = item.querySelector('[data-btn-container]');
+
+    colorContainer.innerHTML = this._template.getColorContainerHtml(edittedColor, edittedColorName);
+    levelNameContainer.innerHTML = this._template.getLevelNameContainerHtml(edittedLevelName);
+    const colorPickerDialog = this._getColorPickerDialogElement(initialColor);
+    colorPickerDialog.remove();
+
+    btnContainer.innerHTML = this._template.getBtnsHtml();
+  };
 
   /* 메서드 */
   _bindEvents = () => {
@@ -176,6 +190,29 @@ const EnduranceLevelInfoView = class extends View {
           levelNameContainer.append(levelNameInput);
 
           btnContainer.innerHTML = this._template.getEditStateBtnsHtml();
+          break;
+
+        case btnType === 'confirm':
+          initialColor = colorContainer.querySelector('[data-initial-color]').dataset.initialColor;
+          initialColorName = colorContainer.querySelector('[data-initial-color-name]').dataset.initialColorName;
+          initialLevelName = levelNameContainer.querySelector('[data-initial-level-name]').dataset.initialLevelName;
+
+          const currentColor = colorContainer.querySelector('[data-current-color]').dataset.currentColor;
+          const currentColorName = colorContainer.querySelector('[data-color-name-input]').value.trim();
+          const currentLevelName = levelNameContainer.querySelector('[data-level-name-input]').value.trim();
+
+          if (!currentColorName) return colorContainer.querySelector('[data-current-color]').focus();
+          if (!currentLevelName) return colorContainer.querySelector('[data-color-name-input]').focus();
+
+          this.trigger('@confirmEditItem', {
+            type: LEVEL_INFO_TYPE.ENDURANCE,
+            initialColor,
+            initialColorName,
+            initialLevelName,
+            currentColor,
+            currentColorName,
+            currentLevelName,
+          });
           break;
 
         case btnType === 'cancel':

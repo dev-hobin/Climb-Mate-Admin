@@ -60,11 +60,14 @@ const LevelController = class {
     this._borderingLevelInfoView //
       .setup(document.querySelector(`[data-level-info="bordering"]`))
       .on('@addItem', event => this._addLevelItem(event.detail))
-      .on('@showAlert', event => this._showAlertModal(event.detail));
+      .on('@showAlert', event => this._showAlertModal(event.detail))
+      .on('@confirmEditItem', event => this._editLevelItem(event.detail));
+
     this._enduranceLevelInfoView //
       .setup(document.querySelector(`[data-level-info="endurance"]`))
       .on('@addItem', event => this._addLevelItem(event.detail))
-      .on('@showAlert', event => this._showAlertModal(event.detail));
+      .on('@showAlert', event => this._showAlertModal(event.detail))
+      .on('@confirmEditItem', event => this._editLevelItem(event.detail));
 
     this._lifeCycle();
   };
@@ -209,6 +212,53 @@ const LevelController = class {
       'success',
       '난이도 정보 삭제 성공',
       '성공적으로 난이도 정보를 삭제했습니다',
+      true
+    );
+  };
+  _editLevelItem = async ({
+    type,
+    initialColor,
+    initialColorName,
+    initialLevelName,
+    currentColor,
+    currentColorName,
+    currentLevelName,
+  }) => {
+    this._modalView.showLoadingModal('난이도 아이템 수정중입니다');
+    const { isSuccess, error, data } = await this._levelInfoModel.editItem(
+      'centerId',
+      'accessKey',
+      type,
+      initialColor,
+      initialColorName,
+      initialLevelName,
+      currentColor,
+      currentColorName,
+      currentLevelName
+    );
+    this._modalView.removeModal();
+    if (!isSuccess) {
+      const { sort, title, description } = error;
+      return this._notificationView.addNotification(sort, title, description, true);
+    }
+
+    const { edittedColor, edittedColorName, edittedLevelName } = data;
+
+    switch (true) {
+      case type === LEVEL_INFO_TYPE.BORDERING:
+        this._borderingLevelInfoView.editItem(initialColor, edittedColor, edittedColorName, edittedLevelName);
+        break;
+      case type === LEVEL_INFO_TYPE.ENDURANCE:
+        this._enduranceLevelInfoView.editItem(initialColor, edittedColor, edittedColorName, edittedLevelName);
+        break;
+      default:
+        throw '사용할 수 없는 난이도 타입입니다';
+    }
+
+    this._notificationView.addNotification(
+      'success',
+      '난이도 정보 수정 성공',
+      '성공적으로 난이도 정보를 수정했습니다',
       true
     );
   };

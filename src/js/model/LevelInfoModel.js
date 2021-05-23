@@ -157,11 +157,72 @@ const LevelInfoModel = class extends Model {
       },
     };
   };
+  editItem = async (
+    centerId,
+    accessKey,
+    type,
+    initialColor,
+    initialColorName,
+    initialLevelName,
+    currentColor,
+    currentColorName,
+    currentLevelName
+  ) => {
+    if (this._hasAnotherSameColor(type, initialColor, currentColor))
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'caution',
+          title: '난이도 정보 수정 실패',
+          description: '같은 색깔의 아이템이 존재합니다',
+        },
+        data: {},
+      };
+    if (this._hasAnotherSameColorName(type, initialColorName, currentColorName))
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'caution',
+          title: '난이도 정보 수정 실패',
+          description: '같은 색깔 이름을 가진 아이템이 존재합니다',
+        },
+        data: {},
+      };
+    if (this._hasAnotherSameLevelName(type, initialLevelName, currentLevelName))
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'caution',
+          title: '난이도 정보 수정 실패',
+          description: '같은 난이도 이름을 가진 아이템이 존재합니다',
+        },
+        data: {},
+      };
+    console.log(tag, '아이템 수정중...');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    this._info[type] = this._info[type].map(info => {
+      if (info.color !== initialColor || info.levelName !== initialLevelName) return info;
+      info.color = currentColor;
+      info.colorName = currentColorName;
+      info.levelName = currentLevelName;
+      return info;
+    });
+    console.log(tag, '수정 후 난이도 정보', this._info[type]);
+    console.log(tag, '난이도 아이템 수정 완료');
+    console.log(tag, '성공 결과 반환');
+    return {
+      isSuccess: true,
+      error: {},
+      data: {
+        edittedColor: currentColor,
+        edittedColorName: currentColorName,
+        edittedLevelName: currentLevelName,
+      },
+    };
+  };
 
   /* 메소드 */
   _hasSameColor = (type, color) => {
-    console.log(type, color);
-    console.log(this._info);
     if (this._info[type].filter(info => info.color === color).length > 0) return true;
     return false;
   };
@@ -171,6 +232,28 @@ const LevelInfoModel = class extends Model {
   };
   _hasSameLevelName = (type, levelName) => {
     if (this._info[type].filter(info => info.levelName === levelName).length > 0) return true;
+    return false;
+  };
+
+  _hasAnotherSameColor = (type, initialColor, currentColor) => {
+    if (this._info[type].filter(info => info.color !== initialColor && info.color === currentColor).length > 0)
+      return true;
+    return false;
+  };
+  _hasAnotherSameColorName = (type, initialColorName, currentColorName) => {
+    if (
+      this._info[type].filter(info => info.colorName !== initialColorName && info.colorName === currentColorName)
+        .length > 0
+    )
+      return true;
+    return false;
+  };
+  _hasAnotherSameLevelName = (type, initialLevelName, currentLevelName) => {
+    if (
+      this._info[type].filter(info => info.levelName !== initialLevelName && info.levelName === currentLevelName)
+        .length > 0
+    )
+      return true;
     return false;
   };
 };
