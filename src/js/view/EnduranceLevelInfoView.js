@@ -89,6 +89,10 @@ const EnduranceLevelInfoView = class extends View {
 
     this._itemList.append(item);
   };
+  updateItemList = (itemList = []) => {
+    if (itemList.length === 0) return (this._itemList.innerHTML = this._template.getEmptyItemHtml());
+    this._itemList.innerHTML = this._template.getItemsHtml(itemList);
+  };
 
   /* 메서드 */
   _bindEvents = () => {
@@ -96,6 +100,37 @@ const EnduranceLevelInfoView = class extends View {
       const { save: saveBtn } = instance.getRoot().interaction;
       saveBtn.value = '저장';
       saveBtn.addEventListener('click', () => instance.hide());
+    });
+
+    this._itemList.addEventListener('click', event => {
+      const btnType = event.target.dataset.btn;
+      if (!btnType) return;
+      const item = event.target.closest('[data-item]');
+      const colorContainer = item.querySelector('[data-color-container]');
+      const levelNameContainer = item.querySelector('[data-level-name-container]');
+      const btnContainer = item.querySelector('[data-btn-container]');
+
+      let initialColor;
+      let initialLevelName;
+
+      switch (true) {
+        case btnType === 'delete':
+          initialColor = colorContainer.querySelector('[data-item-color]').dataset.itemColor;
+          initialLevelName = levelNameContainer.querySelector('[data-level-name]').textContent;
+          this.trigger('@showAlert', {
+            description: '정말로 삭제하시겠습니까?',
+            eventInfo: {
+              eventName: 'level-info__delete-item',
+              type: LEVEL_INFO_TYPE.ENDURANCE,
+              color: initialColor,
+              levelName: initialLevelName,
+            },
+          });
+          break;
+
+        default:
+          throw `${tag} 사용 불가능한 버튼 타입입니다`;
+      }
     });
 
     this._addBtn.addEventListener('click', () => {
@@ -120,11 +155,13 @@ class Template {
   getItemHtml = (level, color, colorName, levelName) => {
     return `
       <div class="level-item__level" data-item-level>Level - ${level}</div>
-        <div class="level-item__color-container">
-        <div class="level-item__color" style="background-color: ${color};" data-item-color></div>
+        <div class="level-item__color-container" data-color-container>
+        <div class="level-item__color" style="background-color: ${color};" data-item-color="${color}"></div>
         <div class="level-item__color-name" data-item-color-name>${colorName}</div>
       </div>
-      <div class="level-item__level-name" data-item-level-name>${levelName}</div>
+      <div class="level-item__level-name-container" data-level-name-container>
+        <div class="level-item__level-name" data-level-name>${levelName}</div>
+      </div>
       <div class="flex-start-container level-item__btn-container" data-btn-container>
         <button class="level-item__edit-btn" data-btn="edit">
           <i class="far fa-edit level-item__edit-btn-icon"></i>
@@ -145,11 +182,13 @@ class Template {
         `
         <li class="level-item" data-item>
           <div class="level-item__level" data-item-level>Level - ${level}</div>
-          <div class="level-item__color-container">
-            <div class="level-item__color" style="background-color: ${color};" data-item-color></div>
+          <div class="level-item__color-container" data-color-container>
+            <div class="level-item__color" style="background-color: ${color};" data-item-color="${color}"></div>
             <div class="level-item__color-name" data-item-color-name>${colorName}</div>
           </div>
-          <div class="level-item__level-name" data-item-level-name>${levelName}</div>
+          <div class="level-item__level-name-container" data-level-name-container>
+            <div class="level-item__level-name" data-level-name>${levelName}</div>
+          </div>
           <div class="flex-start-container level-item__btn-container" data-btn-container>
             <button class="level-item__edit-btn" data-btn="edit">
               <i class="far fa-edit level-item__edit-btn-icon"></i>

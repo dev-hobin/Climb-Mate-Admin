@@ -50,6 +50,10 @@ const ModalView = class extends View {
         this._addExtraPriceInfoDeleteItemEvent(confirm, eventInfo);
         break;
 
+      case eventName === 'level-info__delete-item':
+        this._addLevelInfoDeleteItemEvent(confirm, eventInfo);
+        break;
+
       default:
         throw `${tag} 올바른 이벤트 정보가 아닙니다 :${eventName}`;
     }
@@ -122,6 +126,13 @@ const ModalView = class extends View {
     confirm.addEventListener('click', () => {
       this.removeModal();
       this.trigger('@confirmExtraPriceItemDelete', { goodsName });
+    });
+  };
+  // 난이도 정보에서 아이템 삭제하는 이벤트
+  _addLevelInfoDeleteItemEvent = (confirm, { type, color, levelName }) => {
+    confirm.addEventListener('click', () => {
+      this.removeModal();
+      this.trigger('@confirmLevelInfoItemDelete', { type, color, levelName });
     });
   };
 };

@@ -93,7 +93,7 @@ const LevelInfoModel = class extends Model {
         error: { sort: 'caution', title: '난이도 정보 추가 실패', description: '같은 이름의 색깔이 존재합니다' },
         data: {},
       };
-    if (this._hasSameColorName(type, levelName))
+    if (this._hasSameLevelName(type, levelName))
       return {
         isSuccess: false,
         error: { sort: 'caution', title: '난이도 정보 추가 실패', description: '같은 이름의 레벨이 존재합니다' },
@@ -119,54 +119,41 @@ const LevelInfoModel = class extends Model {
       },
     };
   };
-  deleteItem = async (centerId, accessKey, goodsName) => {
-    if (!this._hasNamedItem(goodsName))
+  deleteItem = async (centerId, accessKey, type, color, levelName) => {
+    if (!this._hasSameColor(type, color))
       return {
         isSuccess: false,
-        error: { sort: 'caution', title: '상품 삭제 실패', description: '해당 상품이 존재하지 않습니다' },
+        error: {
+          sort: 'caution',
+          title: '난이도 정보 삭제 실패',
+          description: '삭제할 아이템 정보가 존재하지 않습니다',
+        },
         data: {},
       };
-    this._info = this._info.filter(info => info.goodsName !== goodsName);
-    console.log(this._info);
+    if (!this._hasSameLevelName(type, levelName))
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'caution',
+          title: '난이도 정보 삭제 실패',
+          description: '삭제할 아이템 정보가 존재하지 않습니다',
+        },
+        data: {},
+      };
     console.log(tag, '아이템 삭제중...');
     await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log(tag, '수정된 정보', this._info);
-    console.log(tag, '아이템 삭제 성공');
-    console.log(tag, '성공 결과 반환');
-    return {
-      isSuccess: true,
-      error: {},
-      data: {
-        goodsName,
-      },
-    };
-  };
-  editItem = async (accessKey, initialGoodsName, edittedGoodsName, edittedPrice) => {
-    if (!this._hasNamedItem(initialGoodsName))
-      return {
-        isSuccess: false,
-        error: { sort: 'caution', title: '상품 수정 실패', description: '해당 상품이 존재하지 않습니다' },
-        data: {},
-      };
-
-    this._info = this._info.map(info => {
-      if (info.goodsName !== initialGoodsName) return info;
-      info.goodsName = edittedGoodsName;
-      info.goodsPrice = this._addCommas(edittedPrice);
-      return info;
+    this._info[type] = this._info[type].filter(info => {
+      if (info.color !== color || info.levelName !== levelName) return true;
+      return false;
     });
-    console.log(tag, '아이템 수정중...');
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log(tag, '수정된 정보', this._info);
-    console.log(tag, '아이템 수정 성공');
+    console.log(tag, '삭제후 난이도 정보', this._info[type]);
+    console.log(tag, '난이도 아이템 삭제 완료');
     console.log(tag, '성공 결과 반환');
     return {
       isSuccess: true,
       error: {},
       data: {
-        initialGoodsName,
-        edittedGoodsName,
-        edittedPrice: this._addCommas(edittedPrice),
+        itemList: this._info[type],
       },
     };
   };

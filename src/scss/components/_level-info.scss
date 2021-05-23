@@ -124,7 +124,7 @@
     min-height: 2rem;
     background-color: blueviolet;
   }
-  &__level-name {
+  &__level-name-container {
     flex: 1;
     text-align: center;
     margin-right: 0.5rem;
@@ -142,6 +142,7 @@
     &-icon {
       font-size: 1rem;
       color: $color-light-red;
+      pointer-events: none;
     }
 
     &:hover {

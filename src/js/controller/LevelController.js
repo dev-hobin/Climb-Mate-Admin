@@ -45,7 +45,8 @@ const LevelController = class {
 
     this._modalView
       .setup(document.querySelector('main'))
-      .on('@confirmLevelImageDelete', event => this._deleteLevelImage(event.detail));
+      .on('@confirmLevelImageDelete', event => this._deleteLevelImage(event.detail))
+      .on('@confirmLevelInfoItemDelete', event => this._deleteLevelItem(event.detail));
 
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
@@ -58,10 +59,12 @@ const LevelController = class {
 
     this._borderingLevelInfoView //
       .setup(document.querySelector(`[data-level-info="bordering"]`))
-      .on('@addItem', event => this._addLevelItem(event.detail));
+      .on('@addItem', event => this._addLevelItem(event.detail))
+      .on('@showAlert', event => this._showAlertModal(event.detail));
     this._enduranceLevelInfoView //
       .setup(document.querySelector(`[data-level-info="endurance"]`))
-      .on('@addItem', event => this._addLevelItem(event.detail));
+      .on('@addItem', event => this._addLevelItem(event.detail))
+      .on('@showAlert', event => this._showAlertModal(event.detail));
 
     this._lifeCycle();
   };
@@ -170,6 +173,42 @@ const LevelController = class {
       'success',
       '난이도 정보 추가 성공',
       '성공적으로 난이도 정보를 추가했습니다',
+      true
+    );
+  };
+  _deleteLevelItem = async ({ type, color, levelName }) => {
+    this._modalView.showLoadingModal('난이도 아이템 삭제중입니다');
+    const { isSuccess, error, data } = await this._levelInfoModel.deleteItem(
+      'centerId',
+      'accessKey',
+      type,
+      color,
+      levelName
+    );
+    this._modalView.removeModal();
+    if (!isSuccess) {
+      const { sort, title, description } = error;
+      return this._notificationView.addNotification(sort, title, description, true);
+    }
+
+    const { itemList } = data;
+    console.log(itemList);
+
+    switch (true) {
+      case type === LEVEL_INFO_TYPE.BORDERING:
+        this._borderingLevelInfoView.updateItemList(itemList);
+        break;
+      case type === LEVEL_INFO_TYPE.ENDURANCE:
+        this._enduranceLevelInfoView.updateItemList(itemList);
+        break;
+      default:
+        throw '사용할 수 없는 난이도 타입입니다';
+    }
+
+    this._notificationView.addNotification(
+      'success',
+      '난이도 정보 삭제 성공',
+      '성공적으로 난이도 정보를 삭제했습니다',
       true
     );
   };
