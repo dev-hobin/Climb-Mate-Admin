@@ -4,8 +4,11 @@ import ModalView from '../view/ModalView';
 import NotificationView from '../view/NotificationView';
 
 import LevelImageInfoView from '../view/LevelImageInfoView';
+import BorderingLevelInfoView from '../view/BorderingLevelInfoView';
+import EnduranceLevelInfoView from '../view/EnduranceLevelInfoView';
 
 import SingleImageUploadModel, { SINGLE_IMAGE_UPLOADER_TYPE } from '../model/SingleImageUploadModel';
+import LevelInfoModel from '../model/LevelInfoModel';
 
 const tag = '[LevelController]';
 
@@ -17,9 +20,12 @@ const LevelController = class {
     this._modalView = new ModalView();
     this._notificationView = new NotificationView();
     this._levelImageInfoView = new LevelImageInfoView();
+    this._borderingLevelInfoView = new BorderingLevelInfoView();
+    this._enduranceLevelInfoView = new EnduranceLevelInfoView();
 
     // 모델
     this._singleImageUploadModel = new SingleImageUploadModel();
+    this._levelInfoModel = new LevelInfoModel();
   }
 
   /* 인터페이스 */
@@ -50,6 +56,9 @@ const LevelController = class {
       .on('@confirmImage', event => this._confirmLevelImage(event.detail))
       .on('@cancelImage', event => this._cancelLevelImage(event.detail));
 
+    this._borderingLevelInfoView.setup(document.querySelector(`[data-level-info="bordering"]`));
+    this._enduranceLevelInfoView.setup(document.querySelector(`[data-level-info="endurance"]`));
+
     this._lifeCycle();
   };
 
@@ -69,6 +78,10 @@ const LevelController = class {
       SINGLE_IMAGE_UPLOADER_TYPE.LEVEL
     );
     this._levelImageInfoView.setImage(initialLevelImage);
+
+    const [initialBorderingLevelInfo, initialEnduranceLevelInfo] = await this._levelInfoModel.initInfo('centerId');
+    this._borderingLevelInfoView.initItems(initialBorderingLevelInfo);
+    this._enduranceLevelInfoView.initItems(initialEnduranceLevelInfo);
   };
 
   // 헤더 어드민 메뉴 토글

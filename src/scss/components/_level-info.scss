@@ -1,3 +1,12 @@
+.level-info-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  @include mq($bp-large-desktop) {
+    flex-direction: row;
+  }
+}
 .level-info {
   padding: 1rem;
   &__title {
@@ -73,6 +82,23 @@
     padding: 0 1rem;
     width: calc(468px - 2rem);
   }
+
+  // color picker 라이브러리 버튼 커스텀
+  &[data-level-info] {
+    [data-add-container] {
+      .pcr-button {
+        width: 3rem;
+        height: 3rem;
+      }
+    }
+  }
+}
+.empty-level-item {
+  text-align: center;
+  color: $color-gray;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 4rem 0;
 }
 .level-item {
   padding: 0.5rem;
@@ -98,16 +124,14 @@
     min-height: 2rem;
     background-color: blueviolet;
   }
-  &__color-name {
-  }
   &__level-name {
     flex: 1;
     text-align: center;
     margin-right: 0.5rem;
   }
   &__delete-btn {
-    width: 2rem;
-    height: 2rem;
+    width: 1.5rem;
+    height: 1.5rem;
     opacity: 0.5;
     transition: opacity 200ms ease;
     cursor: pointer;
@@ -118,6 +142,77 @@
     &-icon {
       font-size: 1rem;
       color: $color-light-red;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+  &__btn-container {
+    margin-left: 1rem;
+  }
+  &__edit-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.5rem;
+    opacity: 0.7;
+    transition: opacity 200ms ease;
+
+    &-icon {
+      font-size: 1.2rem;
+      color: $color-light-blue;
+      pointer-events: none;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+  // &__delete-btn {
+  //   width: 2rem;
+  //   height: 2rem;
+  //   opacity: 0.5;
+  //   transition: opacity 200ms ease;
+
+  //   &-icon {
+  //     font-size: 1.2rem;
+  //     color: $color-light-red;
+  //     pointer-events: none;
+  //   }
+
+  //   &:hover {
+  //     opacity: 1;
+  //   }
+  // }
+
+  &__confirm-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.5rem;
+    opacity: 0.7;
+    transition: opacity 200ms ease;
+
+    &-icon {
+      font-size: 1.2rem;
+      color: $color-green;
+      pointer-events: none;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__cancel-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+    opacity: 0.7;
+    transition: opacity 200ms ease;
+
+    &-icon {
+      font-size: 1rem;
+      color: $color-red;
+      pointer-events: none;
     }
 
     &:hover {

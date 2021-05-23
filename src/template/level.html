@@ -84,91 +84,166 @@
               />
             </figure>
           </label>
-          <div class="single-image-uploader__btn-container" data-btn-container>
-            <!-- <button class="single-image-uploader__btn" data-btn="confirm">확인</button>
-          <button class="single-image-uploader__btn" data-btn="cancel">취소</button>
-          <button class="single-image-uploader__btn" data-btn="delete">삭제</button> -->
+          <div class="single-image-uploader__btn-container" data-btn-container></div>
+        </div>
+      </article>
+      <div class="level-info-container">
+        <article class="level-info" data-level-info="bordering">
+          <h2 class="level-info__title">볼더링 난이도</h2>
+          <div class="level-info__add-level-container" data-add-container>
+            <div class="level-info__level-color" data-color-picker></div>
+            <input class="level-info__level-color-name-input" type="text" placeholder="색깔" data-color-name-input />
+            <input class="level-info__level-name-input" type="text" placeholder="난이도 이름" data-level-name-input />
+            <button class="level-info__add-level-btn" data-add-btn>
+              <i class="fas fa-plus level-info__add-level-btn-icon"></i>
+            </button>
           </div>
-        </div>
-      </article>
-      <article class="level-info">
-        <h2 class="level-info__title">난이도 리스트</h2>
-        <div class="level-info__add-level-container">
-          <div class="level-info__level-color">색깔</div>
-          <input class="level-info__level-color-name-input" type="text" placeholder="색깔" />
-          <input class="level-info__level-name-input" type="text" placeholder="난이도 이름" />
-          <button class="level-info__add-level-btn">
-            <i class="fas fa-plus level-info__add-level-btn-icon"></i>
-          </button>
-        </div>
-        <div class="level-info__description">드래그하여 레벨 조정이 가능합니다</div>
-        <ul class="level-info__level-list">
-          <li class="level-item">
-            <div class="level-item__level">Level - 1</div>
-            <div class="level-item__color-container">
-              <div class="level-item__color">색깔</div>
-              <div class="level-item__color-name">파란색</div>
-            </div>
-            <div class="level-item__level-name">난이도 이름</div>
-            <div class="level-item__delete-btn"><i class="fas fa-trash level-item__delete-btn-icon"></i></div>
-          </li>
-          <li class="level-item">
-            <div class="level-item__level">Level - 2</div>
-            <div class="level-item__color-container">
-              <div class="level-item__color">색깔</div>
-              <div class="level-item__color-name">파란색</div>
-            </div>
-            <div class="level-item__level-name">난이도 이름</div>
-            <div class="level-item__delete-btn"><i class="fas fa-trash level-item__delete-btn-icon"></i></div>
-          </li>
-          <li class="level-item">
-            <div class="level-item__level">Level - 3</div>
-            <div class="level-item__color-container">
-              <div class="level-item__color">색깔</div>
-              <div class="level-item__color-name">파란색</div>
-            </div>
-            <div class="level-item__level-name">난이도 이름</div>
-            <div class="level-item__delete-btn"><i class="fas fa-trash level-item__delete-btn-icon"></i></div>
-          </li>
-          <li class="level-item">
-            <div class="level-item__level">Level - 4</div>
-            <div class="level-item__color-container">
-              <div class="level-item__color">색깔</div>
-              <div class="level-item__color-name">파란색</div>
-            </div>
-            <div class="level-item__level-name">난이도 이름</div>
-            <div class="level-item__delete-btn"><i class="fas fa-trash level-item__delete-btn-icon"></i></div>
-          </li>
-          <li class="level-item">
-            <div class="level-item__level">Level - 5</div>
-            <div class="level-item__color-container">
-              <div class="level-item__color">색깔</div>
-              <div class="level-item__color-name">파란색</div>
-            </div>
-            <div class="level-item__level-name">난이도 이름</div>
-            <div class="level-item__delete-btn"><i class="fas fa-trash level-item__delete-btn-icon"></i></div>
-          </li>
-          <li class="level-item">
-            <div class="level-item__level">Level - 6</div>
-            <div class="level-item__color-container">
-              <div class="level-item__color">색깔</div>
-              <div class="level-item__color-name">파란색</div>
-            </div>
-            <div class="level-item__level-name">난이도 이름</div>
-            <div class="level-item__delete-btn"><i class="fas fa-trash level-item__delete-btn-icon"></i></div>
-          </li>
-          <li class="level-item">
-            <div class="level-item__level">Level - 7</div>
-            <div class="level-item__color-container">
-              <div class="level-item__color">색깔</div>
-              <div class="level-item__color-name">파란색</div>
-            </div>
-            <div class="level-item__level-name">난이도 이름</div>
-            <div class="level-item__delete-btn"><i class="fas fa-trash level-item__delete-btn-icon"></i></div>
-          </li>
-        </ul>
-      </article>
-
+          <ul class="level-info__level-list" data-item-list>
+            <!-- <li class="empty-level-item" data-empty-item>상품을 추가해주세요</li> -->
+            <!-- <li class="level-item" data-item>
+              <div class="level-item__level" data-item-level>Level - 1</div>
+              <div class="level-item__color-container">
+                <div class="level-item__color" data-item-color></div>
+                <div class="level-item__color-name" data-item-color-name>파란색</div>
+              </div>
+              <div class="level-item__level-name" data-item-level-name>난이도 이름</div>
+              <div class="flex-start-container level-item__btn-container" data-btn-container>
+                <button class="level-item__edit-btn" data-btn="edit">
+                  <i class="far fa-edit level-item__edit-btn-icon"></i>
+                </button>
+                <button class="level-item__delete-btn" data-btn="delete">
+                  <i class="fas fa-trash level-item__delete-btn-icon"></i>
+                </button>
+              </div>
+            </li>
+            <li class="level-item">
+              <div class="level-item__level" data-item-level>Level - 2</div>
+              <div class="level-item__color-container">
+                <div class="level-item__color" data-item-color></div>
+                <div class="level-item__color-name" data-item-color-name>파란색</div>
+              </div>
+              <div class="level-item__level-name" data-item-level-name>난이도 이름</div>
+              <div class="flex-start-container level-item__btn-container" data-btn-container>
+                <button class="level-item__edit-btn" data-btn="edit">
+                  <i class="far fa-edit level-item__edit-btn-icon"></i>
+                </button>
+                <button class="level-item__delete-btn" data-btn="delete">
+                  <i class="fas fa-trash level-item__delete-btn-icon"></i>
+                </button>
+              </div>
+            </li>
+            <li class="level-item">
+              <div class="level-item__level" data-item-level>Level - 3</div>
+              <div class="level-item__color-container">
+                <div class="level-item__color" data-item-color></div>
+                <div class="level-item__color-name" data-item-color-name>파란색</div>
+              </div>
+              <div class="level-item__level-name" data-item-level-name>난이도 이름</div>
+              <div class="flex-start-container level-item__btn-container" data-btn-container>
+                <button class="level-item__edit-btn" data-btn="edit">
+                  <i class="far fa-edit level-item__edit-btn-icon"></i>
+                </button>
+                <button class="level-item__delete-btn" data-btn="delete">
+                  <i class="fas fa-trash level-item__delete-btn-icon"></i>
+                </button>
+              </div>
+            </li>
+            <li class="level-item">
+              <div class="level-item__level" data-item-level>Level - 4</div>
+              <div class="level-item__color-container">
+                <div class="level-item__color" data-item-color></div>
+                <div class="level-item__color-name" data-item-color-name>파란색</div>
+              </div>
+              <div class="level-item__level-name" data-item-level-name>난이도 이름</div>
+              <div class="flex-start-container level-item__btn-container" data-btn-container>
+                <button class="level-item__edit-btn" data-btn="edit">
+                  <i class="far fa-edit level-item__edit-btn-icon"></i>
+                </button>
+                <button class="level-item__delete-btn" data-btn="delete">
+                  <i class="fas fa-trash level-item__delete-btn-icon"></i>
+                </button>
+              </div>
+            </li>
+            <li class="level-item">
+              <div class="level-item__level" data-item-level>Level - 5</div>
+              <div class="level-item__color-container">
+                <div class="level-item__color" data-item-color></div>
+                <div class="level-item__color-name" data-item-color-name>파란색</div>
+              </div>
+              <div class="level-item__level-name" data-item-level-name>난이도 이름</div>
+              <div class="flex-start-container level-item__btn-container" data-btn-container>
+                <button class="level-item__edit-btn" data-btn="edit">
+                  <i class="far fa-edit level-item__edit-btn-icon"></i>
+                </button>
+                <button class="level-item__delete-btn" data-btn="delete">
+                  <i class="fas fa-trash level-item__delete-btn-icon"></i>
+                </button>
+              </div>
+            </li>
+            <li class="level-item">
+              <div class="level-item__level" data-item-level>Level - 6</div>
+              <div class="level-item__color-container">
+                <div class="level-item__color" data-item-color></div>
+                <div class="level-item__color-name" data-item-color-name>파란색</div>
+              </div>
+              <div class="level-item__level-name" data-item-level-name>난이도 이름</div>
+              <div class="flex-start-container level-item__btn-container" data-btn-container>
+                <button class="level-item__edit-btn" data-btn="edit">
+                  <i class="far fa-edit level-item__edit-btn-icon"></i>
+                </button>
+                <button class="level-item__delete-btn" data-btn="delete">
+                  <i class="fas fa-trash level-item__delete-btn-icon"></i>
+                </button>
+              </div>
+            </li>
+            <li class="level-item">
+              <div class="level-item__level" data-item-level>Level - 7</div>
+              <div class="level-item__color-container">
+                <div class="level-item__color" data-item-color></div>
+                <div class="level-item__color-name" data-item-color-name>파란색</div>
+              </div>
+              <div class="level-item__level-name" data-item-level-name>난이도 이름</div>
+              <div class="flex-start-container level-item__btn-container" data-btn-container>
+                <button class="level-item__edit-btn" data-btn="edit">
+                  <i class="far fa-edit level-item__edit-btn-icon"></i>
+                </button>
+                <button class="level-item__delete-btn" data-btn="delete">
+                  <i class="fas fa-trash level-item__delete-btn-icon"></i>
+                </button>
+              </div>
+            </li> -->
+          </ul>
+        </article>
+        <article class="level-info" data-level-info="endurance">
+          <h2 class="level-info__title">지구력 난이도</h2>
+          <div class="level-info__add-level-container" data-add-container>
+            <div class="level-info__level-color" data-color-picker></div>
+            <input class="level-info__level-color-name-input" type="text" placeholder="색깔" data-color-name-input />
+            <input class="level-info__level-name-input" type="text" placeholder="난이도 이름" data-level-name-input />
+            <button class="level-info__add-level-btn" data-add-btn>
+              <i class="fas fa-plus level-info__add-level-btn-icon"></i>
+            </button>
+          </div>
+          <ul class="level-info__level-list" data-item-list>
+            <li class="level-item" data-item>
+              <div class="level-item__level" data-item-level>Level - 1</div>
+              <div class="level-item__color-container">
+                <div class="level-item__color" data-item-color>색깔</div>
+                <div class="level-item__color-name" data-item-color-name>파란색</div>
+              </div>
+              <div class="level-item__level-name" data-item-level-name>난이도 이름</div>
+              <div class="flex-start-container level-item__btn-container" data-btn-container>
+                <button class="level-item__edit-btn" data-btn="edit">
+                  <i class="far fa-edit level-item__edit-btn-icon"></i>
+                </button>
+                <button class="level-item__delete-btn" data-btn="delete">
+                  <i class="fas fa-trash level-item__delete-btn-icon"></i>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </article>
+      </div>
       <div class="notification" data-notification></div>
     </main>
   </body>
