@@ -17,7 +17,7 @@ const BorderingLevelInfoView = class extends View {
     this.init(element);
 
     this._colorPicker = Pickr.create({
-      el: '[data-level-info="bordering"] [data-color-picker]',
+      el: `[data-level-info="${LEVEL_INFO_TYPE.BORDERING}"] [data-color-picker]`,
       theme: 'nano',
 
       swatches: [
@@ -111,6 +111,7 @@ const BorderingLevelInfoView = class extends View {
       const btnContainer = item.querySelector('[data-btn-container]');
 
       let initialColor;
+      let initialColorName;
       let initialLevelName;
 
       switch (true) {
@@ -128,13 +129,76 @@ const BorderingLevelInfoView = class extends View {
           });
           break;
 
+        case btnType === 'edit':
+          initialColor = colorContainer.querySelector('[data-item-color]').dataset.itemColor;
+          initialColorName = colorContainer.querySelector('[data-item-color-name]').textContent;
+          initialLevelName = levelNameContainer.querySelector('[data-level-name]').textContent;
+
+          const colorPicker = this._getColorPicker(
+            `[data-level-info="${LEVEL_INFO_TYPE.BORDERING}"] [data-item-color="${initialColor}"]`,
+            initialColor
+          );
+
+          colorPicker
+            .on('init', instance => {
+              console.log(instance);
+              const { root: btnContainer } = instance.getRoot();
+              btnContainer.setAttribute('data-initial-color', initialColor);
+              btnContainer.setAttribute('data-current-color', initialColor);
+              const { save: saveBtn } = instance.getRoot().interaction;
+              saveBtn.value = '저장';
+              saveBtn.addEventListener('click', () => instance.hide());
+            })
+            .on('save', (color, instance) => {
+              const currentColor = color.toHEXA().toString().toLowerCase();
+              const { root: btnContainer } = instance.getRoot();
+              btnContainer.setAttribute('data-current-color', currentColor);
+            });
+
+          const colorNameInput = document.createElement('input');
+          colorNameInput.setAttribute('class', 'level-item__color-name-input');
+          colorNameInput.setAttribute('value', initialColorName);
+          colorNameInput.setAttribute('data-initial-color-name', initialColorName);
+          colorNameInput.setAttribute('data-color-name-input', '');
+          colorNameInput.setAttribute('placeholder', '색깔');
+
+          colorContainer.querySelector('[data-item-color-name]').remove();
+          colorContainer.append(colorNameInput);
+
+          const levelNameInput = document.createElement('input');
+          levelNameInput.setAttribute('class', 'level-item__level-name-input');
+          levelNameInput.setAttribute('value', initialLevelName);
+          levelNameInput.setAttribute('data-initial-level-name', initialLevelName);
+          levelNameInput.setAttribute('data-level-name-input', '');
+          levelNameInput.setAttribute('placeholder', '난이도');
+
+          levelNameContainer.querySelector('[data-level-name]').remove();
+          levelNameContainer.append(levelNameInput);
+
+          btnContainer.innerHTML = this._template.getEditStateBtnsHtml();
+          break;
+
+        case btnType === 'cancel':
+          initialColor = colorContainer.querySelector('[data-initial-color]').dataset.initialColor;
+          initialColorName = colorContainer.querySelector('[data-initial-color-name]').dataset.initialColorName;
+          colorContainer.innerHTML = this._template.getColorContainerHtml(initialColor, initialColorName);
+
+          initialLevelName = levelNameContainer.querySelector('[data-initial-level-name]').dataset.initialLevelName;
+          levelNameContainer.innerHTML = this._template.getLevelNameContainerHtml(initialLevelName);
+
+          const colorPickerDialog = this._getColorPickerDialogElement(initialColor);
+          colorPickerDialog.remove();
+
+          btnContainer.innerHTML = this._template.getBtnsHtml();
+          break;
+
         default:
           throw `${tag} 사용 불가능한 버튼 타입입니다`;
       }
     });
 
     this._addBtn.addEventListener('click', () => {
-      const color = this._colorPicker.getSelectedColor().toHEXA().toString();
+      const color = this._colorPicker.getSelectedColor().toHEXA().toString().toLowerCase();
       const colorName = this._colorNameInput.value.trim();
       const levelName = this._levelNameInput.value.trim();
 
@@ -143,6 +207,54 @@ const BorderingLevelInfoView = class extends View {
 
       this.trigger('@addItem', { type: LEVEL_INFO_TYPE.BORDERING, color, colorName, levelName });
     });
+  };
+
+  _getColorPicker = (selector, defaultColor) => {
+    return Pickr.create({
+      el: selector,
+      theme: 'nano',
+      appClass: `${LEVEL_INFO_TYPE.BORDERING}-dialog-${defaultColor.split('#')[1]}`,
+      default: defaultColor,
+
+      swatches: [
+        'rgba(244, 67, 54, 1)',
+        'rgba(233, 30, 99, 1)',
+        'rgba(156, 39, 176, 1)',
+        'rgba(103, 58, 183, 1)',
+        'rgba(63, 81, 181, 1)',
+        'rgba(33, 150, 243, 1)',
+        'rgba(3, 169, 244, 1)',
+        'rgba(0, 188, 212, 1)',
+        'rgba(0, 150, 136, 1)',
+        'rgba(76, 175, 80, 1)',
+        'rgba(139, 195, 74, 1)',
+        'rgba(205, 220, 57, 1)',
+        'rgba(255, 235, 59, 1)',
+        'rgba(255, 193, 7, 1)',
+      ],
+
+      components: {
+        // Main components
+        preview: true,
+        opacity: false,
+        hue: false,
+
+        // Input / output Options
+        interaction: {
+          hex: true,
+          rgba: true,
+          hsla: false,
+          hsva: false,
+          cmyk: false,
+          input: true,
+          clear: false,
+          save: true,
+        },
+      },
+    });
+  };
+  _getColorPickerDialogElement = initialColor => {
+    return document.querySelector(`.${LEVEL_INFO_TYPE.BORDERING}-dialog-${initialColor.split('#')[1]}`);
   };
 };
 
@@ -201,6 +313,38 @@ class Template {
       `
       );
     }, initialHtml);
+  };
+  getColorContainerHtml = (color, colorName) => {
+    return `
+        <div class="level-item__color" style="background-color: ${color};" data-item-color="${color}"></div>
+        <div class="level-item__color-name" data-item-color-name>${colorName}</div>
+    `;
+  };
+  getLevelNameContainerHtml = levelName => {
+    return `
+      <div class="level-item__level-name" data-level-name>${levelName}</div>
+    `;
+  };
+  getBtnsHtml = () => {
+    return `
+      <button class="level-item__edit-btn" data-btn="edit">
+        <i class="far fa-edit level-item__edit-btn-icon"></i>
+      </button>
+      <button class="level-item__delete-btn" data-btn="delete">
+        <i class="fas fa-trash level-item__delete-btn-icon"></i>
+      </button>
+    `;
+  };
+
+  getEditStateBtnsHtml = () => {
+    return `
+        <button class="level-item__confirm-btn" data-btn="confirm">
+          <i class="far fa-check-square level-item__confirm-btn-icon"></i>
+        </button>
+        <button class="level-item__cancel-btn" data-btn="cancel">
+          <i class="fas fa-redo level-item__cancel-btn-icon"></i>
+        </button>
+      `;
   };
 }
 
