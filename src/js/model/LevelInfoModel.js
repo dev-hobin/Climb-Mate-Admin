@@ -73,7 +73,29 @@ const LevelInfoModel = class extends Model {
   }
 
   /* 인터페이스 */
-  initInfo = async centerId => {
+  initInfo = async accessToken => {
+    console.log('볼더링 난이도 정보 더미 데이터', borderingDummy);
+    const reqData1 = {
+      reqCode: 3012,
+      reqBody: {
+        accessKey: accessToken,
+      },
+    };
+    const { resBody: bordering } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData1);
+
+    console.log('볼더링 난이도 정보', bordering);
+
+    console.log('지구력 난이도 정보 더미 데이터', enduranceDummy);
+    const reqData2 = {
+      reqCode: 3013,
+      reqBody: {
+        accessKey: accessToken,
+      },
+    };
+    const { resBody: endurance } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData2);
+
+    console.log('지구력 난이도 정보', endurance);
+
     borderingDummy.forEach(info => this._info[LEVEL_INFO_TYPE.BORDERING].push({ ...info }));
     enduranceDummy.forEach(info => this._info[LEVEL_INFO_TYPE.ENDURANCE].push({ ...info }));
 

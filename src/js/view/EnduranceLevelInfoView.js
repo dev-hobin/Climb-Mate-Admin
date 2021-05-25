@@ -65,7 +65,6 @@ const EnduranceLevelInfoView = class extends View {
 
     this._bindEvents();
 
-    console.log(tag, 'setup()');
     return this;
   };
 
@@ -155,7 +154,6 @@ const EnduranceLevelInfoView = class extends View {
 
           colorPicker
             .on('init', instance => {
-              console.log(instance);
               const { root: btnContainer } = instance.getRoot();
               btnContainer.setAttribute('data-initial-color', initialColor);
               btnContainer.setAttribute('data-current-color', initialColor);

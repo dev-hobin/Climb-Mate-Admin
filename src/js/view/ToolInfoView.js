@@ -21,13 +21,10 @@ const ToolInfoView = class extends View {
     this._updateBtn = element.querySelector('[data-update-btn]');
 
     this._bindEvents();
-
-    console.log(tag, 'setup()');
     return this;
   };
 
   initItems = (itemInfoObj, extraInfoObj) => {
-    console.log(tag, 'initial 정보대로 체크박스 체크');
     // 헬스도구 추가 설명 텍스트 설정
     this._healthTextArea.value = extraInfoObj[TOOL_EXTRA_INFO.HEALTH];
 
@@ -47,7 +44,6 @@ const ToolInfoView = class extends View {
       const toolType = event.target.closest('[data-item]').dataset.item;
       this.trigger('@checkTool', { toolType, checked: checkbox.checked });
       // 헬스도구 체크 해제했을 경우 텍스트 박스 안보이게
-      console.log(toolType, TOOL_TYPE.HEATH, checkbox.checked);
       if (toolType === TOOL_TYPE.HEATH) {
         if (checkbox.checked) this._healthTextContainer.classList.add('show');
         else this._healthTextContainer.classList.remove('show');

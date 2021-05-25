@@ -7,6 +7,8 @@ import LevelImageInfoView from '../view/LevelImageInfoView';
 import BorderingLevelInfoView from '../view/BorderingLevelInfoView';
 import EnduranceLevelInfoView from '../view/EnduranceLevelInfoView';
 
+import UserModel from '../model/UserModel';
+
 import SingleImageUploadModel, { SINGLE_IMAGE_UPLOADER_TYPE } from '../model/SingleImageUploadModel';
 import LevelInfoModel, { LEVEL_INFO_TYPE } from '../model/LevelInfoModel';
 
@@ -24,6 +26,8 @@ const LevelController = class {
     this._enduranceLevelInfoView = new EnduranceLevelInfoView();
 
     // 모델
+    this._userModel = new UserModel();
+
     this._singleImageUploadModel = new SingleImageUploadModel();
     this._levelInfoModel = new LevelInfoModel();
   }
@@ -31,13 +35,11 @@ const LevelController = class {
   /* 인터페이스 */
 
   init = () => {
-    console.log(`${tag} init()`);
-
     this._headerView //
       .setup(document.querySelector(`[data-header]`))
       .on('@toggleSidebar', () => this._toggleSidebar())
       .on('@toggleAdminMenu', () => this._toggleAdminMenu())
-      .on('@clickAdminMenu', event => console.log(event.detail));
+      .on('@clickLogout', () => this._logout());
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
@@ -76,20 +78,26 @@ const LevelController = class {
 
   // 라이프 사이클
   _lifeCycle = async () => {
+    // 로그인 확인
+    if (!this._userModel.isLogged()) return location.replace('/login.html');
+    // 사용할 액세스키
+    let accessToken = this._userModel.getAccessToken();
+    // 센터 이름 세팅
+    const centerName = await this._userModel.getName();
+    this._headerView.setCenterName(centerName);
     /* 사이드바 메뉴 설정 */
-    // * 일단 가격 정보 페이지로 들어왔다고 가정 -> 나중에는 url 값 받아서 구분해야함
     this._sidebarView.initMenu({
       depth1: 'centerInfo',
       depth2: 'level',
     });
 
     const initialLevelImage = await this._singleImageUploadModel.initImage(
-      'centerId',
+      accessToken,
       SINGLE_IMAGE_UPLOADER_TYPE.LEVEL
     );
     this._levelImageInfoView.setImage(initialLevelImage);
 
-    const [initialBorderingLevelInfo, initialEnduranceLevelInfo] = await this._levelInfoModel.initInfo('centerId');
+    const [initialBorderingLevelInfo, initialEnduranceLevelInfo] = await this._levelInfoModel.initInfo(accessToken);
     this._borderingLevelInfoView.initItems(initialBorderingLevelInfo);
     this._enduranceLevelInfoView.initItems(initialEnduranceLevelInfo);
   };
@@ -103,6 +111,9 @@ const LevelController = class {
   _toggleSideMenu = ({ menu }) => this._sidebarView.toggleSideMenu(menu);
   // 경고 모달 보여주기
   _showAlertModal = ({ description, eventInfo }) => this._modalView.showAlertModal(description, eventInfo);
+
+  // 로그아웃
+  _logout = () => this._userModel.logout();
 
   // 난이도 이미지 변경
   _changeLevelImage = ({ type, fileList }) => {

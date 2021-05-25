@@ -22,12 +22,10 @@ const FacilityInfoView = class extends View {
 
     this._bindEvents();
 
-    console.log(tag, 'setup()');
     return this;
   };
 
   initItems = (itemInfoObj, extraInfoObj) => {
-    console.log(tag, 'initial 정보대로 체크박스 체크');
     // 주차장 추가 설명 텍스트 설정
     this._parkignLotTextArea.value = extraInfoObj[FACILITY_EXTRA_INFO.PARKING_LOT];
 
@@ -48,7 +46,6 @@ const FacilityInfoView = class extends View {
       const facilityType = event.target.closest('[data-item]').dataset.item;
       this.trigger('@checkFacility', { facilityType, checked: checkbox.checked });
       // 주차장 체크 해제했을 경우 텍스트 박스 안보이게
-      console.log(facilityType, FACILITY_TYPE.PARKING_LOT, checkbox.checked);
       if (facilityType === FACILITY_TYPE.PARKING_LOT) {
         if (checkbox.checked) this._parkignLotTextContainer.classList.add('show');
         else this._parkignLotTextContainer.classList.remove('show');

@@ -8,6 +8,8 @@ import BaseSettingInfoView from '../view/BaseSettingInfoView';
 import BaseWorkingTimeInfoView from '../view/BaseWorkingTimeInfoView';
 import BaseSocialInfoView from '../view/BaseSocialInfoView';
 
+import UserModel from '../model/UserModel';
+
 import BaseCenterInfoModel from '../model/BaseCenterInfoModel';
 import BaseSettingInfoModel from '../model/BaseSettingInfoModel';
 import BaseWorkingTimeInfoModel from '../model/BaseWorkingTimeInfoModel';
@@ -29,6 +31,8 @@ const BaseInfoController = class {
     this._baseSocialInfoView = new BaseSocialInfoView();
 
     // 모델
+    this._userModel = new UserModel();
+
     this._baseCenterInfoModel = new BaseCenterInfoModel();
     this._baseSettingInfoModel = new BaseSettingInfoModel();
     this._baseWorkingTimeInfoModel = new BaseWorkingTimeInfoModel();
@@ -42,7 +46,7 @@ const BaseInfoController = class {
       .setup(document.querySelector(`[data-header]`))
       .on('@toggleSidebar', () => this._toggleSidebar())
       .on('@toggleAdminMenu', () => this._toggleAdminMenu())
-      .on('@clickAdminMenu', event => console.log(event.detail));
+      .on('@clickLogout', () => this._logout());
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
@@ -81,8 +85,6 @@ const BaseInfoController = class {
       .on('@changeSocialUrl', event => this._changeSocialUrl(event.detail))
       .on('@updateSocialInfo', this._updateSocialInfo);
 
-    console.log(`${tag} init()`);
-
     this._lifeCycle();
   };
 
@@ -90,24 +92,30 @@ const BaseInfoController = class {
 
   // 라이프 사이클
   _lifeCycle = async () => {
+    // 로그인 확인
+    if (!this._userModel.isLogged()) return location.replace('/login.html');
+    // 사용할 액세스키
+    let accessToken = this._userModel.getAccessToken();
+    // 센터 이름 세팅
+    const centerName = await this._userModel.getName();
+    this._headerView.setCenterName(centerName);
     /* 사이드바 메뉴 설정 */
-    // * 일단 기본 정보 페이지로 들어왔다고 가정 -> 나중에는 url 값 받아서 구분해야함
     this._sidebarView.initMenu({
       depth1: 'centerInfo',
       depth2: 'baseInfo',
     });
 
     // 기본 정보 세팅
-    const initialCenterInfo = await this._baseCenterInfoModel.initInfo(999);
+    const initialCenterInfo = await this._baseCenterInfoModel.initInfo(accessToken);
     this._baseCenterInfoView.initItems(initialCenterInfo);
 
-    const initialSettingInfo = await this._baseSettingInfoModel.initInfo(999);
+    const initialSettingInfo = await this._baseSettingInfoModel.initInfo(accessToken);
     this._baseSettingInfoView.initItems(initialSettingInfo);
 
-    const initialWoringTimeInfo = await this._baseWorkingTimeInfoModel.initInfo(999);
+    const initialWoringTimeInfo = await this._baseWorkingTimeInfoModel.initInfo(accessToken);
     this._baseWorkingTimeInfoView.initItems(initialWoringTimeInfo);
 
-    const [initialSocialCheckInfo, initialSocialUrlInfo] = await this._baseSocialInfoModel.initInfo(999);
+    const [initialSocialCheckInfo, initialSocialUrlInfo] = await this._baseSocialInfoModel.initInfo(accessToken);
     this._baseSocialInfoView.initItems(initialSocialCheckInfo, initialSocialUrlInfo);
   };
 
@@ -124,6 +132,9 @@ const BaseInfoController = class {
   _toggleSideMenu = ({ menu }) => {
     this._sidebarView.toggleSideMenu(menu);
   };
+
+  // 로그아웃
+  _logout = () => this._userModel.logout();
 
   // 센터 기본 정보 변경
   _changeExtraAddress = ({ value }) => this._baseCenterInfoModel.changeExtraAddress(value);

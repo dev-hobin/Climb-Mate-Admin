@@ -1,16 +1,21 @@
 const tag = '[Model]';
 
 const Model = class {
+  HOST = {
+    SERVER: 'https://climbmate.co.kr',
+    TEST_SERVER: 'http://13.209.4.105',
+  };
+  PATHS = {
+    MAIN: '/AdminIndex.php',
+  };
+  RES_CODE = {
+    SUCCESS: 200,
+    FAIL: 500,
+  };
+
   constructor() {
     this._resStatus = null;
   }
-
-  _hosts = {
-    SERVER: 'https://climbmate.co.kr',
-  };
-  _paths = {
-    SERVER_MAIN: '/indexTest1.php',
-  };
 
   // 서버와 통신하는 메소드 (공통)
   _sendHttpRequest = async (method, host, path, data) => {
@@ -111,6 +116,39 @@ const Model = class {
   // DELETE
   deleteRequest = async (host, path, data) => {
     return await this._sendHttpRequest('DELETE', host, path, data);
+  };
+
+  getCookie = name => {
+    let matches = document.cookie.match(
+      new RegExp('(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)')
+    );
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+  };
+  setCookie = (name, value, options = {}) => {
+    options = {
+      path: '/',
+      ...options,
+    };
+
+    if (options.expires instanceof Date) {
+      options.expires = options.expires.toUTCString();
+    }
+
+    let updatedCookie = encodeURIComponent(name) + '=' + encodeURIComponent(value);
+
+    for (let optionKey in options) {
+      updatedCookie += '; ' + optionKey;
+      let optionValue = options[optionKey];
+      if (optionValue !== true) {
+        updatedCookie += '=' + optionValue;
+      }
+    }
+    document.cookie = updatedCookie;
+  };
+  deleteCookie = name => {
+    this.setCookie(name, '', {
+      'max-age': -1,
+    });
   };
 };
 

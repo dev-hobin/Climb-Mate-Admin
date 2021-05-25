@@ -17,8 +17,6 @@ const NoticeController = class {
   /* 인터페이스 */
 
   init = () => {
-    console.log(`${tag} init()`);
-
     this._headerView //
       .setup(document.querySelector(`[data-header]`))
       .on('@toggleSidebar', () => this._toggleSidebar())

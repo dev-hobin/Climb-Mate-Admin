@@ -25,13 +25,10 @@ const BaseCenterInfoView = class extends View {
 
     this._bindEvents();
 
-    console.log(tag, 'setup()');
     return this;
   };
 
   initItems = infoObj => {
-    console.log(tag, 'initial 정보대로 기본 정보 설정');
-
     this._name.textContent = infoObj[BASE_CENTER_INFO_TYPE.CENTER_NAME];
     this._address.textContent = infoObj[BASE_CENTER_INFO_TYPE.CENTER_ADDRESS];
     this._extraAddressInput.value = infoObj[BASE_CENTER_INFO_TYPE.EXTRA_CENTER_ADDRESS];
@@ -78,7 +75,6 @@ const BaseCenterInfoView = class extends View {
       this.trigger('@changeIntroduce', { value: event.target.value });
     });
     this._updateBtn.addEventListener('click', () => this.trigger('@updateCenterInfo'));
-    console.log(tag, '트리거 이벤트 등록 완료');
   };
 };
 

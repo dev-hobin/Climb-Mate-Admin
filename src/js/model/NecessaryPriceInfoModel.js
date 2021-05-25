@@ -38,7 +38,18 @@ const NecessaryPriceInfoModel = class extends Model {
   }
 
   /* 인터페이스 */
-  initInfo = async centerId => {
+  initInfo = async accessToken => {
+    console.log('필수 상품 정보 더미 데이터 { 상품 타입 : 가격 }', dummyInfo);
+    const reqData = {
+      reqCode: 3007,
+      reqBody: {
+        accessKey: accessToken,
+      },
+    };
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+    console.log('필수 상품 정보', resBody);
+
     this._info = { ...dummyInfo };
     return this._info;
   };

@@ -65,7 +65,6 @@ const BorderingLevelInfoView = class extends View {
 
     this._bindEvents();
 
-    console.log(tag, 'setup()');
     return this;
   };
 

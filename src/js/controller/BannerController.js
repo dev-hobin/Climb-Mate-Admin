@@ -2,9 +2,11 @@ import HeaderView from '../view/HeaderView';
 import SidebarView from '../view/SidebarView';
 import ModalView from '../view/ModalView';
 import NotificationView from '../view/NotificationView';
-import BannerImageUploadView from '../view/BannerImageUploadView.js';
+import BannerImageUploadView from '../view/BannerImageUploadView';
 
-import ImageUploadModel, { IMAGE_UPLOADER_TYPE } from '../model/ImageUploadModel.js';
+import UserModel from '../model/UserModel';
+
+import ImageUploadModel, { IMAGE_UPLOADER_TYPE } from '../model/ImageUploadModel';
 
 const tag = '[BannerController]';
 
@@ -18,19 +20,19 @@ const BannerController = class {
     this._bannerImageUploadView = new BannerImageUploadView();
 
     // 모델
+    this._userModel = new UserModel();
+
     this._imageUploadModel = new ImageUploadModel();
   }
 
   /* 인터페이스 */
 
   init = () => {
-    console.log(`${tag} init()`);
-
     this._headerView //
       .setup(document.querySelector(`[data-header]`))
       .on('@toggleSidebar', () => this._toggleSidebar())
       .on('@toggleAdminMenu', () => this._toggleAdminMenu())
-      .on('@clickAdminMenu', event => console.log(event.detail));
+      .on('@clickLogout', () => this._logout());
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
@@ -54,17 +56,22 @@ const BannerController = class {
 
   // 라이프 사이클
   _lifeCycle = async () => {
+    // 로그인 확인
+    if (!this._userModel.isLogged()) return location.replace('/login.html');
+    // 사용할 액세스키
+    let accessToken = this._userModel.getAccessToken();
+    // 센터 이름 세팅
+    const centerName = await this._userModel.getName();
+    this._headerView.setCenterName(centerName);
     /* 사이드바 메뉴 설정 */
-    // * 일단 배너 사진 페이지로 들어왔다고 가정 -> 나중에는 url 값 받아서 구분해야함
     this._sidebarView.initMenu({
       depth1: 'centerInfo',
       depth2: 'banner',
     });
 
     /* 배너 이미지 설정 */
-    const initialBannerImages = await this._imageUploadModel.initImages('centerId', IMAGE_UPLOADER_TYPE.BANNER);
+    const initialBannerImages = await this._imageUploadModel.initImages(accessToken, IMAGE_UPLOADER_TYPE.BANNER);
     this._bannerImageUploadView.initItems(initialBannerImages);
-    console.log(tag, '배너 initial 이미지 추가');
   };
 
   // 헤더 어드민 메뉴 토글
@@ -80,6 +87,9 @@ const BannerController = class {
   _toggleSideMenu = ({ menu }) => {
     this._sidebarView.toggleSideMenu(menu);
   };
+
+  // 로그아웃
+  _logout = () => this._userModel.logout();
 
   // 이미지 추가
   _addImages = async ({ type, fileList }) => {

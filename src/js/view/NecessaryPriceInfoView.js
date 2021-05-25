@@ -18,14 +18,12 @@ const NecessaryPriceInfoView = class extends View {
 
     this._bindEvents();
 
-    console.log(`${tag} setup()`);
     return this;
   };
   initInfo = infoObj => {
     this._items.forEach((item, index) => {
       item.querySelector('[data-price]').textContent = infoObj[index + 1];
     });
-    console.log(infoObj);
   };
   setPrice = (priceType, price) => {
     const item = this._items.filter(item => item.dataset.item === priceType)[0];

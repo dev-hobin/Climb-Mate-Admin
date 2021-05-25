@@ -31,7 +31,22 @@ const BaseCenterInfoModel = class extends Model {
   }
 
   /* 인터페이스 */
-  initInfo = async centerId => {
+  initInfo = async accessToken => {
+    console.log('센터 정보 더미 데이터', dummyInfo);
+    const reqData = {
+      reqCode: 3000,
+      reqBody: {
+        accessKey: accessToken,
+      },
+    };
+    const {
+      resCode,
+      resBody: [{ centerName, centerAddress, centerNumber, centerPhoneNumber, detailComment }],
+      resErr,
+    } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+    console.log('센터 정보', { centerName, centerAddress, centerNumber, centerPhoneNumber, detailComment });
+
     this._info.initial = {
       ...dummyInfo,
       // 깊은 복사를 위함
@@ -45,7 +60,6 @@ const BaseCenterInfoModel = class extends Model {
       [BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [...dummyInfo[BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]],
     };
 
-    console.log(tag, '정보 init 완료');
     return this._info.initial;
   };
   changeExtraAddress = address => {

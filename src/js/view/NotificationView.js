@@ -13,7 +13,6 @@ const NotificationView = class extends View {
 
   setup = element => {
     this.init(element);
-    console.log(`${tag} setup()`);
     return this;
   };
 

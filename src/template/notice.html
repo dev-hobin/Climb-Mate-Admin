@@ -12,10 +12,10 @@
     <header class="header" data-header>
       <div class="flex-start-container header__logo-container">
         <button class="header__menu-toggle-btn" data-sidebar-toggle-btn><i class="fas fa-bars"></i></button>
-        <a href="#" class="header__logo">Climb:Mate 관리</a>
+        <a href="/login.html" class="header__logo">Climb:Mate 관리</a>
       </div>
       <button class="header__admin-menu-btn" data-admin-menu-btn>
-        <span class="header__admin-name">사과 클라이밍</span
+        <span class="header__admin-name" data-center-name>사과 클라이밍</span
         ><i class="fas fa-chevron-left header__admin-menu-btn-icon"></i>
         <nav class="admin-navigation">
           <ul class="admin-navigation__list" data-admin-menu-list>
@@ -70,7 +70,10 @@
     </nav>
     <main class="main">
       <section class="board" data-type="notice">
-        <h1 class="board__title">공지사항</h1>
+        <div class="flex-between-container">
+          <h1 class="board__title">공지사항</h1>
+          <a href="/noticeInfo.html" class="board__add-btn">공지사항 작성하기</a>
+        </div>
         <table class="table board__table" data-type="notice">
           <thead class="table__thead">
             <tr class="table__row">

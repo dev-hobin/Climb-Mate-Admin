@@ -5,6 +5,8 @@ import NotificationView from '../view/NotificationView';
 import FacilityInfoView from '../view/FacilityInfoView';
 import ToolInfoView from '../view/ToolInfoView';
 
+import UserModel from '../model/UserModel';
+
 import FacilityInfoModel from '../model/FacilityInfoModel';
 import ToolInfoModel from '../model/ToolInfoModel';
 
@@ -21,6 +23,8 @@ const DetailInfoController = class {
     this._toolInfoView = new ToolInfoView();
 
     // 모델
+    this._userModel = new UserModel();
+
     this._facilityInfoModel = new FacilityInfoModel();
     this._toolInfoModel = new ToolInfoModel();
   }
@@ -28,13 +32,11 @@ const DetailInfoController = class {
   /* 인터페이스 */
 
   init = () => {
-    console.log(`${tag} init()`);
-
     this._headerView //
       .setup(document.querySelector(`[data-header]`))
       .on('@toggleSidebar', () => this._toggleSidebar())
       .on('@toggleAdminMenu', () => this._toggleAdminMenu())
-      .on('@clickAdminMenu', event => console.log(event.detail));
+      .on('@clickLogout', () => this._logout());
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
@@ -62,19 +64,48 @@ const DetailInfoController = class {
 
   // 라이프 사이클
   _lifeCycle = async () => {
+    // 로그인 확인
+    if (!this._userModel.isLogged()) return location.replace('/login.html');
+    // 사용할 액세스키
+    let accessToken = this._userModel.getAccessToken();
+    // 센터 이름 세팅
+    const centerName = await this._userModel.getName();
+    this._headerView.setCenterName(centerName);
     /* 사이드바 메뉴 설정 */
-    // * 일단 시설 및 가격 페이지로 들어왔다고 가정 -> 나중에는 url 값 받아서 구분해야함
     this._sidebarView.initMenu({
       depth1: 'centerInfo',
       depth2: 'detailInfo',
     });
 
     // 시설 아이템 체크
-    const [initialFacilities, initialFacilityExtra] = await this._facilityInfoModel.initInfo(999);
-    this._facilityInfoView.initItems(initialFacilities, initialFacilityExtra);
+    const {
+      isSuccess: isFacilityInitSuccess,
+      error: facilityInitError,
+      data: facilityInitData,
+    } = await this._facilityInfoModel.initInfo(accessToken);
+    if (!isFacilityInitSuccess) {
+      this._notificationView.addNotification(
+        facilityInitError.sort,
+        facilityInitError.title,
+        facilityInitError.description
+      );
+    } else {
+      const { checkInfo, extraInfo } = facilityInitData;
+      this._facilityInfoView.initItems(checkInfo, extraInfo);
+    }
+
     // 도구 아이템 체크
-    const [initialTools, initialToolExtra] = await this._toolInfoModel.initInfo(999);
-    this._toolInfoView.initItems(initialTools, initialToolExtra);
+    const {
+      isSuccess: isToolInitSuccess,
+      error: toolInitError,
+      data: toolInitData,
+    } = await this._toolInfoModel.initInfo(accessToken);
+    if (!isToolInitSuccess) {
+      this._notificationView.addNotification(toolInitError.sort, toolInitError.title, toolInitError.description);
+    } else {
+      const { checkInfo, extraInfo } = toolInitData;
+      this._toolInfoView.initItems(checkInfo, extraInfo);
+    }
   };
 
   // 헤더 어드민 메뉴 토글
@@ -90,6 +121,9 @@ const DetailInfoController = class {
   _toggleSideMenu = ({ menu }) => {
     this._sidebarView.toggleSideMenu(menu);
   };
+
+  // 로그아웃
+  _logout = () => this._userModel.logout();
 
   _updateFacilityCheckInfo = ({ facilityType, checked }) => {
     this._facilityInfoModel.updateCheckInfo(facilityType, checked);

@@ -12,6 +12,13 @@ export const TOOL_EXTRA_INFO = {
   HEALTH: 'health-description',
 };
 
+const TOOL_NAME_TO_TYPE_KEY = {
+  '킬터 보드': 'KILTER_BOARD',
+  '문 보드': 'MOON_BOARD',
+  '헬스 도구': 'HEATH',
+  '트레이닝 보드': 'TRAINING_BOARD',
+};
+
 const dummyCheckInfo = {
   [TOOL_TYPE.HEATH]: true,
   [TOOL_TYPE.TRAINING_BOARD]: false,
@@ -36,14 +43,52 @@ const ToolInfoModel = class extends Model {
   }
 
   /* 인터페이스 */
-  initInfo = async centerId => {
-    this._checkInfo.initial = { ...dummyCheckInfo };
-    this._checkInfo.current = { ...dummyCheckInfo };
+  initInfo = async accessToken => {
+    console.group('도구 정보 더미 데이터');
+    console.log('체크 정보');
+    console.log(dummyCheckInfo);
+    console.log('운동기구 추가 정보');
+    console.log(dummyExtraInfo);
+    console.groupEnd();
 
-    this._extraInfo.initial = { ...dummyExtraInfo };
-    this._extraInfo.current = { ...dummyExtraInfo };
+    const reqData = {
+      reqCode: 3005,
+      reqBody: { accessKey: accessToken },
+    };
+    const {
+      resCode,
+      resBody: {
+        centerTool,
+        detailCenterHealthTool: { detailCenterHealthTool },
+      },
+      resErr,
+    } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-    return [this._checkInfo.initial, this._extraInfo.initial];
+    if (resCode == this.RES_CODE.FAIL)
+      return {
+        isSuccess: false,
+        error: { sort: 'error', title: '서버 오류', description: resErr },
+        data: {},
+      };
+
+    console.log('도구 정보', { centerTool, detailCenterHealthTool });
+
+    const checkInfo = this._makeCheckInfo(centerTool);
+    this._checkInfo.initial = { ...checkInfo };
+    this._checkInfo.current = { ...checkInfo };
+
+    const extraInfo = this._makeExtraInfo(detailCenterHealthTool);
+    this._extraInfo.initial = { ...extraInfo };
+    this._extraInfo.current = { ...extraInfo };
+
+    return {
+      isSuccess: true,
+      error: {},
+      data: {
+        checkInfo: this._checkInfo.initial,
+        extraInfo: this._extraInfo.initial,
+      },
+    };
   };
   updateCheckInfo = (tool, checked) => {
     this._checkInfo.current[tool] = checked;
@@ -89,6 +134,25 @@ const ToolInfoModel = class extends Model {
     }
     if (extraInitial[TOOL_EXTRA_INFO.HEALTH] !== extaCurrent[TOOL_EXTRA_INFO.HEALTH]) return true;
     return false;
+  };
+  // 체크 정보 만들기
+  _makeCheckInfo = tools => {
+    const checkInfo = {};
+    tools.forEach(toolInfo => {
+      const { toolName, toolCheck } = toolInfo;
+      const typeKey = TOOL_NAME_TO_TYPE_KEY[toolName];
+      const isChecked = toolCheck == 1 ? true : false;
+
+      checkInfo[TOOL_TYPE[typeKey]] = isChecked;
+    });
+    return checkInfo;
+  };
+  // 추가 정보 만들기
+  _makeExtraInfo = description => {
+    const extraInfo = {
+      'health-description': description,
+    };
+    return extraInfo;
   };
 };
 

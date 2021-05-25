@@ -38,7 +38,17 @@ const ExtraPriceInfoModel = class extends Model {
   }
 
   /* 인터페이스 */
-  initInfo = async centerId => {
+  initInfo = async accessToken => {
+    console.log('추가 상품 정보 더미 데이터', dummyInfo);
+    const reqData = {
+      reqCode: 3008,
+      reqBody: {
+        accessKey: accessToken,
+      },
+    };
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+    console.log('추가 상품 정보', resBody);
     dummyInfo.forEach(info => this._info.push({ ...info }));
     const initialInfo = this._info.map(info => {
       info.goodsPrice = this._addCommas(info.goodsPrice);

@@ -4,6 +4,21 @@
   &__title {
     font-size: $font-size-large;
   }
+  &__add-btn {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1rem;
+    border-radius: $border-radius-rectangle;
+    color: $color-white;
+    padding: 0.5em;
+    cursor: pointer;
+    border: 2px solid $color-red;
+    background-color: $color-red;
+    &:hover {
+      border: 2px solid $color-light-red;
+      background-color: $color-light-red;
+    }
+  }
   &__table {
     margin-top: 1rem;
   }

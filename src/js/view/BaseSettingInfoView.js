@@ -32,8 +32,6 @@ const BaseSettingInfoView = class extends View {
     this._updateBtn = element.querySelector('[data-update-btn]');
 
     this._bindEvents();
-
-    console.log(tag, 'setup()');
     return this;
   };
 
@@ -44,8 +42,6 @@ const BaseSettingInfoView = class extends View {
     this._settingCycleInput.value = infoObj[BASE_SETTING_INFO_TYPE.SETTING_CYCLE];
     this._nextSettingDateInput.value = infoObj[BASE_SETTING_INFO_TYPE.NEXT_SETTING_DATE];
     this._recentSettingDateInput.value = infoObj[BASE_SETTING_INFO_TYPE.RECENT_SETTING_DATE];
-
-    console.log(tag, 'initial 정보대로 기본 정보 설정');
   };
 
   /* 메서드 */

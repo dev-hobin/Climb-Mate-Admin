@@ -43,7 +43,28 @@ const BaseSocialInfoModel = class extends Model {
   }
 
   /* 인터페이스 */
-  initInfo = async centerId => {
+  initInfo = async accessToken => {
+    console.group('소셜 정보 더미 데이터');
+    console.log('체크 정보');
+    console.log(dummyCheckInfo);
+    console.log('url 정보');
+    console.log(dummyUrlInfo);
+    console.groupEnd();
+
+    const reqData = {
+      reqCode: 3003,
+      reqBody: {
+        accessKey: accessToken,
+      },
+    };
+    const {
+      resCode,
+      resBody: [{ centerUrl, centerUrl2 }],
+      resErr,
+    } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+    console.log('소셜 정보', { centerUrl, centerUrl2 });
+
     this._checkInfo.initial = { ...dummyCheckInfo };
     this._checkInfo.current = { ...dummyCheckInfo };
 

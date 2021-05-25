@@ -13,7 +13,6 @@ const ModalView = class extends View {
 
   setup = element => {
     this.init(element);
-    console.log(`${tag} setup()`);
     return this;
   };
 
@@ -35,7 +34,6 @@ const ModalView = class extends View {
     const confirm = modal.querySelector(`[data-type="confirm"]`);
 
     const { eventName } = eventInfo;
-    console.log(eventInfo);
 
     switch (true) {
       case eventName === 'image-uploader__delete-image':

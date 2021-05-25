@@ -5,6 +5,8 @@ import NotificationView from '../view/NotificationView';
 import BorderingImageUploadView from '../view/BorderingImageUploadView.js';
 import EnduranceImageUploadView from '../view/EnduranceImageUploadView.js';
 
+import UserModel from '../model/UserModel';
+
 import ImageUploadModel, { IMAGE_UPLOADER_TYPE } from '../model/ImageUploadModel.js';
 
 const tag = '[SettingController]';
@@ -20,19 +22,19 @@ const SettingController = class {
     this._enduranceImageUploadView = new EnduranceImageUploadView();
 
     // 모델
+    this._userModel = new UserModel();
+
     this._imageUploadModel = new ImageUploadModel();
   }
 
   /* 인터페이스 */
 
   init = () => {
-    console.log(`${tag} init()`);
-
     this._headerView //
       .setup(document.querySelector(`[data-header]`))
       .on('@toggleSidebar', () => this._toggleSidebar())
       .on('@toggleAdminMenu', () => this._toggleAdminMenu())
-      .on('@clickAdminMenu', event => console.log(event.detail));
+      .on('@clickLogout', () => this._logout());
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
@@ -63,22 +65,26 @@ const SettingController = class {
 
   // 라이프 사이클
   _lifeCycle = async () => {
+    // 로그인 확인
+    if (!this._userModel.isLogged()) return location.replace('/login.html');
+    // 사용할 액세스키
+    let accessToken = this._userModel.getAccessToken();
+    // 센터 이름 세팅
+    const centerName = await this._userModel.getName();
+    this._headerView.setCenterName(centerName);
     /* 사이드바 메뉴 설정 */
-    // * 일단 세팅 사진 페이지로 들어왔다고 가정 -> 나중에는 url 값 받아서 구분해야함
     this._sidebarView.initMenu({
       depth1: 'centerInfo',
       depth2: 'setting',
     });
 
     /* 볼더링 이미지 설정 */
-    const initialBorderingImages = await this._imageUploadModel.initImages('centerId', IMAGE_UPLOADER_TYPE.BORDERING);
+    const initialBorderingImages = await this._imageUploadModel.initImages(accessToken, IMAGE_UPLOADER_TYPE.BORDERING);
     this._borderingImageUploadView.initItems(initialBorderingImages);
-    console.log(tag, '볼더링 initial 이미지 추가');
 
     /* 지구력 이미지 설정 */
-    const initialEnduranceImages = await this._imageUploadModel.initImages('centerId', IMAGE_UPLOADER_TYPE.ENDURANCE);
+    const initialEnduranceImages = await this._imageUploadModel.initImages(accessToken, IMAGE_UPLOADER_TYPE.ENDURANCE);
     this._enduranceImageUploadView.initItems(initialEnduranceImages);
-    console.log(tag, '지구력 initial 이미지 추가');
   };
 
   // 헤더 어드민 메뉴 토글
@@ -88,6 +94,9 @@ const SettingController = class {
   _toggleSidebar = () => this._sidebarView.toggleSidebar();
   // 사이드 메뉴 토글
   _toggleSideMenu = ({ menu }) => this._sidebarView.toggleSideMenu(menu);
+
+  // 로그아웃
+  _logout = () => this._userModel.logout();
 
   // 이미지 추가
   _addImages = async ({ type, fileList }) => {

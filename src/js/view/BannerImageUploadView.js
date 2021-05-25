@@ -21,8 +21,6 @@ const BannerImageUploadView = class extends View {
     this._uploadBtn = element.querySelector('[data-upload-btn]');
 
     this._bindEvents();
-
-    console.log(`${tag} setup()`);
     return this;
   };
 

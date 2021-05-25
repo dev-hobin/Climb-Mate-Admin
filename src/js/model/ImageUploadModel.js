@@ -44,7 +44,42 @@ const ImageUploadModel = class extends Model {
   }
 
   /* 인터페이스 */
-  initImages = async (centerId, type) => {
+  initImages = async (accessToken, type) => {
+    if (type === IMAGE_UPLOADER_TYPE.BANNER) {
+      console.log('배너 사진 더미 데이터', dummyImages);
+      const reqData = {
+        reqCode: 3009,
+        reqBody: {
+          accessKey: accessToken,
+        },
+      };
+      const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+      console.log('배너 사진 정보', resBody);
+    } else if (type === IMAGE_UPLOADER_TYPE.BORDERING) {
+      console.log('볼더링 사진 더미 데이터', dummyImages);
+      const reqData = {
+        reqCode: 3010,
+        reqBody: {
+          accessKey: accessToken,
+        },
+      };
+      const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+      console.log('볼더링 사진 정보', resBody);
+    } else if (type === IMAGE_UPLOADER_TYPE.ENDURANCE) {
+      console.log('지구력 사진 더미 데이터', dummyImages);
+      const reqData = {
+        reqCode: 3011,
+        reqBody: {
+          accessKey: accessToken,
+        },
+      };
+      const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+      console.log('지구력 사진 정보', resBody);
+    }
+
     if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
     this._imageData[type].initial.push(...dummyImages);
     this._imageData[type].current.push(...dummyImages);

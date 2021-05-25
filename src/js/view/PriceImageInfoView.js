@@ -22,7 +22,6 @@ const PriceImageInfoView = class extends View {
 
     this._bindEvents();
 
-    console.log(`${tag} setup()`);
     return this;
   };
 

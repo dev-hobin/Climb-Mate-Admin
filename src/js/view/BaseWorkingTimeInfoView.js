@@ -22,7 +22,6 @@ const BaseWorkingTimeInfoView = class extends View {
 
     this._bindEvents();
 
-    console.log(tag, 'setup()');
     return this;
   };
 
@@ -31,8 +30,6 @@ const BaseWorkingTimeInfoView = class extends View {
     this._weekendInput.value = infoObj[BASE_WORKING_TIME_INFO_TYPE.WEEKEND];
     this._holidayInput.value = infoObj[BASE_WORKING_TIME_INFO_TYPE.HOLIDAY];
     this._noticeInput.value = infoObj[BASE_WORKING_TIME_INFO_TYPE.NOTICE];
-
-    console.log(tag, 'initial 정보대로 운영시간 정보 설정');
   };
 
   /* 메서드 */

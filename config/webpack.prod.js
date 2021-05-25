@@ -12,7 +12,16 @@ module.exports = merge(common, {
     rules: [
       {
         test: /\.(s[ac]|c)ss$/i,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '/',
+            },
+          },
+          'css-loader',
+          'sass-loader',
+        ],
       },
     ],
   },

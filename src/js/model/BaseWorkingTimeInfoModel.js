@@ -27,7 +27,19 @@ const BaseWorkingTimeInfoModel = class extends Model {
   }
 
   /* 인터페이스 */
-  initInfo = async centerId => {
+  initInfo = async accessToken => {
+    console.log('운영 시간 정보 더미 데이터', dummyInfo);
+
+    const reqData = {
+      reqCode: 3002,
+      reqBody: {
+        accessKey: accessToken,
+      },
+    };
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+    console.log('운영시간 정보', resBody);
+
     this._info.initial = {
       ...dummyInfo,
     };

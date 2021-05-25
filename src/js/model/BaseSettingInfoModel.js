@@ -27,7 +27,27 @@ const BaseSettingInfoModel = class extends Model {
   }
 
   /* 인터페이스 */
-  initInfo = async centerId => {
+  initInfo = async accessToken => {
+    console.log('세팅 정보 더미 데이터', dummyInfo);
+    const reqData = {
+      reqCode: 3001,
+      reqBody: {
+        accessKey: accessToken,
+      },
+    };
+    const {
+      resCode,
+      resBody: [{ detailNextUpdate, detailRecentUpdate, detailCenterSettingCycle, detailCenterSettingRatio }],
+      resErr,
+    } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+    console.log('세팅 정보', {
+      detailNextUpdate,
+      detailRecentUpdate,
+      detailCenterSettingCycle,
+      detailCenterSettingRatio,
+    });
+
     this._info.initial = {
       ...dummyInfo,
       [BASE_SETTING_INFO_TYPE.SETTING_RATIO]: [...dummyInfo[BASE_SETTING_INFO_TYPE.SETTING_RATIO]],
@@ -37,7 +57,6 @@ const BaseSettingInfoModel = class extends Model {
       [BASE_SETTING_INFO_TYPE.SETTING_RATIO]: [...dummyInfo[BASE_SETTING_INFO_TYPE.SETTING_RATIO]],
     };
 
-    console.log(tag, '세팅 정보 init 완료');
     return this._info.initial;
   };
 

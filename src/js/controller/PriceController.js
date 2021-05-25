@@ -7,6 +7,8 @@ import PriceImageInfoView from '../view/PriceImageInfoView';
 import NecessaryPriceInfoView from '../view/NecessaryPriceInfoView';
 import ExtraPriceInfoView from '../view/ExtraPriceInfoView';
 
+import UserModel from '../model/UserModel';
+
 import SingleImageUploadModel, { SINGLE_IMAGE_UPLOADER_TYPE } from '../model/SingleImageUploadModel';
 import NecessaryPriceInfoModel from '../model/NecessaryPriceInfoModel';
 import ExtraPriceInfoModel from '../model/ExtraPriceInfoModel';
@@ -26,6 +28,8 @@ const PriceController = class {
     this._extraPriceInfoView = new ExtraPriceInfoView();
 
     // 모델
+    this._userModel = new UserModel();
+
     this._singleImageUploadModel = new SingleImageUploadModel();
     this._necessaryPriceInfoModel = new NecessaryPriceInfoModel();
     this._extraPriceInfoModel = new ExtraPriceInfoModel();
@@ -34,13 +38,11 @@ const PriceController = class {
   /* 인터페이스 */
 
   init = () => {
-    console.log(`${tag} init()`);
-
     this._headerView //
       .setup(document.querySelector(`[data-header]`))
       .on('@toggleSidebar', () => this._toggleSidebar())
       .on('@toggleAdminMenu', () => this._toggleAdminMenu())
-      .on('@clickAdminMenu', event => console.log(event.detail));
+      .on('@clickLogout', () => this._logout());
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
@@ -77,25 +79,30 @@ const PriceController = class {
 
   // 라이프 사이클
   _lifeCycle = async () => {
+    // 로그인 확인
+    if (!this._userModel.isLogged()) return location.replace('/login.html');
+    // 사용할 액세스키
+    let accessToken = this._userModel.getAccessToken();
+    // 센터 이름 세팅
+    const centerName = await this._userModel.getName();
+    this._headerView.setCenterName(centerName);
     /* 사이드바 메뉴 설정 */
-    // * 일단 가격 정보 페이지로 들어왔다고 가정 -> 나중에는 url 값 받아서 구분해야함
     this._sidebarView.initMenu({
       depth1: 'centerInfo',
       depth2: 'price',
     });
 
     const initialPriceImage = await this._singleImageUploadModel.initImage(
-      'centerId',
+      accessToken,
       SINGLE_IMAGE_UPLOADER_TYPE.PRICE
     );
     this._priceImageInfoView.setImage(initialPriceImage);
 
-    const initialNecessaryPriceInfo = await this._necessaryPriceInfoModel.initInfo('centerId');
+    const initialNecessaryPriceInfo = await this._necessaryPriceInfoModel.initInfo(accessToken);
     this._necessaryPriceInfoView.initInfo(initialNecessaryPriceInfo);
 
-    const initialExtraPriceInfo = await this._extraPriceInfoModel.initInfo('centerId');
+    const initialExtraPriceInfo = await this._extraPriceInfoModel.initInfo(accessToken);
     this._extraPriceInfoView.initInfo(initialExtraPriceInfo);
-    console.log(initialExtraPriceInfo);
   };
 
   // 헤더 어드민 메뉴 토글
@@ -107,6 +114,9 @@ const PriceController = class {
   _toggleSideMenu = ({ menu }) => this._sidebarView.toggleSideMenu(menu);
   // 경고 모달 보여주기
   _showAlertModal = ({ description, eventInfo }) => this._modalView.showAlertModal(description, eventInfo);
+
+  // 로그아웃
+  _logout = () => this._userModel.logout();
 
   // 가격표 이미지 변경
   _changePriceImage = ({ type, fileList }) => {

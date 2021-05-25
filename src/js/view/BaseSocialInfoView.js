@@ -21,7 +21,6 @@ const BaseSocialInfoView = class extends View {
 
     this._bindEvents();
 
-    console.log(tag, 'setup()');
     return this;
   };
 
@@ -34,8 +33,6 @@ const BaseSocialInfoView = class extends View {
       checkbox.checked = checkInfoObj[itemType];
       urlInput.value = urlInfoObj[itemType];
     });
-
-    console.log(tag, 'initial 정보대로 url 정보 설정');
   };
 
   /* 메서드 */
@@ -69,7 +66,6 @@ const BaseSocialInfoView = class extends View {
     for (const checkbox of this._checkboxes) {
       if (checkbox.checked) count++;
     }
-    console.log(count);
     return count;
   };
 };

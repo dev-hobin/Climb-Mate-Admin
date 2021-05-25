@@ -25,7 +25,39 @@ const SingleImageUploadModel = class extends Model {
   }
 
   /* 인터페이스 */
-  initImage = async (centerId, type) => {
+  initImage = async (accessToken, type) => {
+    if (type === SINGLE_IMAGE_UPLOADER_TYPE.PRICE) {
+      console.log('가격표 이미지 정보 더미 데이터', dummyImage);
+      const reqData = {
+        reqCode: 3006,
+        reqBody: {
+          accessKey: accessToken,
+        },
+      };
+      const {
+        resCode,
+        resBody: [{ detailCenterGoodsImageURL }],
+        resErr,
+      } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+      console.log('가격표 이미지 정보', detailCenterGoodsImageURL);
+    } else if (type === SINGLE_IMAGE_UPLOADER_TYPE.LEVEL) {
+      console.log('난이도 이미지 정보 더미 데이터', dummyImage);
+      const reqData = {
+        reqCode: 3014,
+        reqBody: {
+          accessKey: accessToken,
+        },
+      };
+      const {
+        resCode,
+        resBody: [{ detailCenterLevelImageURL }],
+        resErr,
+      } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+      console.log('난이도 이미지 정보', detailCenterLevelImageURL);
+    }
+
     if (!this._checkType(type)) throw '사용할 수 없는 타입입니다';
     this._imageData[type].initial = dummyImage;
     this._imageData[type].current = dummyImage;
