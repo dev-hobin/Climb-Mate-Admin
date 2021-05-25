@@ -67,28 +67,28 @@ const EnduranceImageUploadView = class extends View {
 
   // 메소드
   _bindEvents = () => {
-    // 이미지 리스트에 드래그 오버 이벤트 달기
-    this._imageList.addEventListener('dragover', event => {
-      // 마우스 포인터 차단 모양 없애기
-      event.preventDefault();
-      // 업로더 종류
-      const uploaderType = event.currentTarget.parentElement.dataset.uploader;
-      // 드래그 중인 아이템 없으면 차단
-      const draggingItem = document.querySelector('.dragging');
-      if (!draggingItem) return;
-      // 드래그 중인 아이템의 종류와 업로더 종류가 다르면 차단
-      const draggingItemType = draggingItem.parentElement.parentElement.dataset.uploader;
-      if (uploaderType !== draggingItemType) return;
+    // // 이미지 리스트에 드래그 오버 이벤트 달기
+    // this._imageList.addEventListener('dragover', event => {
+    //   // 마우스 포인터 차단 모양 없애기
+    //   event.preventDefault();
+    //   // 업로더 종류
+    //   const uploaderType = event.currentTarget.parentElement.dataset.uploader;
+    //   // 드래그 중인 아이템 없으면 차단
+    //   const draggingItem = document.querySelector('.dragging');
+    //   if (!draggingItem) return;
+    //   // 드래그 중인 아이템의 종류와 업로더 종류가 다르면 차단
+    //   const draggingItemType = draggingItem.parentElement.parentElement.dataset.uploader;
+    //   if (uploaderType !== draggingItemType) return;
 
-      // 자리 변경
-      const closestItemInfo = this._getClosestItemInfo(this._imageList, event.clientX, event.clientY);
-      if (closestItemInfo.length === 0) return;
-      const { appendDirection, item } = closestItemInfo[0];
-      if (appendDirection === 'after') item.insertAdjacentElement('afterend', draggingItem);
-      else item.insertAdjacentElement('beforebegin', draggingItem);
-    });
-    // 이미지 url 이동 방지
-    this._imageList.addEventListener('drop', event => event.preventDefault());
+    //   // 자리 변경
+    //   const closestItemInfo = this._getClosestItemInfo(this._imageList, event.clientX, event.clientY);
+    //   if (closestItemInfo.length === 0) return;
+    //   const { appendDirection, item } = closestItemInfo[0];
+    //   if (appendDirection === 'after') item.insertAdjacentElement('afterend', draggingItem);
+    //   else item.insertAdjacentElement('beforebegin', draggingItem);
+    // });
+    // // 이미지 url 이동 방지
+    // this._imageList.addEventListener('drop', event => event.preventDefault());
     // 이미지 인풋 이벤트 달기
     this._imageInput.addEventListener('change', event => {
       if (event.target.files.length === 0) return;
