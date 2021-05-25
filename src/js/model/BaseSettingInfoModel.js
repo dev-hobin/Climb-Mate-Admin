@@ -9,13 +9,6 @@ export const BASE_SETTING_INFO_TYPE = {
   RECENT_SETTING_DATE: 'RECENT_SETTING_DATE',
 };
 
-const dummyInfo = {
-  [BASE_SETTING_INFO_TYPE.SETTING_RATIO]: ['6', '4'],
-  [BASE_SETTING_INFO_TYPE.SETTING_CYCLE]: '3주에 한번 볼더링 문제 변경',
-  [BASE_SETTING_INFO_TYPE.NEXT_SETTING_DATE]: '2021-07-07',
-  [BASE_SETTING_INFO_TYPE.RECENT_SETTING_DATE]: '2021-05-05',
-};
-
 const BaseSettingInfoModel = class extends Model {
   constructor() {
     super();
@@ -28,7 +21,6 @@ const BaseSettingInfoModel = class extends Model {
 
   /* 인터페이스 */
   initInfo = async accessToken => {
-    console.log('세팅 정보 더미 데이터', dummyInfo);
     const reqData = {
       reqCode: 3001,
       reqBody: {
@@ -48,16 +40,37 @@ const BaseSettingInfoModel = class extends Model {
       resErr,
     } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
+    if (resCode == this.RES_CODE.FAIL)
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '세팅 정보를 가져오는데 실패했습니다',
+        },
+        data: {},
+      };
+
     this._info.initial = {
-      ...dummyInfo,
-      [BASE_SETTING_INFO_TYPE.SETTING_RATIO]: [...dummyInfo[BASE_SETTING_INFO_TYPE.SETTING_RATIO]],
+      [BASE_SETTING_INFO_TYPE.SETTING_RATIO]: [conceptBordering, conceptEndurance],
+      [BASE_SETTING_INFO_TYPE.SETTING_CYCLE]: detailCenterSettingCycle,
+      [BASE_SETTING_INFO_TYPE.NEXT_SETTING_DATE]: detailNextUpdate,
+      [BASE_SETTING_INFO_TYPE.RECENT_SETTING_DATE]: detailRecentUpdate,
     };
     this._info.current = {
-      ...dummyInfo,
-      [BASE_SETTING_INFO_TYPE.SETTING_RATIO]: [...dummyInfo[BASE_SETTING_INFO_TYPE.SETTING_RATIO]],
+      [BASE_SETTING_INFO_TYPE.SETTING_RATIO]: [conceptBordering, conceptEndurance],
+      [BASE_SETTING_INFO_TYPE.SETTING_CYCLE]: detailCenterSettingCycle,
+      [BASE_SETTING_INFO_TYPE.NEXT_SETTING_DATE]: detailNextUpdate,
+      [BASE_SETTING_INFO_TYPE.RECENT_SETTING_DATE]: detailRecentUpdate,
     };
 
-    return this._info.initial;
+    return {
+      isSuccess: true,
+      error: {},
+      data: {
+        settingInfo: this._info.initial,
+      },
+    };
   };
 
   changeSettingRatio = (bordering, endurance) => {

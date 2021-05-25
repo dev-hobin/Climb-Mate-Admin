@@ -106,11 +106,38 @@ const BaseInfoController = class {
     });
 
     // 기본 정보 세팅
-    const initialCenterInfo = await this._baseCenterInfoModel.initInfo(accessToken);
-    this._baseCenterInfoView.initItems(initialCenterInfo);
+    const {
+      isSuccess: isCenterInfoInitSuccess,
+      error: centerInfoInitError,
+      data: centerInfoInitData,
+    } = await this._baseCenterInfoModel.initInfo(accessToken);
+    if (!isCenterInfoInitSuccess) {
+      this._notificationView.addNotification(
+        centerInfoInitError.sort,
+        centerInfoInitError.title,
+        centerInfoInitError.description
+      );
+    } else {
+      const { centerInfo } = centerInfoInitData;
+      this._baseCenterInfoView.initItems(centerInfo);
+    }
 
-    const initialSettingInfo = await this._baseSettingInfoModel.initInfo(accessToken);
-    this._baseSettingInfoView.initItems(initialSettingInfo);
+    // 세팅 정보 세팅
+    const {
+      isSuccess: isSettingInfoInitSuccess,
+      error: settingInfoInitError,
+      data: settingInfoInitData,
+    } = await this._baseSettingInfoModel.initInfo(accessToken);
+    if (!isSettingInfoInitSuccess) {
+      this._notificationView.addNotification(
+        settingInfoInitError.sort,
+        settingInfoInitError.title,
+        settingInfoInitError.description
+      );
+    } else {
+      const { settingInfo } = settingInfoInitData;
+      this._baseSettingInfoView.initItems(settingInfo);
+    }
 
     const initialWoringTimeInfo = await this._baseWorkingTimeInfoModel.initInfo(accessToken);
     this._baseWorkingTimeInfoView.initItems(initialWoringTimeInfo);

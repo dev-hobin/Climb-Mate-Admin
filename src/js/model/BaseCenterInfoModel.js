@@ -11,15 +11,6 @@ export const BASE_CENTER_INFO_TYPE = {
   CENTER_INTRODUCE: 'CENTER_INTRODUCE',
 };
 
-const dummyInfo = {
-  [BASE_CENTER_INFO_TYPE.CENTER_NAME]: '사과 클라이밍',
-  [BASE_CENTER_INFO_TYPE.CENTER_ADDRESS]: '사과 클라이밍장 주소 123',
-  [BASE_CENTER_INFO_TYPE.EXTRA_CENTER_ADDRESS]: '사과 클라이밍장 상세 주소 123',
-  [BASE_CENTER_INFO_TYPE.CALL_NUMBER]: ['031', '1234', '5678'],
-  [BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: ['010', '1234', '1234'],
-  [BASE_CENTER_INFO_TYPE.CENTER_INTRODUCE]: '사과 클라이밍장 소개입니다',
-};
-
 const BaseCenterInfoModel = class extends Model {
   constructor() {
     super();
@@ -32,7 +23,6 @@ const BaseCenterInfoModel = class extends Model {
 
   /* 인터페이스 */
   initInfo = async accessToken => {
-    console.log('센터 정보 더미 데이터', dummyInfo);
     const reqData = {
       reqCode: 3000,
       reqBody: {
@@ -45,14 +35,17 @@ const BaseCenterInfoModel = class extends Model {
       resErr,
     } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-    console.log('센터 정보', {
-      centerName,
-      centerAddress,
-      centerDetailAddress,
-      centerNumber,
-      centerPhoneNumber,
-      detailComment,
-    });
+    if (resCode == this.RES_CODE.FAIL)
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '센터 정보를 가져오는데 실패했습니다',
+        },
+        data: {},
+      };
+
     const centerNumbers = centerNumber.split('-');
     const centerPhoneNumbers = centerPhoneNumber.split('-');
     this._info.initial = {
@@ -72,7 +65,13 @@ const BaseCenterInfoModel = class extends Model {
       [BASE_CENTER_INFO_TYPE.CENTER_INTRODUCE]: detailComment,
     };
 
-    return this._info.initial;
+    return {
+      isSuccess: true,
+      error: {},
+      data: {
+        centerInfo: this._info.initial,
+      },
+    };
   };
   changeExtraAddress = address => {
     this._info.current.EXTRA_CENTER_ADDRESS = address;
