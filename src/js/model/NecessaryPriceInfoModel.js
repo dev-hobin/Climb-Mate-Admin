@@ -46,17 +46,38 @@ const NecessaryPriceInfoModel = class extends Model {
         accessKey: accessToken,
       },
     };
-    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+    const {
+      resCode,
+      resBody: goodsArray,
+      resErr,
+    } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-    console.log('필수 상품 정보', resBody);
+    if (resCode == this.RES_CODE.FAIL)
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '필수 상품 정보를 가져오는데 실패했습니다',
+        },
+        data: {},
+      };
 
-    this._info = { ...dummyInfo };
-    return this._info;
+    const goodsInfo = this._makeInfo(goodsArray);
+    console.log(goodsInfo);
+    this._info = goodsInfo;
+    return {
+      isSuccess: true,
+      error: {},
+      data: {
+        goodsInfo: this._info,
+      },
+    };
   };
-  editPrice = async (goodsType, priceType, price) => {
-    this._info[goodsType] = price;
+  editPrice = async (goodsType, price) => {
     console.log(tag, '가격 수정중...');
     await new Promise(resolve => setTimeout(resolve, 1000));
+    this._info[goodsType]['price'] = this._addCommas(price);
     console.log(tag, '수정된 정보 { goodsType, price }', this._info);
     console.log(tag, '가격 수정 완료');
     console.log(tag, '성공 결과 반환');
@@ -70,6 +91,17 @@ const NecessaryPriceInfoModel = class extends Model {
   };
   /* 메소드 */
   _addCommas = price => price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  _makeInfo = goodsArray => {
+    const info = {};
+    goodsArray.forEach(goodsInfo => {
+      const { id, goodsName, goodsType, goodsPrice } = goodsInfo;
+      info[goodsType] = {
+        id,
+        price: this._addCommas(goodsPrice),
+      };
+    });
+    return info;
+  };
 };
 
 export default NecessaryPriceInfoModel;

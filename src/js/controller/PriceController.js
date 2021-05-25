@@ -92,14 +92,37 @@ const PriceController = class {
       depth2: 'price',
     });
 
-    const initialPriceImage = await this._singleImageUploadModel.initImage(
-      accessToken,
-      SINGLE_IMAGE_UPLOADER_TYPE.PRICE
-    );
-    this._priceImageInfoView.setImage(initialPriceImage);
+    const {
+      isSuccess: isPriceImageInitSuccess,
+      error: priceImageInitError,
+      data: priceImageInitData,
+    } = await this._singleImageUploadModel.initImage(accessToken, SINGLE_IMAGE_UPLOADER_TYPE.PRICE);
+    if (!isPriceImageInitSuccess) {
+      this._notificationView.addNotification(
+        priceImageInitError.sort,
+        priceImageInitError.title,
+        priceImageInitError.description
+      );
+    } else {
+      const { imageUrl } = priceImageInitData;
+      this._priceImageInfoView.setImage(imageUrl);
+    }
 
-    const initialNecessaryPriceInfo = await this._necessaryPriceInfoModel.initInfo(accessToken);
-    this._necessaryPriceInfoView.initInfo(initialNecessaryPriceInfo);
+    const {
+      isSuccess: isNecessaryGoodsInitSuccess,
+      error: necessaryGoodsInitError,
+      data: necessaryGoodsInitData,
+    } = await this._necessaryPriceInfoModel.initInfo(accessToken);
+    if (!isNecessaryGoodsInitSuccess) {
+      this._notificationView.addNotification(
+        necessaryGoodsInitError.sort,
+        necessaryGoodsInitError.title,
+        necessaryGoodsInitError.description
+      );
+    } else {
+      const { goodsInfo } = necessaryGoodsInitData;
+      this._necessaryPriceInfoView.initInfo(goodsInfo);
+    }
 
     const initialExtraPriceInfo = await this._extraPriceInfoModel.initInfo(accessToken);
     this._extraPriceInfoView.initInfo(initialExtraPriceInfo);
@@ -169,7 +192,7 @@ const PriceController = class {
   // 필수 상품 정보 수정
   _editNecessaryPrice = async ({ goodsType, priceType, price }) => {
     this._modalView.showLoadingModal('상품 정보를 수정중입니다');
-    const { isSuccess, error, data } = await this._necessaryPriceInfoModel.editPrice(goodsType, priceType, price);
+    const { isSuccess, error, data } = await this._necessaryPriceInfoModel.editPrice(goodsType, price);
     this._modalView.removeModal();
     if (!isSuccess) {
       const { sort, title, description } = error;

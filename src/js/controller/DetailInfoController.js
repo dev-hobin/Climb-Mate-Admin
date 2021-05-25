@@ -109,18 +109,12 @@ const DetailInfoController = class {
   };
 
   // 헤더 어드민 메뉴 토글
-  _toggleAdminMenu = () => {
-    this._headerView.toggleAdminMenu();
-  };
+  _toggleAdminMenu = () => this._headerView.toggleAdminMenu();
 
   // 사이드바 토글
-  _toggleSidebar = () => {
-    this._sidebarView.toggleSidebar();
-  };
+  _toggleSidebar = () => this._sidebarView.toggleSidebar();
   // 사이드 메뉴 토글
-  _toggleSideMenu = ({ menu }) => {
-    this._sidebarView.toggleSideMenu(menu);
-  };
+  _toggleSideMenu = ({ menu }) => this._sidebarView.toggleSideMenu(menu);
 
   // 로그아웃
   _logout = () => this._userModel.logout();

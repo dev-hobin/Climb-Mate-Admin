@@ -22,7 +22,7 @@ const NecessaryPriceInfoView = class extends View {
   };
   initInfo = infoObj => {
     this._items.forEach((item, index) => {
-      item.querySelector('[data-price]').textContent = infoObj[index + 1];
+      item.querySelector('[data-price]').textContent = infoObj[index + 1]['price'];
     });
   };
   setPrice = (priceType, price) => {

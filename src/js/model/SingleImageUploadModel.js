@@ -26,13 +26,14 @@ const SingleImageUploadModel = class extends Model {
 
   /* 인터페이스 */
   initImage = async (accessToken, type) => {
+    if (!this._checkType(type)) throw '사용할 수 없는 타입입니다';
+
+    let result;
     if (type === SINGLE_IMAGE_UPLOADER_TYPE.PRICE) {
       console.log('가격표 이미지 정보 더미 데이터', dummyImage);
       const reqData = {
         reqCode: 3006,
-        reqBody: {
-          accessKey: accessToken,
-        },
+        reqBody: { accessKey: accessToken },
       };
       const {
         resCode,
@@ -40,7 +41,27 @@ const SingleImageUploadModel = class extends Model {
         resErr,
       } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-      console.log('가격표 이미지 정보', detailCenterGoodsImageURL);
+      console.log(detailCenterGoodsImageURL);
+
+      if (resCode == this.RES_CODE.FAIL) {
+        result = {
+          isSuccess: false,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: resErr,
+          },
+          data: {},
+        };
+      } else {
+        result = {
+          isSuccess: true,
+          error: {},
+          data: {
+            imageUrl: `${this.HOST.TEST_SERVER}/${detailCenterGoodsImageURL}`,
+          },
+        };
+      }
     } else if (type === SINGLE_IMAGE_UPLOADER_TYPE.LEVEL) {
       console.log('난이도 이미지 정보 더미 데이터', dummyImage);
       const reqData = {
@@ -55,13 +76,35 @@ const SingleImageUploadModel = class extends Model {
         resErr,
       } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-      console.log('난이도 이미지 정보', detailCenterLevelImageURL);
-    }
+      if (resCode == this.RES_CODE.FAIL) {
+        result = {
+          isSuccess: false,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: resErr,
+          },
+          data: {},
+        };
+      } else {
+        result = {
+          isSuccess: true,
+          error: {},
+          data: {
+            imageUrl: `${this.HOST.TEST_SERVER}/${detailCenterLevelImageURL}`,
+          },
+        };
+      }
+    } else throw '사용할 수 없는 타입입니다';
 
-    if (!this._checkType(type)) throw '사용할 수 없는 타입입니다';
-    this._imageData[type].initial = dummyImage;
-    this._imageData[type].current = dummyImage;
-    return this._imageData[type].initial;
+    const { isSuccess, error, data } = result;
+    if (!isSuccess) {
+      return result;
+    } else {
+      this._imageData[type].initial = data.imageUrl;
+      this._imageData[type].current = data.imageUrl;
+      return result;
+    }
   };
 
   getInitialImage = type => {
