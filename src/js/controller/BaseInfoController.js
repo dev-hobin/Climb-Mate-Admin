@@ -156,8 +156,22 @@ const BaseInfoController = class {
       this._baseWorkingTimeInfoView.initItems(workingTimeInfo);
     }
 
-    const [initialSocialCheckInfo, initialSocialUrlInfo] = await this._baseSocialInfoModel.initInfo(accessToken);
-    this._baseSocialInfoView.initItems(initialSocialCheckInfo, initialSocialUrlInfo);
+    // 소셜 정보 세팅
+    const {
+      isSuccess: isSocialInfoInitSuccess,
+      error: socialInfoInitError,
+      data: socialInfoInitData,
+    } = await this._baseSocialInfoModel.initInfo(accessToken);
+    if (!isSocialInfoInitSuccess) {
+      this._notificationView.addNotification(
+        socialInfoInitError.sort,
+        socialInfoInitError.title,
+        socialInfoInitError.description
+      );
+    } else {
+      const { checkInfo: socialCheckInfo, urlInfo: socialUrlInfo } = socialInfoInitData;
+      this._baseSocialInfoView.initItems(socialCheckInfo, socialUrlInfo);
+    }
   };
 
   // 헤더 어드민 메뉴 토글
