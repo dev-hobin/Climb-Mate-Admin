@@ -45,45 +45,100 @@ const ImageUploadModel = class extends Model {
 
   /* 인터페이스 */
   initImages = async (accessToken, type) => {
+    if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
+
+    let imagesInfo;
     if (type === IMAGE_UPLOADER_TYPE.BANNER) {
-      console.log('배너 사진 더미 데이터', dummyImages);
       const reqData = {
         reqCode: 3009,
         reqBody: {
           accessKey: accessToken,
         },
       };
-      const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+      const {
+        resCode,
+        resBody: bannerInfo,
+        resErr,
+      } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-      console.log('배너 사진 정보', resBody);
+      if (resCode == this.RES_CODE.FAIL)
+        return {
+          isSuccess: false,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: '배너 사진을 가져오는데 실패했습니다',
+          },
+          data: {},
+        };
+
+      imagesInfo = bannerInfo;
+      console.log('배너 사진 정보', bannerInfo);
     } else if (type === IMAGE_UPLOADER_TYPE.BORDERING) {
-      console.log('볼더링 사진 더미 데이터', dummyImages);
       const reqData = {
         reqCode: 3010,
         reqBody: {
           accessKey: accessToken,
         },
       };
-      const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+      const {
+        resCode,
+        resBody: borderingInfo,
+        resErr,
+      } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-      console.log('볼더링 사진 정보', resBody);
+      if (resCode == this.RES_CODE.FAIL)
+        return {
+          isSuccess: false,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: '볼더링 사진을 가져오는데 실패했습니다',
+          },
+          data: {},
+        };
+
+      imagesInfo = borderingInfo;
+      console.log('볼더링 사진 정보', borderingInfo);
     } else if (type === IMAGE_UPLOADER_TYPE.ENDURANCE) {
-      console.log('지구력 사진 더미 데이터', dummyImages);
       const reqData = {
         reqCode: 3011,
         reqBody: {
           accessKey: accessToken,
         },
       };
-      const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+      const {
+        resCode,
+        resBody: enduranceInfo,
+        resErr,
+      } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-      console.log('지구력 사진 정보', resBody);
-    }
+      if (resCode == this.RES_CODE.FAIL)
+        return {
+          isSuccess: false,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: '볼더링 사진을 가져오는데 실패했습니다',
+          },
+          data: {},
+        };
 
-    if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
-    this._imageData[type].initial.push(...dummyImages);
-    this._imageData[type].current.push(...dummyImages);
-    return this._imageData[type].initial;
+      imagesInfo = enduranceInfo;
+      console.log('지구력 사진 정보', enduranceInfo);
+    } else throw '사용할 수 없는 이미지 업로더 타입입니다';
+
+    imagesInfo.forEach(info => {
+      this._imageData[type].initial.push({ ...info });
+      this._imageData[type].current.push({ ...info });
+    });
+    return {
+      isSuccess: true,
+      error: {},
+      data: {
+        images: this._imageData[type].initial,
+      },
+    };
   };
 
   getInitialImages = type => {

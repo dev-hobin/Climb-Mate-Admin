@@ -69,9 +69,22 @@ const BannerController = class {
       depth2: 'banner',
     });
 
-    /* 배너 이미지 설정 */
-    const initialBannerImages = await this._imageUploadModel.initImages(accessToken, IMAGE_UPLOADER_TYPE.BANNER);
-    this._bannerImageUploadView.initItems(initialBannerImages);
+    // 배너 이미지 설정
+    const {
+      isSuccess: isBannerInfoInitSuccess,
+      error: bannerInfoInitError,
+      data: bannerInfoInitData,
+    } = await this._imageUploadModel.initImages(accessToken, IMAGE_UPLOADER_TYPE.BANNER);
+    if (!isBannerInfoInitSuccess) {
+      this._notificationView.addNotification(
+        bannerInfoInitError.sort,
+        bannerInfoInitError.title,
+        bannerInfoInitError.description
+      );
+    } else {
+      const { images } = bannerInfoInitData;
+      this._bannerImageUploadView.initItems(images);
+    }
   };
 
   // 헤더 어드민 메뉴 토글
