@@ -2,34 +2,6 @@ import Model from '../core/Model.js';
 
 const tag = '[ExtraPriceInfoModel]';
 
-const dummyInfo = [
-  {
-    id: 2,
-    goodsName: '추가 아이템 1',
-    goodsPrice: 10000,
-  },
-  {
-    id: 5,
-    goodsName: '추가 아이템 2',
-    goodsPrice: 20000,
-  },
-  {
-    id: 6,
-    goodsName: '추가 아이템 3',
-    goodsPrice: 50000,
-  },
-  {
-    id: 8,
-    goodsName: '추가 아이템 4',
-    goodsPrice: 80000,
-  },
-  {
-    id: 9,
-    goodsName: '추가 아이템 5',
-    goodsPrice: 100000,
-  },
-];
-
 const ExtraPriceInfoModel = class extends Model {
   constructor() {
     super();
@@ -39,22 +11,38 @@ const ExtraPriceInfoModel = class extends Model {
 
   /* 인터페이스 */
   initInfo = async accessToken => {
-    console.log('추가 상품 정보 더미 데이터', dummyInfo);
     const reqData = {
       reqCode: 3008,
       reqBody: {
         accessKey: accessToken,
       },
     };
-    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+    const {
+      resCode,
+      resBody: goodsArray,
+      resErr,
+    } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-    console.log('추가 상품 정보', resBody);
-    dummyInfo.forEach(info => this._info.push({ ...info }));
-    const initialInfo = this._info.map(info => {
-      info.goodsPrice = this._addCommas(info.goodsPrice);
-      return info;
-    });
-    return initialInfo;
+    if (resCode == this.RES_CODE.FAIL)
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '추가 상품 정보를 가져오는데 실패했습니다',
+        },
+        data: {},
+      };
+
+    const goodsInfo = this._makeInfo(goodsArray);
+    this._info = goodsInfo;
+    return {
+      isSuccess: true,
+      error: {},
+      data: {
+        goodsInfo: this._info,
+      },
+    };
   };
   addItem = async (centerId, accessKey, goodsName, goodsPrice) => {
     if (this._hasSameName(goodsName))
@@ -66,7 +54,8 @@ const ExtraPriceInfoModel = class extends Model {
     this._info.push({
       id: '서버에서 받아온 id',
       goodsName,
-      goodsPrice,
+      goodsType: '서버에서 받아온 goodsType',
+      goodsPrice: this._addCommas(goodsPrice),
     });
     console.log(tag, '아이템 추가중...');
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -135,6 +124,19 @@ const ExtraPriceInfoModel = class extends Model {
   };
 
   /* 메소드 */
+  _makeInfo = goodsArray => {
+    const info = [];
+    goodsArray.forEach(goodsInfo => {
+      const { id, goodsName, goodsType, goodsPrice } = goodsInfo;
+      info.push({
+        id,
+        goodsName,
+        goodsType,
+        goodsPrice: this._addCommas(goodsPrice),
+      });
+    });
+    return info;
+  };
   _addCommas = price => price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   _hasSameName = goodsName => {

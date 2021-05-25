@@ -23,13 +23,6 @@ const GOODS_TYPE_TO_KEY = {
   4: 'oneMonthClassPrice',
   5: 'threeMonthClassPrice',
 };
-const dummyInfo = {
-  1: 0,
-  2: 0,
-  3: 0,
-  4: 0,
-  5: 0,
-};
 
 const NecessaryPriceInfoModel = class extends Model {
   constructor() {
@@ -39,7 +32,6 @@ const NecessaryPriceInfoModel = class extends Model {
 
   /* 인터페이스 */
   initInfo = async accessToken => {
-    console.log('필수 상품 정보 더미 데이터 { 상품 타입 : 가격 }', dummyInfo);
     const reqData = {
       reqCode: 3007,
       reqBody: {
@@ -64,7 +56,6 @@ const NecessaryPriceInfoModel = class extends Model {
       };
 
     const goodsInfo = this._makeInfo(goodsArray);
-    console.log(goodsInfo);
     this._info = goodsInfo;
     return {
       isSuccess: true,

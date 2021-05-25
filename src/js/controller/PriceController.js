@@ -92,6 +92,7 @@ const PriceController = class {
       depth2: 'price',
     });
 
+    // 가격표 이미지 설정
     const {
       isSuccess: isPriceImageInitSuccess,
       error: priceImageInitError,
@@ -108,6 +109,7 @@ const PriceController = class {
       this._priceImageInfoView.setImage(imageUrl);
     }
 
+    // 필수 상품 정보 설정
     const {
       isSuccess: isNecessaryGoodsInitSuccess,
       error: necessaryGoodsInitError,
@@ -124,8 +126,22 @@ const PriceController = class {
       this._necessaryPriceInfoView.initInfo(goodsInfo);
     }
 
-    const initialExtraPriceInfo = await this._extraPriceInfoModel.initInfo(accessToken);
-    this._extraPriceInfoView.initInfo(initialExtraPriceInfo);
+    // 추가 상품 정보 설정
+    const {
+      isSuccess: isExtraGoodsInitSuccess,
+      error: extraGoodsInitError,
+      data: extraGoodsInitData,
+    } = await this._extraPriceInfoModel.initInfo(accessToken);
+    if (!isExtraGoodsInitSuccess) {
+      this._notificationView.addNotification(
+        extraGoodsInitError.sort,
+        extraGoodsInitError.title,
+        extraGoodsInitError.description
+      );
+    } else {
+      const { goodsInfo } = extraGoodsInitData;
+      this._extraPriceInfoView.initInfo(goodsInfo);
+    }
   };
 
   // 헤더 어드민 메뉴 토글
