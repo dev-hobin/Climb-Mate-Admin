@@ -26,10 +26,19 @@ const BaseWorkingTimeInfoView = class extends View {
   };
 
   initItems = infoObj => {
-    this._weekdayInput.value = infoObj[BASE_WORKING_TIME_INFO_TYPE.WEEKDAY];
-    this._weekendInput.value = infoObj[BASE_WORKING_TIME_INFO_TYPE.WEEKEND];
-    this._holidayInput.value = infoObj[BASE_WORKING_TIME_INFO_TYPE.HOLIDAY];
-    this._noticeInput.value = infoObj[BASE_WORKING_TIME_INFO_TYPE.NOTICE];
+    for (const [key, value] of Object.entries(infoObj)) {
+      const { day, time, comment } = value;
+      if (day === '평일') {
+        this._weekdayInput.value = time;
+        this._noticeInput.value = comment;
+      }
+      if (day === '주말') {
+        this._weekendInput.value = time;
+      }
+      if (day === '공휴일') {
+        this._holidayInput.value = time;
+      }
+    }
   };
 
   /* 메서드 */

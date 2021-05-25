@@ -139,8 +139,22 @@ const BaseInfoController = class {
       this._baseSettingInfoView.initItems(settingInfo);
     }
 
-    const initialWoringTimeInfo = await this._baseWorkingTimeInfoModel.initInfo(accessToken);
-    this._baseWorkingTimeInfoView.initItems(initialWoringTimeInfo);
+    // 운영시간 정보 세팅
+    const {
+      isSuccess: isWoringTimeInfoInitSuccess,
+      error: workingTimeInfoInitError,
+      data: workingTimeInfoInitData,
+    } = await this._baseWorkingTimeInfoModel.initInfo(accessToken);
+    if (!isWoringTimeInfoInitSuccess) {
+      this._notificationView.addNotification(
+        workingTimeInfoInitError.sort,
+        workingTimeInfoInitError.title,
+        workingTimeInfoInitError.description
+      );
+    } else {
+      const { workingTimeInfo } = workingTimeInfoInitData;
+      this._baseWorkingTimeInfoView.initItems(workingTimeInfo);
+    }
 
     const [initialSocialCheckInfo, initialSocialUrlInfo] = await this._baseSocialInfoModel.initInfo(accessToken);
     this._baseSocialInfoView.initItems(initialSocialCheckInfo, initialSocialUrlInfo);

@@ -9,11 +9,11 @@ export const BASE_WORKING_TIME_INFO_TYPE = {
   NOTICE: 'NOTICE',
 };
 
-const dummyInfo = {
-  [BASE_WORKING_TIME_INFO_TYPE.WEEKDAY]: '10:00 - 20:00',
-  [BASE_WORKING_TIME_INFO_TYPE.WEEKEND]: '12:00 - 18:00',
-  [BASE_WORKING_TIME_INFO_TYPE.HOLIDAY]: '12:00 - 18:00',
-  [BASE_WORKING_TIME_INFO_TYPE.NOTICE]: '운영시간 추가 알림 알림 알림',
+const WORKING_TIME_NAME_TO_TYPE_KEY = {
+  평일: 'WEEKDAY',
+  주말: 'WEEKEND',
+  공휴일: 'HOLIDAY',
+  알림: 'NOTICE',
 };
 
 const BaseWorkingTimeInfoModel = class extends Model {
@@ -28,43 +28,67 @@ const BaseWorkingTimeInfoModel = class extends Model {
 
   /* 인터페이스 */
   initInfo = async accessToken => {
-    console.log('운영 시간 정보 더미 데이터', dummyInfo);
-
     const reqData = {
       reqCode: 3002,
       reqBody: {
         accessKey: accessToken,
       },
     };
-    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+    const {
+      resCode,
+      resBody: workingTimeArray,
+      resErr,
+    } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-    console.log('운영시간 정보', resBody);
+    console.log('운영시간 정보', workingTimeArray);
 
-    this._info.initial = {
-      ...dummyInfo,
+    if (resCode == this.RES_CODE.FAIL)
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '운영시간 정보를 가져오는데 실패했습니다',
+        },
+        data: {},
+      };
+
+    this._info.initial = this._makeInfo(workingTimeArray);
+    this._info.current = this._makeInfo(workingTimeArray);
+
+    return {
+      isSuccess: true,
+      error: {},
+      data: {
+        workingTimeInfo: this._info.initial,
+      },
     };
-    this._info.current = {
-      ...dummyInfo,
-    };
-
-    console.log(tag, '운영시간 정보 init 완료');
-    return this._info.initial;
   };
   changeWeekdayTime = value => {
-    this._info.current.WEEKDAY = value;
-    console.log(tag, '평일 운영시간 변경', [this._info.current.WEEKDAY]);
+    for (const [id, info] of Object.entries(this._info.current)) {
+      const { day } = info;
+      if (day !== '평일') continue;
+      return (this._info.current[id]['time'] = value);
+    }
   };
   changeWeekendTime = value => {
-    this._info.current.WEEKEND = value;
-    console.log(tag, '주말 운영시간 변경', [this._info.current.WEEKEND]);
+    for (const [id, info] of Object.entries(this._info.current)) {
+      const { day } = info;
+      if (day !== '주말') continue;
+      return (this._info.current[id]['time'] = value);
+    }
   };
   changeHolidayTime = value => {
-    this._info.current.HOLIDAY = value;
-    console.log(tag, '공휴일 운영시간 변경', [this._info.current.HOLIDAY]);
+    for (const [id, info] of Object.entries(this._info.current)) {
+      const { day } = info;
+      if (day !== '공휴일') continue;
+      return (this._info.current[id]['time'] = value);
+    }
   };
   changeNoticeTime = value => {
-    this._info.current.NOTICE = value;
-    console.log(tag, '운영시간 추가 알림 변경', [this._info.current.NOTICE]);
+    for (const [id, info] of Object.entries(this._info.current)) {
+      this._info.current[id]['comment'] = value;
+    }
   };
 
   update = async () => {
@@ -91,12 +115,27 @@ const BaseWorkingTimeInfoModel = class extends Model {
   };
 
   // 메소드
+  _makeInfo = infoArray => {
+    const workingTimeInfo = {};
+    infoArray.forEach(info => {
+      const { id, scheduleDay, scheduleTime, detailScheduleComment } = info;
+      workingTimeInfo[id] = {
+        day: scheduleDay,
+        time: scheduleTime,
+        comment: detailScheduleComment,
+      };
+    });
+    return workingTimeInfo;
+  };
+
   _isInfoChanged = () => {
     const initial = this._info.initial;
     const current = this._info.current;
 
-    for (const [key, value] of Object.entries(current)) {
-      if (initial[key] !== value) return true;
+    for (const [id, info] of Object.entries(current)) {
+      const { time, comment } = info;
+      if (initial[id]['time'] !== time) return true;
+      if (initial[id]['comment'] !== comment) return true;
     }
     return false;
   };
