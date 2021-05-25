@@ -37,16 +37,16 @@ const BaseSettingInfoModel = class extends Model {
     };
     const {
       resCode,
-      resBody: [{ detailNextUpdate, detailRecentUpdate, detailCenterSettingCycle, detailCenterSettingRatio }],
+      resBody: {
+        conceptBordering,
+        conceptEndurance,
+        detailNextUpdate,
+        detailRecentUpdate,
+        detailCenterSettingCycle,
+        detailCenterSettingRatio,
+      },
       resErr,
     } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
-
-    console.log('세팅 정보', {
-      detailNextUpdate,
-      detailRecentUpdate,
-      detailCenterSettingCycle,
-      detailCenterSettingRatio,
-    });
 
     this._info.initial = {
       ...dummyInfo,

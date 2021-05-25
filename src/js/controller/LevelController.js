@@ -91,11 +91,22 @@ const LevelController = class {
       depth2: 'level',
     });
 
-    const initialLevelImage = await this._singleImageUploadModel.initImage(
-      accessToken,
-      SINGLE_IMAGE_UPLOADER_TYPE.LEVEL
-    );
-    this._levelImageInfoView.setImage(initialLevelImage);
+    // 난이도 이미지 설정
+    const {
+      isSuccess: isLevelImageInitSuccess,
+      error: levelImageInitError,
+      data: levelImageInitData,
+    } = await this._singleImageUploadModel.initImage(accessToken, SINGLE_IMAGE_UPLOADER_TYPE.LEVEL);
+    if (!isLevelImageInitSuccess) {
+      this._notificationView.addNotification(
+        levelImageInitError.sort,
+        levelImageInitError.title,
+        levelImageInitError.description
+      );
+    } else {
+      const { imageUrl } = levelImageInitData;
+      this._levelImageInfoView.setImage(imageUrl);
+    }
 
     const [initialBorderingLevelInfo, initialEnduranceLevelInfo] = await this._levelInfoModel.initInfo(accessToken);
     this._borderingLevelInfoView.initItems(initialBorderingLevelInfo);

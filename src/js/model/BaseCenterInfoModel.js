@@ -41,23 +41,35 @@ const BaseCenterInfoModel = class extends Model {
     };
     const {
       resCode,
-      resBody: [{ centerName, centerAddress, centerNumber, centerPhoneNumber, detailComment }],
+      resBody: [{ centerName, centerAddress, centerDetailAddress, centerNumber, centerPhoneNumber, detailComment }],
       resErr,
     } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-    console.log('센터 정보', { centerName, centerAddress, centerNumber, centerPhoneNumber, detailComment });
-
+    console.log('센터 정보', {
+      centerName,
+      centerAddress,
+      centerDetailAddress,
+      centerNumber,
+      centerPhoneNumber,
+      detailComment,
+    });
+    const centerNumbers = centerNumber.split('-');
+    const centerPhoneNumbers = centerPhoneNumber.split('-');
     this._info.initial = {
-      ...dummyInfo,
-      // 깊은 복사를 위함
-      [BASE_CENTER_INFO_TYPE.CALL_NUMBER]: [...dummyInfo[BASE_CENTER_INFO_TYPE.CALL_NUMBER]],
-      [BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [...dummyInfo[BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]],
+      [BASE_CENTER_INFO_TYPE.CENTER_NAME]: centerName,
+      [BASE_CENTER_INFO_TYPE.CENTER_ADDRESS]: centerAddress,
+      [BASE_CENTER_INFO_TYPE.EXTRA_CENTER_ADDRESS]: centerDetailAddress,
+      [BASE_CENTER_INFO_TYPE.CALL_NUMBER]: [centerNumbers[0], centerNumbers[1], centerNumbers[2]],
+      [BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [centerPhoneNumbers[0], centerPhoneNumbers[1], centerPhoneNumbers[2]],
+      [BASE_CENTER_INFO_TYPE.CENTER_INTRODUCE]: detailComment,
     };
     this._info.current = {
-      ...dummyInfo,
-      // 깊은 복사를 위함
-      [BASE_CENTER_INFO_TYPE.CALL_NUMBER]: [...dummyInfo[BASE_CENTER_INFO_TYPE.CALL_NUMBER]],
-      [BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [...dummyInfo[BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]],
+      [BASE_CENTER_INFO_TYPE.CENTER_NAME]: centerName,
+      [BASE_CENTER_INFO_TYPE.CENTER_ADDRESS]: centerAddress,
+      [BASE_CENTER_INFO_TYPE.EXTRA_CENTER_ADDRESS]: centerDetailAddress,
+      [BASE_CENTER_INFO_TYPE.CALL_NUMBER]: [centerNumbers[0], centerNumbers[1], centerNumbers[2]],
+      [BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [centerPhoneNumbers[0], centerPhoneNumbers[1], centerPhoneNumbers[2]],
+      [BASE_CENTER_INFO_TYPE.CENTER_INTRODUCE]: detailComment,
     };
 
     return this._info.initial;

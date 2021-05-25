@@ -63,7 +63,6 @@ const SingleImageUploadModel = class extends Model {
         };
       }
     } else if (type === SINGLE_IMAGE_UPLOADER_TYPE.LEVEL) {
-      console.log('난이도 이미지 정보 더미 데이터', dummyImage);
       const reqData = {
         reqCode: 3014,
         reqBody: {
