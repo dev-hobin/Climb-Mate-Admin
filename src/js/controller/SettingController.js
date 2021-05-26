@@ -54,7 +54,7 @@ const SettingController = class {
     this._enduranceImageUploadView //
       .setup(document.querySelector(`[data-uploader="endurance"]`))
       .on('@addImages', event => this._addImages(event.detail))
-      .on('@changeImageLocation', event => this._changeImageLocation(event.detail))
+      // .on('@changeImageLocation', event => this._changeImageLocation(event.detail))
       .on('@showAlert', event => this._showAlertModal(event.detail))
       .on('@uploadImages', event => this._uploadImages(event.detail));
 
@@ -78,13 +78,39 @@ const SettingController = class {
       depth2: 'setting',
     });
 
-    /* 볼더링 이미지 설정 */
-    const initialBorderingImages = await this._imageUploadModel.initImages(accessToken, IMAGE_UPLOADER_TYPE.BORDERING);
-    this._borderingImageUploadView.initItems(initialBorderingImages);
+    // 볼더링 이미지 설정
+    const {
+      isSuccess: isBorderingInfoInitSuccess,
+      error: borderingInfoInitError,
+      data: borderingInfoInitData,
+    } = await this._imageUploadModel.initImages(accessToken, IMAGE_UPLOADER_TYPE.BORDERING);
+    if (!isBorderingInfoInitSuccess) {
+      this._notificationView.addNotification(
+        borderingInfoInitError.sort,
+        borderingInfoInitError.title,
+        borderingInfoInitError.description
+      );
+    } else {
+      const { images: borderingImages } = borderingInfoInitData;
+      this._borderingImageUploadView.initItems(borderingImages);
+    }
 
-    /* 지구력 이미지 설정 */
-    const initialEnduranceImages = await this._imageUploadModel.initImages(accessToken, IMAGE_UPLOADER_TYPE.ENDURANCE);
-    this._enduranceImageUploadView.initItems(initialEnduranceImages);
+    // 지구력 이미지 설정
+    const {
+      isSuccess: isEnduranceInfoInitSuccess,
+      error: enduranceInfoInitError,
+      data: enduranceInfoInitData,
+    } = await this._imageUploadModel.initImages(accessToken, IMAGE_UPLOADER_TYPE.ENDURANCE);
+    if (!isEnduranceInfoInitSuccess) {
+      this._notificationView.addNotification(
+        enduranceInfoInitError.sort,
+        enduranceInfoInitError.title,
+        enduranceInfoInitError.description
+      );
+    } else {
+      const { images: enduranceImages } = enduranceInfoInitData;
+      this._enduranceImageUploadView.initItems(enduranceImages);
+    }
   };
 
   // 헤더 어드민 메뉴 토글
@@ -128,13 +154,12 @@ const SettingController = class {
   _deleteImage = ({ type, index }) => {
     this._imageUploadModel.addDeletedImages(type, index);
     this[`_${type}ImageUploadView`].removeItem(index);
-    this._modalView.removeModal();
     console.log(tag, type, '이미지 삭제');
   };
-  // 이미지 자리 변경
-  _changeImageLocation = ({ type, beforeIndex, afterIndex }) => {
-    this._imageUploadModel.changeImageLocation(type, beforeIndex, afterIndex);
-  };
+  // // 이미지 자리 변경
+  // _changeImageLocation = ({ type, beforeIndex, afterIndex }) => {
+  //   this._imageUploadModel.changeImageLocation(type, beforeIndex, afterIndex);
+  // };
   // 이미지 업로드
   _uploadImages = async ({ type }) => {
     console.log(type);

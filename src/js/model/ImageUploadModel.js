@@ -2,19 +2,6 @@ import Model from '../core/Model.js';
 
 const tag = '[ImageUploadModel]';
 
-const dummyImages = [
-  'http://placehold.it/200x200.jpg/ff0000/ffffff?text=1',
-  'http://placehold.it/200x200.jpg/800000/ffffff?text=2',
-  'http://placehold.it/200x200.jpg/808000/ffffff?text=3',
-  'http://placehold.it/200x200.jpg/008080/ffffff?text=4',
-  'http://placehold.it/200x200.jpg/800080/ffffff?text=5',
-  'http://placehold.it/200x200.jpg/0000ff/ffffff?text=6',
-  'http://placehold.it/200x200.jpg/F4A460/ffffff?text=7',
-  'http://placehold.it/200x200.jpg/FFB6C1/ffffff?text=8',
-  'http://placehold.it/200x200.jpg/87CEFA/ffffff?text=9',
-  'http://placehold.it/200x200.jpg/F0E68C/ffffff?text=10',
-];
-
 export const IMAGE_UPLOADER_TYPE = {
   BANNER: 'banner',
   BORDERING: 'bordering',
@@ -160,21 +147,27 @@ const ImageUploadModel = class extends Model {
   };
   addDeletedImages = (type, index) => {
     if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
-    const deletedImages = this._imageData[type].current.splice(index, 1);
-    this._imageData[type].deleted.push(...deletedImages);
+    const deletedImageObj = this._imageData[type].current.splice(index, 1)[0];
+    deletedImageObj.imageOrder = 0;
+    this._imageData[type].deleted.push(deletedImageObj);
+    this._updateImageOrder(type);
+
+    console.log(this._imageData[type].deleted);
+    console.log(this._imageData[type].current);
   };
 
   changeImageLocation = (type, beforeIndex, afterIndex) => {
     if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
+
+    // 데이터 자리 변경
     const draggedItemArray = this._imageData[type].current.splice(beforeIndex, 1);
     this._imageData[type].current.splice(afterIndex, 0, ...draggedItemArray);
 
-    console.group(tag, type, '이미지 자리 변경 정보');
-    console.log('자리 변경 전');
-    console.log(this._imageData[type].current);
-    console.log('자리 변경 후');
-    console.log(this._imageData[type].current);
-    console.groupEnd();
+    // 이미지 순서값 업데이트
+    this._updateImageOrder(type);
+
+    console.log('초기값', this._imageData[type].initial);
+    console.log('자리 변경 후', this._imageData[type].current);
   };
 
   isImagesChanged = type => {
@@ -182,9 +175,12 @@ const ImageUploadModel = class extends Model {
     // 1. 배열 길이 비교 -> 다르면 무조건 달라진 것
     if (this._imageData[type].initial.length !== this._imageData[type].current.length) return true;
     // 2. 하나 하나 비교
-    for (const [index, image] of this._imageData[type].current.entries()) {
-      if (this._imageData[type].initial[index] === image) continue;
-      else return true;
+    for (const [index, { id, imageOrder, imageOriginalUrl, imageThumbUrl }] of this._imageData[
+      type
+    ].current.entries()) {
+      if (imageOrder !== String(index + 1) || this._imageData[type].initial[index]['imageOrder'] !== String(index + 1))
+        throw '사진의 순서 설정에 오류가 발생했습니다';
+      if (this._imageData[type].initial[index]['id'] !== id) return true;
     }
     return false;
   };
@@ -247,6 +243,12 @@ const ImageUploadModel = class extends Model {
   };
 
   /* 메소드 */
+  _updateImageOrder = type => {
+    this._imageData[type].current.forEach((info, index) => {
+      const order = index + 1;
+      info['imageOrder'] = String(order);
+    });
+  };
   _checkImageCount = count => {
     if (count >= 30) return false;
     else return true;
@@ -279,17 +281,18 @@ const ImageUploadModel = class extends Model {
   };
 
   _addExtraInfo = type => {
-    const orderedList = this._imageData[type].current.map((image, index) => {
-      if (typeof image === 'object') return { order: index + 1, file: image };
-      else return { order: index + 1, url: image };
+    const imageList = this._imageData[type].current.map((info, index) => {
+      if (info.constructor.name === 'Object') {
+        const { id, imageOrder, imageOriginalUrl, imageThumbUrl } = info;
+        return { isAdded: false, id, imageOrder, imageOriginalUrl, imageThumbUrl };
+      } else if (info.constructor.name === 'File') {
+        return { isAdded: true, imageOrder: String(index + 1), file: info };
+      } else throw '사진 정보를 구분하는 중 오류 발생';
     });
 
-    console.log(tag, type, '이미지에 순서 정보 추가');
-    console.log(orderedList);
-
-    const files = orderedList.filter(imageObj => imageObj.hasOwnProperty('file'));
-    const urls = orderedList.filter(imageObj => imageObj.hasOwnProperty('url'));
-    const willDeleted = this._imageData[type].deleted.filter(image => typeof image === 'string');
+    const files = imageList.filter(infoObj => infoObj.isAdded);
+    const urls = imageList.filter(infoObj => !infoObj.isAdded);
+    const willDeleted = this._imageData[type].deleted.filter(infoObj => infoObj.constructor.name === 'Object');
 
     return [files, urls, willDeleted];
   };

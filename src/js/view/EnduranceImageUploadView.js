@@ -1,13 +1,14 @@
 import View from '../core/View.js';
 
 const tag = '[EnduranceImageUploadView]';
+const BASE_URL = 'http://13.209.4.105/';
 
 const EnduranceImageUploadView = class extends View {
   constructor() {
     super();
 
-    this._dragStartIndex = null;
-    this._dragEndIndex = null;
+    // this._dragStartIndex = null;
+    // this._dragEndIndex = null;
   }
 
   /* 인터페이스 */
@@ -28,11 +29,14 @@ const EnduranceImageUploadView = class extends View {
   initItems = imageUrlArray => {
     if (imageUrlArray.length === 0) return this._setNoneMessage();
     // 아이템 만들어서 이벤트 달기
-    const itemsArray = imageUrlArray.map(imageUrl => {
-      const item = this._makeItem(imageUrl);
-      this._addItemEvent(item);
-      return item;
-    });
+    const itemsArray = imageUrlArray
+      .sort((a, b) => Number(a.imageOrder) - Number(b.imageOrder))
+      .map(info => {
+        const { id, imageOrder, imageOriginalUrl, imageThumbUrl } = info;
+        const item = this._makeItem(imageThumbUrl);
+        this._addItemEvent(item);
+        return item;
+      });
     // 이미지 리스트에 아이템들 추가
     this._imageList.append(...itemsArray);
     // 이미지 개수 설정
@@ -43,7 +47,7 @@ const EnduranceImageUploadView = class extends View {
 
     const itemsArray = imageFiles.map(file => {
       const imageUrl = URL.createObjectURL(file);
-      const item = this._makeItem(imageUrl);
+      const item = this._makeItem(imageUrl, true);
       this._addItemEvent(item);
       // 아이템 로드 되면 url 객체 메모리에서 해제
       item.onload = () => URL.revokeObjectURL(imageUrl);
@@ -52,7 +56,7 @@ const EnduranceImageUploadView = class extends View {
     // 이미지 리스트에 아이템들 추가
     this._imageList.append(...itemsArray);
     // 이미지 개수 설정
-    this._imageCount.textContent = `(${this._imageList.children.length} / 30)`;
+    this._imageCount.textContent = `( ${this._imageList.children.length} / 30 )`;
   };
   removeItem = index => {
     // 전체 아이템 가져온다
@@ -60,7 +64,7 @@ const EnduranceImageUploadView = class extends View {
     // 삭제될 인덱스에 해당하는 아이템을 삭제한다
     items[index].remove();
     // 이미지 개수 설정
-    this._imageCount.textContent = `(${this._imageList.children.length} / 30)`;
+    this._imageCount.textContent = `( ${this._imageList.children.length} / 30 )`;
 
     this._checkItemExist();
   };
@@ -100,15 +104,23 @@ const EnduranceImageUploadView = class extends View {
   };
 
   // 리스트 아이템 만들기
-  _makeItem = imageUrl => {
+  _makeItem = (imageUrl, isBlob = false) => {
     const item = document.createElement('li');
     item.setAttribute('class', 'upload-image-item');
     item.setAttribute('data-image-item', '');
 
-    const innerHtml = `<figure class="upload-image-item__figure">
-      <img class="upload-image-item__img" src="${imageUrl}" alt="지구력 이미지">
-      <button class="upload-image-item__delete-btn" data-delete-btn>X</button>
-    </figure>`;
+    let innerHtml = '';
+    if (isBlob) {
+      innerHtml = `<figure class="upload-image-item__figure">
+        <img class="upload-image-item__img" src="${imageUrl}" alt="지구력 이미지">
+        <button class="upload-image-item__delete-btn" data-delete-btn>X</button>
+      </figure>`;
+    } else {
+      innerHtml = `<figure class="upload-image-item__figure">
+        <img class="upload-image-item__img" src="${BASE_URL}${imageUrl}" alt="지구력 이미지">
+        <button class="upload-image-item__delete-btn" data-delete-btn>X</button>
+      </figure>`;
+    }
 
     item.innerHTML = innerHtml;
 
@@ -116,25 +128,25 @@ const EnduranceImageUploadView = class extends View {
   };
   // 리스트 아이템에 이벤트 달아주기
   _addItemEvent = item => {
-    // 드래그 이벤트
-    item.addEventListener('dragstart', () => {
-      item.classList.add('dragging');
-      this._dragStartIndex = Array.from(item.parentNode.children).indexOf(item);
-    });
-    item.addEventListener('dragend', () => {
-      item.classList.remove('dragging');
-      this._dragEndIndex = Array.from(item.parentNode.children).indexOf(item);
-      // 아이템간 자리 바뀐게 있다면 컨트롤러에게 자리 바뀌었다고 알림
-      if (this._dragStartIndex !== this._dragEndIndex)
-        this.trigger('@changeImageLocation', {
-          type: 'endurance',
-          beforeIndex: this._dragStartIndex,
-          afterIndex: this._dragEndIndex,
-        });
-      // 드래그 끝내면 인덱스는 초기화
-      this._dragStartIndex = null;
-      this._dragEndIndex = null;
-    });
+    // // 드래그 이벤트
+    // item.addEventListener('dragstart', () => {
+    //   item.classList.add('dragging');
+    //   this._dragStartIndex = Array.from(item.parentNode.children).indexOf(item);
+    // });
+    // item.addEventListener('dragend', () => {
+    //   item.classList.remove('dragging');
+    //   this._dragEndIndex = Array.from(item.parentNode.children).indexOf(item);
+    //   // 아이템간 자리 바뀐게 있다면 컨트롤러에게 자리 바뀌었다고 알림
+    //   if (this._dragStartIndex !== this._dragEndIndex)
+    //     this.trigger('@changeImageLocation', {
+    //       type: 'endurance',
+    //       beforeIndex: this._dragStartIndex,
+    //       afterIndex: this._dragEndIndex,
+    //     });
+    //   // 드래그 끝내면 인덱스는 초기화
+    //   this._dragStartIndex = null;
+    //   this._dragEndIndex = null;
+    // });
     // 아이템 삭제 트리거 이벤트
     const deleteBtn = item.querySelector('[data-delete-btn]');
     deleteBtn.addEventListener('click', () => {
@@ -149,34 +161,34 @@ const EnduranceImageUploadView = class extends View {
       });
     });
   };
-  // 아이템 드래그 할 때 가장 가까운 아이템 정보 가져오기
-  _getClosestItemInfo = (itemList, clientX, clientY) => {
-    // 모든 아이템 가져온다 (드래그중인 아이템 제외)
-    const otherItems = [...itemList.querySelectorAll('[data-image-item]:not(.dragging)')];
+  // // 아이템 드래그 할 때 가장 가까운 아이템 정보 가져오기
+  // _getClosestItemInfo = (itemList, clientX, clientY) => {
+  //   // 모든 아이템 가져온다 (드래그중인 아이템 제외)
+  //   const otherItems = [...itemList.querySelectorAll('[data-image-item]:not(.dragging)')];
 
-    return (
-      otherItems
-        // 아이템 하나씩 뽑아서 가장 가까운 아이템만 객체로 필요한 정보 담아서 새 배열로 만든다
-        .map(item => {
-          const itemRect = item.getBoundingClientRect();
-          // 아이템 반지름
-          const itemRadius = itemRect.width / 2;
-          // 아이템 중심 좌표
-          const itemCenterX = itemRect.left + itemRadius;
-          const itemCenterY = itemRect.top + itemRadius;
-          // 마우스 포인터와의 거리 차이
-          const distanceX = Math.abs(clientX - itemCenterX);
-          const distanceY = Math.abs(clientY - itemCenterY);
+  //   return (
+  //     otherItems
+  //       // 아이템 하나씩 뽑아서 가장 가까운 아이템만 객체로 필요한 정보 담아서 새 배열로 만든다
+  //       .map(item => {
+  //         const itemRect = item.getBoundingClientRect();
+  //         // 아이템 반지름
+  //         const itemRadius = itemRect.width / 2;
+  //         // 아이템 중심 좌표
+  //         const itemCenterX = itemRect.left + itemRadius;
+  //         const itemCenterY = itemRect.top + itemRadius;
+  //         // 마우스 포인터와의 거리 차이
+  //         const distanceX = Math.abs(clientX - itemCenterX);
+  //         const distanceY = Math.abs(clientY - itemCenterY);
 
-          if (distanceX < itemRadius && distanceY < itemRadius) {
-            if (clientX - itemCenterX > 0) return { appendDirection: 'after', item };
-            else return { appendDirection: 'before', item };
-          } else return null;
-        })
-        // 정보가 있는 아이템만 필터 -> [{가장 가까운 아이템의 정보}], 가장 가까운 아이템이 없는 경우 -> []
-        .filter(info => info !== null)
-    );
-  };
+  //         if (distanceX < itemRadius && distanceY < itemRadius) {
+  //           if (clientX - itemCenterX > 0) return { appendDirection: 'after', item };
+  //           else return { appendDirection: 'before', item };
+  //         } else return null;
+  //       })
+  //       // 정보가 있는 아이템만 필터 -> [{가장 가까운 아이템의 정보}], 가장 가까운 아이템이 없는 경우 -> []
+  //       .filter(info => info !== null)
+  //   );
+  // };
   // 리스트에 사진 있는지 없는지 체크 후 인포 메세지 관리
   _checkItemExist = () => {
     const itemCount = this._imageList.querySelectorAll('[data-image-item]').length;

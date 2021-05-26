@@ -2,6 +2,7 @@ import View from '../core/View.js';
 
 const tag = '[BannerImageUploaderView]';
 const BASE_URL = 'http://13.209.4.105/';
+
 const BannerImageUploadView = class extends View {
   constructor() {
     super();
@@ -25,7 +26,6 @@ const BannerImageUploadView = class extends View {
   };
 
   initItems = imageInfoArray => {
-    console.log(imageInfoArray);
     if (imageInfoArray.length === 0) return this._setNoneMessage();
     // 아이템 만들어서 이벤트 달기
     const itemsArray = imageInfoArray
@@ -36,7 +36,6 @@ const BannerImageUploadView = class extends View {
         this._addItemEvent(item);
         return item;
       });
-    // TODO : 이미지 초기화 하고 자리 이동 잘 되는 것까지 확인, -> 추가 수정 삭제 로직 수정하면서 확인하면 된다
     // 이미지 리스트에 아이템들 추가
     this._imageList.append(...itemsArray);
     // 이미지 개수 설정
@@ -47,7 +46,7 @@ const BannerImageUploadView = class extends View {
 
     const itemsArray = imageFiles.map(file => {
       const imageUrl = URL.createObjectURL(file);
-      const item = this._makeItem(imageUrl);
+      const item = this._makeItem(imageUrl, true);
       this._addItemEvent(item);
       // 아이템 로드 되면 url 객체 메모리에서 해제
       item.onload = () => URL.revokeObjectURL(imageUrl);
@@ -56,7 +55,7 @@ const BannerImageUploadView = class extends View {
     // 이미지 리스트에 아이템들 추가
     this._imageList.append(...itemsArray);
     // 이미지 개수 설정
-    this._imageCount.textContent = `(${this._imageList.children.length} / 30)`;
+    this._imageCount.textContent = `( ${this._imageList.children.length} / 30 )`;
   };
   removeItem = index => {
     // 전체 아이템 가져온다
@@ -64,7 +63,7 @@ const BannerImageUploadView = class extends View {
     // 삭제될 인덱스에 해당하는 아이템을 삭제한다
     items[index].remove();
     // 이미지 개수 설정
-    this._imageCount.textContent = `(${this._imageList.children.length} / 30)`;
+    this._imageCount.textContent = `( ${this._imageList.children.length} / 30 )`;
 
     this._checkItemExist();
   };
@@ -104,15 +103,23 @@ const BannerImageUploadView = class extends View {
   };
 
   // 리스트 아이템 만들기
-  _makeItem = imageUrl => {
+  _makeItem = (imageUrl, isBlob = false) => {
     const item = document.createElement('li');
     item.setAttribute('class', 'upload-image-item');
     item.setAttribute('data-image-item', '');
 
-    const innerHtml = `<figure class="upload-image-item__figure">
-      <img class="upload-image-item__img" src="${BASE_URL}${imageUrl}" alt="배너 이미지">
-      <button class="upload-image-item__delete-btn" data-delete-btn>X</button>
-    </figure>`;
+    let innerHtml = '';
+    if (isBlob) {
+      innerHtml = `<figure class="upload-image-item__figure">
+        <img class="upload-image-item__img" src="${imageUrl}" alt="배너 이미지">
+        <button class="upload-image-item__delete-btn" data-delete-btn>X</button>
+      </figure>`;
+    } else {
+      innerHtml = `<figure class="upload-image-item__figure">
+        <img class="upload-image-item__img" src="${BASE_URL}${imageUrl}" alt="배너 이미지">
+        <button class="upload-image-item__delete-btn" data-delete-btn>X</button>
+      </figure>`;
+    }
 
     item.innerHTML = innerHtml;
 
