@@ -106,7 +106,7 @@ const BaseWorkingTimeInfoModel = class extends Model {
         error: {
           sort: 'error',
           title: '서버 오류',
-          description: ' 센터 정보를 수정하는데 실패했습니다',
+          description: '운영시간 정보를 수정하는데 실패했습니다',
         },
         data: {},
       };

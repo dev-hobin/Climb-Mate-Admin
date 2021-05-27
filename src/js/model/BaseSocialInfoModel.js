@@ -11,23 +11,6 @@ export const BASE_SOCIAL_INFO_TYPE = {
   OTHER: 'other',
 };
 
-const dummyCheckInfo = {
-  [BASE_SOCIAL_INFO_TYPE.INSTAGRAM]: true,
-  [BASE_SOCIAL_INFO_TYPE.FACEBOOK]: false,
-  [BASE_SOCIAL_INFO_TYPE.NAVER_BAND]: false,
-  [BASE_SOCIAL_INFO_TYPE.NAVER_CAFE]: true,
-  [BASE_SOCIAL_INFO_TYPE.DAUM_CAFE]: false,
-  [BASE_SOCIAL_INFO_TYPE.OTHER]: false,
-};
-const dummyUrlInfo = {
-  [BASE_SOCIAL_INFO_TYPE.INSTAGRAM]: '인스타 url',
-  [BASE_SOCIAL_INFO_TYPE.FACEBOOK]: '',
-  [BASE_SOCIAL_INFO_TYPE.NAVER_BAND]: '',
-  [BASE_SOCIAL_INFO_TYPE.NAVER_CAFE]: '카페 url',
-  [BASE_SOCIAL_INFO_TYPE.DAUM_CAFE]: '',
-  [BASE_SOCIAL_INFO_TYPE.OTHER]: '',
-};
-
 const BaseSocialInfoModel = class extends Model {
   constructor() {
     super();
@@ -44,13 +27,6 @@ const BaseSocialInfoModel = class extends Model {
 
   /* 인터페이스 */
   initInfo = async accessToken => {
-    console.group('소셜 정보 더미 데이터');
-    console.log('체크 정보');
-    console.log(dummyCheckInfo);
-    console.log('url 정보');
-    console.log(dummyUrlInfo);
-    console.groupEnd();
-
     const reqData = {
       reqCode: 3003,
       reqBody: {
@@ -100,7 +76,7 @@ const BaseSocialInfoModel = class extends Model {
     console.log(tag, 'url 정보 변경', [socialType, this._urlInfo.current[socialType]]);
   };
 
-  update = async () => {
+  update = async (accessToken, centerId) => {
     if (!this._isValidateUrl())
       return {
         isSuccess: false,
@@ -121,17 +97,51 @@ const BaseSocialInfoModel = class extends Model {
     console.log('변경된 check 정보', this._checkInfo.current);
     console.log('변경된 url 정보', this._urlInfo.current);
     console.groupEnd();
-    console.log(tag, '소셜 정보 업데이트 중');
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log(tag, '업데이트된 소셜 정보로 기존 정보 업데이트');
-    this._checkInfo.initial = { ...this._checkInfo.current };
-    this._urlInfo.initial = { ...this._urlInfo.current };
-    console.log(tag, '소셜 정보 업데이트 완료 후 결과 반환');
-    return {
-      isSuccess: true,
-      error: {},
-      data: {},
+    console.log(tag, '소셜 정보 업데이트 중...');
+
+    const [centerUrl = '', centerUrl2 = ''] = Object.entries(this._checkInfo.current)
+      .filter(info => {
+        const [infoType, isChecked] = info;
+        if (isChecked) return true;
+        else return false;
+      })
+      .map(item => {
+        const [infoType, isChecked] = item;
+        const url = this._urlInfo.current[infoType];
+        return url;
+      });
+
+    const reqData = {
+      reqCode: 1003,
+      reqBody: {
+        accessKey: accessToken,
+        id: centerId,
+        centerUrl,
+        centerUrl2,
+      },
     };
+    console.log('보낸 데이터', reqData);
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+    console.log('결과', { resCode, resBody, resErr });
+    if (resCode == this.RES_CODE.FAIL) {
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '소셜 정보를 수정하는데 실패했습니다',
+        },
+        data: {},
+      };
+    } else {
+      this._checkInfo.initial = { ...this._checkInfo.current };
+      this._urlInfo.initial = { ...this._urlInfo.current };
+      return {
+        isSuccess: true,
+        error: {},
+        data: {},
+      };
+    }
   };
 
   // 메소드

@@ -267,11 +267,12 @@ const BaseInfoController = class {
     this._baseSocialInfoModel.changeSocialUrl(socialType, url);
   };
   _updateSocialInfo = async () => {
-    this._modalView.showLoadingModal('소셜 정보를 수정중입니다');
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
 
-    const { isSuccess, error } = await this._baseSocialInfoModel.update();
-    console.log(tag, '소셜 정보 업데이트 결과', { isSuccess, error });
+    this._modalView.showLoadingModal('소셜 정보를 수정중입니다');
+    const { isSuccess, error, data } = await this._baseSocialInfoModel.update(accessToken, centerId);
     this._modalView.removeModal();
+
     if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
     this._notificationView.addNotification('success', '소셜 정보 수정', '성공적으로 소셜 정보를 수정했습니다', true);
   };
