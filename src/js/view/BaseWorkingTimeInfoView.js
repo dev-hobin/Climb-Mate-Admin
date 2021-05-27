@@ -26,8 +26,8 @@ const BaseWorkingTimeInfoView = class extends View {
   };
 
   initItems = infoObj => {
-    for (const [key, value] of Object.entries(infoObj)) {
-      const { day, time, comment } = value;
+    for (const [day, info] of Object.entries(infoObj)) {
+      const { id, time, comment } = info;
       if (day === '평일') {
         this._weekdayInput.value = time;
         this._noticeInput.value = comment;

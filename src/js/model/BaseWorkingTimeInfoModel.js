@@ -55,7 +55,7 @@ const BaseWorkingTimeInfoModel = class extends Model {
 
     this._info.initial = this._makeInfo(workingTimeArray);
     this._info.current = this._makeInfo(workingTimeArray);
-
+    console.log(this._info.current);
     return {
       isSuccess: true,
       error: {},
@@ -65,33 +65,30 @@ const BaseWorkingTimeInfoModel = class extends Model {
     };
   };
   changeWeekdayTime = value => {
-    for (const [id, info] of Object.entries(this._info.current)) {
-      const { day } = info;
+    for (const day of Object.keys(this._info.current)) {
       if (day !== '평일') continue;
-      return (this._info.current[id]['time'] = value);
+      return (this._info.current[day]['time'] = value);
     }
   };
   changeWeekendTime = value => {
-    for (const [id, info] of Object.entries(this._info.current)) {
-      const { day } = info;
+    for (const [day] of Object.keys(this._info.current)) {
       if (day !== '주말') continue;
-      return (this._info.current[id]['time'] = value);
+      return (this._info.current[day]['time'] = value);
     }
   };
   changeHolidayTime = value => {
-    for (const [id, info] of Object.entries(this._info.current)) {
-      const { day } = info;
+    for (const day of Object.keys(this._info.current)) {
       if (day !== '공휴일') continue;
-      return (this._info.current[id]['time'] = value);
+      return (this._info.current[day]['time'] = value);
     }
   };
   changeNoticeTime = value => {
-    for (const [id, info] of Object.entries(this._info.current)) {
-      this._info.current[id]['comment'] = value;
+    for (const day of Object.keys(this._info.current)) {
+      this._info.current[day]['comment'] = value;
     }
   };
 
-  update = async () => {
+  update = async (accessToken, centerId) => {
     const isChanged = this._isInfoChanged();
     if (!isChanged)
       return {
@@ -101,8 +98,8 @@ const BaseWorkingTimeInfoModel = class extends Model {
     console.group(tag, '서버로 보낼 수 있는 정보');
     console.log('변경된 운영시간 정보', this._info.current);
     console.groupEnd();
-    console.log(tag, '운영시간 정보 업데이트 중');
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    console.log(tag, '운영시간 정보 업데이트 중...');
+
     console.log(tag, '업데이트된 운영시간 정보로 기존 정보 업데이트');
     this._info.initial = {
       ...this._info.current,
@@ -119,8 +116,8 @@ const BaseWorkingTimeInfoModel = class extends Model {
     const workingTimeInfo = {};
     infoArray.forEach(info => {
       const { id, scheduleDay, scheduleTime, detailScheduleComment } = info;
-      workingTimeInfo[id] = {
-        day: scheduleDay,
+      workingTimeInfo[scheduleDay] = {
+        id,
         time: scheduleTime,
         comment: detailScheduleComment,
       };
@@ -132,10 +129,10 @@ const BaseWorkingTimeInfoModel = class extends Model {
     const initial = this._info.initial;
     const current = this._info.current;
 
-    for (const [id, info] of Object.entries(current)) {
+    for (const [day, info] of Object.entries(current)) {
       const { time, comment } = info;
-      if (initial[id]['time'] !== time) return true;
-      if (initial[id]['comment'] !== comment) return true;
+      if (initial[day]['time'] !== time) return true;
+      if (initial[day]['comment'] !== comment) return true;
     }
     return false;
   };
