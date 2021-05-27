@@ -1,7 +1,5 @@
 import View from '../core/View';
 
-import { BASE_WORKING_TIME_INFO_TYPE } from '../model/BaseWorkingTimeInfoModel';
-
 const tag = '[BaseWoringTimeInfoView]';
 
 const BaseWorkingTimeInfoView = class extends View {

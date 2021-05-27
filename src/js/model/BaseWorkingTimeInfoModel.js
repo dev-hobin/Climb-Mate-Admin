@@ -2,20 +2,6 @@ import Model from '../core/Model.js';
 
 const tag = '[BaseWorkingTimeInfoModel]';
 
-export const BASE_WORKING_TIME_INFO_TYPE = {
-  WEEKDAY: 'WEEKDAY',
-  WEEKEND: 'WEEKEND',
-  HOLIDAY: 'HOLIDAY',
-  NOTICE: 'NOTICE',
-};
-
-const WORKING_TIME_NAME_TO_TYPE_KEY = {
-  평일: 'WEEKDAY',
-  주말: 'WEEKEND',
-  공휴일: 'HOLIDAY',
-  알림: 'NOTICE',
-};
-
 const BaseWorkingTimeInfoModel = class extends Model {
   constructor() {
     super();
@@ -100,15 +86,42 @@ const BaseWorkingTimeInfoModel = class extends Model {
     console.groupEnd();
     console.log(tag, '운영시간 정보 업데이트 중...');
 
-    console.log(tag, '업데이트된 운영시간 정보로 기존 정보 업데이트');
-    this._info.initial = {
-      ...this._info.current,
+    const reqData = {
+      reqCode: 1002,
+      reqBody: {
+        accessKey: accessToken,
+        id: centerId,
+        scheduleWeekday: this._info.current['평일']['time'],
+        scheduleWeekend: this._info.current['주말']['time'],
+        scheduleHoliday: this._info.current['공휴일']['time'],
+        detailScheduleComment: this._info.current['평일']['comment'],
+      },
     };
-    console.log(tag, '운영시간 정보 업데이트 완료 후 결과 반환');
-    return {
-      isSuccess: true,
-      error: '',
-    };
+    console.log('보낸 데이터', reqData);
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+    console.log('결과', { resCode, resBody, resErr });
+    if (resCode == this.RES_CODE.FAIL) {
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: ' 센터 정보를 수정하는데 실패했습니다',
+        },
+        data: {},
+      };
+    } else {
+      this._info.initial = {
+        평일: { ...this._info.current['평일'] },
+        주말: { ...this._info.current['주말'] },
+        공휴일: { ...this._info.current['공휴일'] },
+      };
+      return {
+        isSuccess: true,
+        error: {},
+        data: {},
+      };
+    }
   };
 
   // 메소드
@@ -131,6 +144,9 @@ const BaseWorkingTimeInfoModel = class extends Model {
 
     for (const [day, info] of Object.entries(current)) {
       const { time, comment } = info;
+      console.log(day);
+      console.log(info);
+      console.log(initial[day]);
       if (initial[day]['time'] !== time) return true;
       if (initial[day]['comment'] !== comment) return true;
     }

@@ -236,11 +236,12 @@ const BaseInfoController = class {
   _changeNoticeTime = ({ value }) => this._baseWorkingTimeInfoModel.changeNoticeTime(value);
 
   _updateWorkingTimeInfo = async () => {
-    this._modalView.showLoadingModal('운영시간 정보 수정중입니다');
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
 
-    const { isSuccess, error } = await this._baseWorkingTimeInfoModel.update();
-    console.log(tag, '운영시간 정보 업데이트 결과', { isSuccess, error });
+    this._modalView.showLoadingModal('운영시간 정보 수정중입니다');
+    const { isSuccess, error, data } = await this._baseWorkingTimeInfoModel.update(accessToken, centerId);
     this._modalView.removeModal();
+
     if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
     this._notificationView.addNotification(
       'success',
