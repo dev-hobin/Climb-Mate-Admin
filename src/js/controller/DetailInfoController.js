@@ -126,10 +126,9 @@ const DetailInfoController = class {
     this._facilityInfoModel.updateExtraInfo(extra, info);
   };
   _updateFacility = async () => {
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('시설 정보 수정중입니다');
-
-    const { isSuccess, error } = await this._facilityInfoModel.update();
-    console.log(tag, '시설 업데이트 결과', { isSuccess, error });
+    const { isSuccess, error, data } = await this._facilityInfoModel.update(accessToken, centerId);
     this._modalView.removeModal();
 
     if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
@@ -143,10 +142,9 @@ const DetailInfoController = class {
     this._toolInfoModel.updateExtraInfo(extra, info);
   };
   _updateTool = async () => {
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('도구 정보 수정중입니다');
-
-    const { isSuccess, error } = await this._toolInfoModel.update();
-    console.log(tag, '도구 업데이트 결과', { isSuccess, error });
+    const { isSuccess, error, data } = await this._toolInfoModel.update(accessToken, centerId);
     this._modalView.removeModal();
 
     if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);

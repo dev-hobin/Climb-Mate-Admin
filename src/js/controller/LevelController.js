@@ -108,9 +108,40 @@ const LevelController = class {
       this._levelImageInfoView.setImage(imageUrl);
     }
 
-    const [initialBorderingLevelInfo, initialEnduranceLevelInfo] = await this._levelInfoModel.initInfo(accessToken);
-    this._borderingLevelInfoView.initItems(initialBorderingLevelInfo);
-    this._enduranceLevelInfoView.initItems(initialEnduranceLevelInfo);
+    const [borderingLevelInfoResult, enduranceLevelInfoResult] = await this._levelInfoModel.initInfo(accessToken);
+    const {
+      isSuccess: isBorderingLevelInitSuccess,
+      error: borderingLevelInitError,
+      data: borderingLevelInitData,
+    } = borderingLevelInfoResult;
+
+    if (!isBorderingLevelInitSuccess) {
+      this._notificationView.addNotification(
+        borderingLevelInitError.sort,
+        borderingLevelInitError.title,
+        borderingLevelInitError.description
+      );
+    } else {
+      const { levelInfo: borderingLevelInfo } = borderingLevelInitData;
+      this._borderingLevelInfoView.initItems(borderingLevelInfo);
+    }
+
+    const {
+      isSuccess: isEnduranceLevelInitSuccess,
+      error: enduranceLevelInitError,
+      data: enduranceLevelInitData,
+    } = enduranceLevelInfoResult;
+
+    if (!isEnduranceLevelInitSuccess) {
+      this._notificationView.addNotification(
+        enduranceLevelInitError.sort,
+        enduranceLevelInitError.title,
+        enduranceLevelInitError.description
+      );
+    } else {
+      const { levelInfo: enduranceLevelInfo } = enduranceLevelInitData;
+      this._enduranceLevelInfoView.initItems(enduranceLevelInfo);
+    }
   };
 
   // 헤더 어드민 메뉴 토글

@@ -27,20 +27,6 @@ const FACILITY_NAME_TO_TYPE_KEY = {
   리드연습: 'LEAD_WALL',
 };
 
-const dummyCheckInfo = {
-  [FACILITY_TYPE.SHOWER_ROOM]: true,
-  [FACILITY_TYPE.FITTING_ROOM]: false,
-  [FACILITY_TYPE.WASHROOM]: false,
-  [FACILITY_TYPE.RESTROOM]: true,
-  [FACILITY_TYPE.LOCKER]: false,
-  [FACILITY_TYPE.TOWEL]: true,
-  [FACILITY_TYPE.LEAD_WALL]: false,
-  [FACILITY_TYPE.PARKING_LOT]: true,
-};
-const dummyExtraInfo = {
-  [FACILITY_EXTRA_INFO.PARKING_LOT]: '주차장 위치는 여기여기여기여기 있습니다',
-};
-
 const FacilityInfoModel = class extends Model {
   constructor() {
     super();
@@ -56,13 +42,6 @@ const FacilityInfoModel = class extends Model {
 
   /* 인터페이스 */
   initInfo = async accessToken => {
-    console.group('시설 정보 더미 데이터');
-    console.log('체크 정보');
-    console.log(dummyCheckInfo);
-    console.log('주차장 추가 정보');
-    console.log(dummyExtraInfo);
-    console.groupEnd();
-
     const reqData = {
       reqCode: 3004,
       reqBody: { accessKey: accessToken },
@@ -82,7 +61,6 @@ const FacilityInfoModel = class extends Model {
         error: { sort: 'error', title: '서버 오류', description: resErr },
         data: {},
       };
-    console.log('시설 정보', { centerFacility, detailCenterParkinglot });
 
     const checkInfo = this._makeCheckInfo(centerFacility);
     this._checkInfo.initial = { ...checkInfo };
@@ -107,29 +85,59 @@ const FacilityInfoModel = class extends Model {
   };
   updateExtraInfo = (extra, info) => {
     this._extraInfo.current[extra] = info;
-    console.log(tag, '엑스트라 정보 수정', this._extraInfo.current);
+    console.log(tag, '추가 정보 수정', this._extraInfo.current);
   };
-  update = async () => {
+  update = async (accessToken, centerId) => {
     const isChanged = this._isInfoChanged();
     if (!isChanged)
       return {
         isSuccess: false,
         error: { sort: 'caution', title: '변경된 정보가 없습니다', description: '시설 정보를 변경해주세요' },
+        data: {},
       };
     console.group(tag, '서버로 보낼 수 있는 정보');
     console.log('체크된 시설 정보', this._checkInfo.current);
     console.log('주차장 위치 설명', this._extraInfo.current);
     console.groupEnd();
-    console.log(tag, '시설 업데이트 중');
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log(tag, '업데이트된 시설정보로 기존 정보 업데이트');
-    this._checkInfo.initial = { ...this._checkInfo.current };
-    this._extraInfo.initial = { ...this._extraInfo.current };
-    console.log(tag, '시설 업데이트 완료 후 결과 반환');
-    return {
-      isSuccess: true,
-      error: '',
+    console.log(tag, '시설 업데이트 중...');
+
+    const reqData = {
+      reqCode: 1100,
+      reqBody: {
+        accessKey: accessToken,
+        id: centerId,
+        showerRoomCheck: this._checkInfo.current[FACILITY_TYPE.SHOWER_ROOM] ? 1 : 2,
+        fittingRoomCheck: this._checkInfo.current[FACILITY_TYPE.FITTING_ROOM] ? 1 : 2,
+        washRoomCheck: this._checkInfo.current[FACILITY_TYPE.WASHROOM] ? 1 : 2,
+        restRoomCheck: this._checkInfo.current[FACILITY_TYPE.RESTROOM] ? 1 : 2,
+        lockerRoomCheck: this._checkInfo.current[FACILITY_TYPE.LOCKER] ? 1 : 2,
+        towelCheck: this._checkInfo.current[FACILITY_TYPE.TOWEL] ? 1 : 2,
+        parkingLotCheck: this._checkInfo.current[FACILITY_TYPE.PARKING_LOT] ? 1 : 2,
+        leadPracticeCheck: this._checkInfo.current[FACILITY_TYPE.LEAD_WALL] ? 1 : 2,
+        detailCenterParkinglot: this._extraInfo.current[FACILITY_EXTRA_INFO.PARKING_LOT],
+      },
     };
+    console.log('보낸 데이터', reqData);
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+    if (resCode == this.RES_CODE.FAIL) {
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '시설 정보를 수정하는데 실패했습니다',
+        },
+        data: {},
+      };
+    } else {
+      this._checkInfo.initial = { ...this._checkInfo.current };
+      this._extraInfo.initial = { ...this._extraInfo.current };
+      return {
+        isSuccess: true,
+        error: {},
+        data: {},
+      };
+    }
   };
 
   // 메소드

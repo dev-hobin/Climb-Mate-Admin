@@ -90,29 +90,58 @@ const BaseCenterInfoModel = class extends Model {
     console.log(tag, '센터 소개 변경', [this._info.current.CENTER_INTRODUCE]);
   };
 
-  update = async () => {
+  update = async (accessToken, centerId) => {
     const isChanged = this._isInfoChanged();
     if (!isChanged)
       return {
         isSuccess: false,
         error: { sort: 'caution', title: '변경된 정보가 없습니다', description: '센터 정보를 변경해주세요' },
+        data: {},
       };
     console.group(tag, '서버로 보낼 수 있는 정보');
     console.log('변경된 센터 정보', this._info.current);
     console.groupEnd();
-    console.log(tag, '센터 정보 업데이트 중');
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log(tag, '업데이트된 센터 정보로 기존 정보 업데이트');
-    this._info.initial = {
-      ...this._info.current,
-      [BASE_CENTER_INFO_TYPE.CALL_NUMBER]: [...this._info.current[BASE_CENTER_INFO_TYPE.CALL_NUMBER]],
-      [BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [...this._info.current[BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]],
+    console.log(tag, '센터 정보 업데이트 중...');
+
+    const reqData = {
+      reqCode: 1000,
+      reqBody: {
+        accessKey: accessToken,
+        id: centerId,
+        centerName: this._info.current[BASE_CENTER_INFO_TYPE.CENTER_NAME],
+        centerAddress: this._info.current[BASE_CENTER_INFO_TYPE.CENTER_ADDRESS],
+        centerDetailAddress: this._info.current[BASE_CENTER_INFO_TYPE.EXTRA_CENTER_ADDRESS],
+        centerNumber: this._info.current[BASE_CENTER_INFO_TYPE.CALL_NUMBER].join('-'),
+        centerPhoneNumber: this._info.current[BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER].join('-'),
+        detailComment: this._info.current[BASE_CENTER_INFO_TYPE.CENTER_INTRODUCE],
+      },
     };
-    console.log(tag, '센터 정보 업데이트 완료 후 결과 반환');
-    return {
-      isSuccess: true,
-      error: '',
-    };
+    console.log('보낸 데이터', reqData);
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+    console.log('결과', { resCode, resBody, resErr });
+    if (resCode == this.RES_CODE.FAIL) {
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: ' 센터 정보를 수정하는데 실패했습니다',
+        },
+        data: {},
+      };
+    } else {
+      this._info.initial = {
+        ...this._info.current,
+        [BASE_CENTER_INFO_TYPE.CALL_NUMBER]: [...this._info.current[BASE_CENTER_INFO_TYPE.CALL_NUMBER]],
+        [BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]: [...this._info.current[BASE_CENTER_INFO_TYPE.PHONE_CALL_NUMBER]],
+      };
+      console.log(this._info.initial);
+      return {
+        isSuccess: true,
+        error: {},
+        data: {},
+      };
+    }
   };
 
   // 메소드

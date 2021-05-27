@@ -67,6 +67,24 @@ const UserModel = class extends Model {
     return centerName;
   };
   getAccessToken = () => this.getCookie('accessToken');
+  getCenterInfo = () => {
+    const accessToken = this.getCookie('accessToken');
+    if (!accessToken) return location.replace('/login.html');
+
+    const base64Url = accessToken.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join('')
+    );
+    const jwtObj = JSON.parse(jsonPayload);
+
+    return [accessToken, jwtObj['data']['adminCenterId']];
+  };
 };
 
 export default UserModel;

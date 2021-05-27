@@ -198,10 +198,9 @@ const BaseInfoController = class {
   _changeIntroduce = ({ value }) => this._baseCenterInfoModel.changeIntroduce(value);
 
   _updateCenterInfo = async () => {
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('센터 정보 수정중입니다');
-
-    const { isSuccess, error } = await this._baseCenterInfoModel.update();
-    console.log(tag, '센터 정보 업데이트 결과', { isSuccess, error });
+    const { isSuccess, error, data } = await this._baseCenterInfoModel.update(accessToken, centerId);
     this._modalView.removeModal();
 
     if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);

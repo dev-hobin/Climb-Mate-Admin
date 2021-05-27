@@ -19,16 +19,6 @@ const TOOL_NAME_TO_TYPE_KEY = {
   '트레이닝 보드': 'TRAINING_BOARD',
 };
 
-const dummyCheckInfo = {
-  [TOOL_TYPE.HEATH]: true,
-  [TOOL_TYPE.TRAINING_BOARD]: false,
-  [TOOL_TYPE.MOON_BOARD]: false,
-  [TOOL_TYPE.KILTER_BOARD]: true,
-};
-const dummyExtraInfo = {
-  [TOOL_EXTRA_INFO.HEALTH]: '여러 종류의 운동기구가 준비되어 있습니다!',
-};
-
 const ToolInfoModel = class extends Model {
   constructor() {
     super();
@@ -44,13 +34,6 @@ const ToolInfoModel = class extends Model {
 
   /* 인터페이스 */
   initInfo = async accessToken => {
-    console.group('도구 정보 더미 데이터');
-    console.log('체크 정보');
-    console.log(dummyCheckInfo);
-    console.log('운동기구 추가 정보');
-    console.log(dummyExtraInfo);
-    console.groupEnd();
-
     const reqData = {
       reqCode: 3005,
       reqBody: { accessKey: accessToken },
@@ -70,8 +53,6 @@ const ToolInfoModel = class extends Model {
         error: { sort: 'error', title: '서버 오류', description: resErr },
         data: {},
       };
-
-    console.log('도구 정보', { centerTool, detailCenterHealthTool });
 
     const checkInfo = this._makeCheckInfo(centerTool);
     this._checkInfo.initial = { ...checkInfo };
@@ -96,29 +77,56 @@ const ToolInfoModel = class extends Model {
   };
   updateExtraInfo = (extra, info) => {
     this._extraInfo.current[extra] = info;
-    console.log(tag, '엑스트라 정보 수정', this._extraInfo.current);
+    console.log(tag, '추가 정보 수정', this._extraInfo.current);
   };
-  update = async () => {
+  update = async (accessToken, centerId) => {
     const isChanged = this._isInfoChanged();
     if (!isChanged)
       return {
         isSuccess: false,
         error: { sort: 'caution', title: '변경된 정보가 없습니다', description: '도구 정보를 변경해주세요' },
+        data: {},
       };
     console.group(tag, '서버로 보낼 수 있는 정보');
     console.log('체크된 도구 정보', this._checkInfo.current);
     console.log('헬스 도구 설명', this._extraInfo.current);
     console.groupEnd();
-    console.log(tag, '도구 업데이트 중');
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log(tag, '업데이트된 도구 정보로 기존 정보 업데이트');
-    this._checkInfo.initial = { ...this._checkInfo.current };
-    this._extraInfo.initial = { ...this._extraInfo.current };
-    console.log(tag, '도구 업데이트 완료 후 결과 반환');
-    return {
-      isSuccess: true,
-      error: '',
+    console.log(tag, '도구 업데이트 중...');
+
+    const reqData = {
+      reqCode: 1101,
+      reqBody: {
+        accessKey: accessToken,
+        id: centerId,
+        healthToolCheck: this._checkInfo.current[TOOL_TYPE.HEATH] ? 1 : 2,
+        trainingBoardCheck: this._checkInfo.current[TOOL_TYPE.TRAINING_BOARD] ? 1 : 2,
+        moonBoardCheck: this._checkInfo.current[TOOL_TYPE.MOON_BOARD] ? 1 : 2,
+        kilterBoardCheck: this._checkInfo.current[TOOL_TYPE.KILTER_BOARD] ? 1 : 2,
+        detailCenterHealthTool: this._extraInfo.current[TOOL_EXTRA_INFO.HEALTH],
+      },
     };
+    console.log('보낸 데이터', reqData);
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+    console.log('결과', { resCode, resBody, resErr });
+    if (resCode == this.RES_CODE.FAIL) {
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '도구 정보를 수정하는데 실패했습니다',
+        },
+        data: {},
+      };
+    } else {
+      this._checkInfo.initial = { ...this._checkInfo.current };
+      this._extraInfo.initial = { ...this._extraInfo.current };
+      return {
+        isSuccess: true,
+        error: {},
+        data: {},
+      };
+    }
   };
 
   // 메소드

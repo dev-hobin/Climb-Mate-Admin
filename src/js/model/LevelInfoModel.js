@@ -75,31 +75,77 @@ const LevelInfoModel = class extends Model {
   /* 인터페이스 */
   initInfo = async accessToken => {
     console.log('볼더링 난이도 정보 더미 데이터', borderingDummy);
-    const reqData1 = {
+    const borderingReqData = {
       reqCode: 3012,
       reqBody: {
         accessKey: accessToken,
       },
     };
-    const { resBody: bordering } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData1);
+    const {
+      resCode: borderingResCode,
+      resBody: borderingLevelInfo,
+      resErr: borderingResErr,
+    } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, borderingReqData);
+    console.log('볼더링 난이도 정보', borderingLevelInfo);
 
-    console.log('볼더링 난이도 정보', bordering);
+    let borderingResResult;
+    if (borderingResCode == this.RES_CODE.FAIL) {
+      borderingResResult = {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '볼더링 난이도 정보를 가져오는데 실패했습니다',
+        },
+        data: {},
+      };
+    } else {
+      borderingResResult = {
+        isSuccess: true,
+        error: {},
+        data: {
+          levelInfo: borderingLevelInfo,
+        },
+      };
+      borderingLevelInfo.forEach(info => this._info[LEVEL_INFO_TYPE.BORDERING].push({ ...info }));
+    }
 
-    console.log('지구력 난이도 정보 더미 데이터', enduranceDummy);
-    const reqData2 = {
+    const enduranceReqData = {
       reqCode: 3013,
       reqBody: {
         accessKey: accessToken,
       },
     };
-    const { resBody: endurance } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData2);
+    const {
+      resCode: enduranceResCode,
+      resBody: enduranceLevelInfo,
+      resErr: enduranceResErr,
+    } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, enduranceReqData);
+    console.log('지구력 난이도 정보', enduranceLevelInfo);
 
-    console.log('지구력 난이도 정보', endurance);
+    let enduranceResResult;
+    if (enduranceResCode == this.RES_CODE.FAIL) {
+      enduranceResResult = {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '지구력 난이도 정보를 가져오는데 실패했습니다',
+        },
+        data: {},
+      };
+    } else {
+      enduranceResResult = {
+        isSuccess: true,
+        error: {},
+        data: {
+          levelInfo: enduranceLevelInfo,
+        },
+      };
+      enduranceLevelInfo.forEach(info => this._info[LEVEL_INFO_TYPE.ENDURANCE].push({ ...info }));
+    }
 
-    borderingDummy.forEach(info => this._info[LEVEL_INFO_TYPE.BORDERING].push({ ...info }));
-    enduranceDummy.forEach(info => this._info[LEVEL_INFO_TYPE.ENDURANCE].push({ ...info }));
-
-    return [this._info[LEVEL_INFO_TYPE.BORDERING], this._info[LEVEL_INFO_TYPE.ENDURANCE]];
+    return [borderingResResult, enduranceResResult];
   };
 
   addItem = async (centerId, accessKey, type, color, colorName, levelName) => {
