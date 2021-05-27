@@ -39,6 +39,7 @@ const BaseSocialInfoModel = class extends Model {
       resErr,
     } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
+    console.log([centerUrl, centerUrl2]);
     if (resCode == this.RES_CODE.FAIL)
       return {
         isSuccess: false,
@@ -235,7 +236,7 @@ const BaseSocialInfoModel = class extends Model {
         if (url.trim().includes('cafe.naver.com')) return true;
         else return false;
       default:
-        return false;
+        return true;
     }
   };
 };
