@@ -253,8 +253,9 @@ const PriceController = class {
   };
   // 추가 상품 정보 삭제
   _deleteExtraItem = async ({ goodsName }) => {
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('상품을 삭제중입니다');
-    const { isSuccess, error, data } = await this._extraPriceInfoModel.deleteItem('centerId', 'accessKey', goodsName);
+    const { isSuccess, error, data } = await this._extraPriceInfoModel.deleteItem(accessToken, centerId, goodsName);
     this._modalView.removeModal();
     if (!isSuccess) {
       const { sort, title, description } = error;

@@ -90,27 +90,52 @@ const ExtraPriceInfoModel = class extends Model {
       },
     };
   };
-  deleteItem = async (centerId, accessKey, goodsName) => {
+  deleteItem = async (accessToken, centerId, goodsName) => {
     if (!this._hasNamedItem(goodsName))
       return {
         isSuccess: false,
         error: { sort: 'caution', title: '상품 삭제 실패', description: '해당 상품이 존재하지 않습니다' },
         data: {},
       };
-    this._info = this._info.filter(info => info.goodsName !== goodsName);
-    console.log(this._info);
-    console.log(tag, '아이템 삭제중...');
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log(tag, '수정된 정보', this._info);
-    console.log(tag, '아이템 삭제 성공');
-    console.log(tag, '성공 결과 반환');
-    return {
-      isSuccess: true,
-      error: {},
-      data: {
+    const deletedItem = this._info.filter(info => info.goodsName === goodsName)[0];
+    const { id, goodsPrice } = deletedItem;
+    const price = this._removeCommas(goodsPrice);
+
+    const reqData = {
+      reqCode: 1202,
+      reqBody: {
+        accessToken,
+        id,
+        goodsCenterId: centerId,
         goodsName,
+        goodsPrice: price,
       },
     };
+
+    console.log(reqData);
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+    console.log({ resCode, resBody, resErr });
+    if (resCode == this.RES_CODE.FAIL) {
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '상품 정보 삭제에 실패했습니다',
+        },
+        data: {},
+      };
+    } else {
+      this._info = this._info.filter(info => info.goodsName !== goodsName);
+
+      return {
+        isSuccess: true,
+        error: {},
+        data: {
+          goodsName,
+        },
+      };
+    }
   };
   editItem = async (accessKey, initialGoodsName, edittedGoodsName, edittedPrice) => {
     if (!this._hasNamedItem(initialGoodsName))
@@ -156,6 +181,7 @@ const ExtraPriceInfoModel = class extends Model {
     return info;
   };
   _addCommas = price => price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  _removeCommas = price => price.replace(/,/gi, '');
 
   _hasSameName = goodsName => {
     if (this._info.filter(info => info.goodsName === goodsName).length > 0) return true;
