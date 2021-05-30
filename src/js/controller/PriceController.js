@@ -267,9 +267,10 @@ const PriceController = class {
   };
   // 추가 상품 정보 수정
   _editItem = async ({ initialGoodsName, edittedGoodsName, edittedPrice }) => {
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('상품을 수정중입니다');
     const { isSuccess, error, data } = await this._extraPriceInfoModel.editItem(
-      'accessKey',
+      accessToken,
       initialGoodsName,
       edittedGoodsName,
       edittedPrice

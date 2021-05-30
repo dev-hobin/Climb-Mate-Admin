@@ -137,7 +137,7 @@ const ExtraPriceInfoModel = class extends Model {
       };
     }
   };
-  editItem = async (accessKey, initialGoodsName, edittedGoodsName, edittedPrice) => {
+  editItem = async (accessToken, initialGoodsName, edittedGoodsName, edittedPrice) => {
     if (!this._hasNamedItem(initialGoodsName))
       return {
         isSuccess: false,
@@ -145,26 +145,50 @@ const ExtraPriceInfoModel = class extends Model {
         data: {},
       };
 
-    this._info = this._info.map(info => {
-      if (info.goodsName !== initialGoodsName) return info;
-      info.goodsName = edittedGoodsName;
-      info.goodsPrice = this._addCommas(edittedPrice);
-      return info;
-    });
-    console.log(tag, '아이템 수정중...');
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log(tag, '수정된 정보', this._info);
-    console.log(tag, '아이템 수정 성공');
-    console.log(tag, '성공 결과 반환');
-    return {
-      isSuccess: true,
-      error: {},
-      data: {
-        initialGoodsName,
-        edittedGoodsName,
-        edittedPrice: this._addCommas(edittedPrice),
+    const edittedItem = this._info.filter(info => info.goodsName === initialGoodsName)[0];
+    const { id } = edittedItem;
+
+    const reqData = {
+      reqCode: 1203,
+      reqBody: {
+        accessToken,
+        id,
+        goodsName: edittedGoodsName,
+        goodsPrice: edittedPrice,
       },
     };
+    console.log(reqData);
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+    console.log({ resCode, resBody, resErr });
+
+    if (resCode == this.RES_CODE.FAIL) {
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '상품 정보 수정에 실패했습니다',
+        },
+        data: {},
+      };
+    } else {
+      this._info = this._info.map(info => {
+        if (info.goodsName !== initialGoodsName) return info;
+        info.goodsName = edittedGoodsName;
+        info.goodsPrice = this._addCommas(edittedPrice);
+        return info;
+      });
+
+      return {
+        isSuccess: true,
+        error: {},
+        data: {
+          initialGoodsName,
+          edittedGoodsName,
+          edittedPrice: this._addCommas(edittedPrice),
+        },
+      };
+    }
   };
 
   /* 메소드 */
