@@ -17,6 +17,7 @@ const BaseSettingInfoView = class extends View {
 
     this._borderingRatioInput = element.querySelector(`input[data-type="bordering"]`);
     this._enduranceRatioInput = element.querySelector(`input[data-type="endurance"]`);
+    this._settingRatioInput = element.querySelector(`input[data-setting-ratio-description]`);
 
     this._settingCycleInput = element.querySelector(`input[data-setting-cycle]`);
 
@@ -38,6 +39,7 @@ const BaseSettingInfoView = class extends View {
   initItems = infoObj => {
     this._borderingRatioInput.value = infoObj[BASE_SETTING_INFO_TYPE.SETTING_RATIO][0];
     this._enduranceRatioInput.value = infoObj[BASE_SETTING_INFO_TYPE.SETTING_RATIO][1];
+    this._settingRatioInput.value = infoObj[BASE_SETTING_INFO_TYPE.SETTING_RATIO_DESCRIPTION];
 
     this._settingCycleInput.value = infoObj[BASE_SETTING_INFO_TYPE.SETTING_CYCLE];
     this._nextSettingDateInput.value = infoObj[BASE_SETTING_INFO_TYPE.NEXT_SETTING_DATE];
@@ -69,6 +71,9 @@ const BaseSettingInfoView = class extends View {
       this._borderingRatioInput.value = anotherRatio;
 
       this.trigger('@changeSettingRatio', { bordering: anotherRatio, endurance: thisRatio });
+    });
+    this._settingRatioInput.addEventListener('input', event => {
+      this.trigger('@changeSettingRatioDescription', { value: event.target.value });
     });
 
     this._settingCycleInput.addEventListener('input', event => {

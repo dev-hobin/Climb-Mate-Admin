@@ -118,7 +118,6 @@ const BaseCenterInfoModel = class extends Model {
     };
     console.log('보낸 데이터', reqData);
     const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
-    console.log('결과', { resCode, resBody, resErr });
     if (resCode == this.RES_CODE.FAIL) {
       return {
         isSuccess: false,

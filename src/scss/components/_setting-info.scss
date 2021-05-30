@@ -42,6 +42,9 @@
   }
 
   &[data-type='setting-ratio'] {
+    .setting-info-item__column-container {
+      width: 100%;
+    }
     .setting-info-item__setting-type-name {
       margin-right: 0.5rem;
     }
@@ -55,6 +58,18 @@
       padding: 0.2rem 0.5rem;
       font-size: 1rem;
       font-weight: 700;
+
+      &::placeholder {
+        font-weight: 400;
+      }
+    }
+    .setting-info-item__ratio-description-input {
+      width: 100%;
+      border: 2px solid $color-light-gray;
+      padding: 0.2rem 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 0.5rem;
 
       &::placeholder {
         font-weight: 400;

@@ -149,12 +149,20 @@
             <ul class="setting-info__list">
               <li class="setting-info-item" data-type="setting-ratio">
                 <h3 class="setting-info-item__title">세팅 비율</h3>
-                <div class="flex-start-container">
-                  <div class="setting-info-item__setting-type-name">볼더링</div>
-                  <input class="setting-info-item__ratio-input" type="text" placeholder="6" data-type="bordering" />
-                  <div class="setting-info-item__colon">:</div>
-                  <div class="setting-info-item__setting-type-name">지구력</div>
-                  <input class="setting-info-item__ratio-input" type="text" placeholder="4" data-type="endurance" />
+                <div class="flex-column-container setting-info-item__column-container">
+                  <div class="flex-start-container">
+                    <div class="setting-info-item__setting-type-name">볼더링</div>
+                    <input class="setting-info-item__ratio-input" type="text" placeholder="6" data-type="bordering" />
+                    <div class="setting-info-item__colon">:</div>
+                    <div class="setting-info-item__setting-type-name">지구력</div>
+                    <input class="setting-info-item__ratio-input" type="text" placeholder="4" data-type="endurance" />
+                  </div>
+                  <input
+                    class="setting-info-item__ratio-description-input"
+                    type="text"
+                    placeholder="세팅 비율에 대해 설명해주세요"
+                    data-setting-ratio-description
+                  />
                 </div>
               </li>
               <li class="setting-info-item" data-type="setting-cycle">

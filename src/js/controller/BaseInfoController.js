@@ -66,6 +66,7 @@ const BaseInfoController = class {
     this._baseSettingInfoView //
       .setup(document.querySelector('[data-setting-info]'))
       .on('@changeSettingRatio', event => this._changeSettingRatio(event.detail))
+      .on('@changeSettingRatioDescription', event => this._changeSettingRatioDescription(event.detail))
       .on('@changeSettingCycle', event => this._changeSettingCycle(event.detail))
       .on('@chageNextSettingDate', event => this._chageNextSettingDate(event.detail))
       .on('@chageRecentSettingDate', event => this._chageRecentSettingDate(event.detail))
@@ -215,18 +216,24 @@ const BaseInfoController = class {
   // 센터 세팅 정보 변경
   _changeSettingRatio = ({ bordering, endurance }) =>
     this._baseSettingInfoModel.changeSettingRatio(bordering, endurance);
+  _changeSettingRatioDescription = ({ value }) => this._baseSettingInfoModel.changeSettingRatioDescription(value);
   _changeSettingCycle = ({ value }) => this._baseSettingInfoModel.changeSettingCycle(value);
   _chageNextSettingDate = ({ value }) => this._baseSettingInfoModel.chageNextSettingDate(value);
   _chageRecentSettingDate = ({ value }) => this._baseSettingInfoModel.chageRecentSettingDate(value);
 
   _updateSettingInfo = async () => {
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('세팅 정보 수정중입니다');
-
-    const { isSuccess, error } = await this._baseSettingInfoModel.update();
-    console.log(tag, '세팅 정보 업데이트 결과', { isSuccess, error });
+    const { isSuccess, error, data } = await this._baseSettingInfoModel.update(accessToken, centerId);
     this._modalView.removeModal();
+
     if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-    this._notificationView.addNotification('success', '세팅 정보 수정', '성공적으로 세팅 정보를 수정했습니다', true);
+    return this._notificationView.addNotification(
+      'success',
+      '세팅 정보 수정',
+      '성공적으로 세팅 정보를 수정했습니다',
+      true
+    );
   };
 
   // 운영시간 정보 변경
