@@ -44,24 +44,43 @@ const ExtraPriceInfoModel = class extends Model {
       },
     };
   };
-  addItem = async (centerId, accessKey, goodsName, goodsPrice) => {
+  addItem = async (accessToken, centerId, goodsName, goodsPrice) => {
     if (this._hasSameName(goodsName))
       return {
         isSuccess: false,
         error: { sort: 'caution', title: '상품 추가 실패', description: '같은 이름의 상품이 있습니다' },
         data: {},
       };
+
+    const reqData = {
+      reqCode: 1201,
+      reqBody: {
+        accessKey: accessToken,
+        goodsCenterId: centerId,
+        goodsPrice,
+        goodsName,
+      },
+    };
+
+    const {
+      resCode,
+      resBody: { id },
+      resErr,
+    } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+    if (resCode == this.RES_CODE.FAIL)
+      return {
+        isSuccess: false,
+        error: { sort: 'error', title: '서버 오류', description: resErr },
+        data: {},
+      };
+
     this._info.push({
-      id: '서버에서 받아온 id',
+      id: id,
       goodsName,
-      goodsType: '서버에서 받아온 goodsType',
       goodsPrice: this._addCommas(goodsPrice),
     });
-    console.log(tag, '아이템 추가중...');
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log(tag, '수정된 정보 { id, goodsName, goodsPrice }', this._info);
-    console.log(tag, '가격 수정 완료');
-    console.log(tag, '성공 결과 반환');
+
     return {
       isSuccess: true,
       error: {},
@@ -127,11 +146,10 @@ const ExtraPriceInfoModel = class extends Model {
   _makeInfo = goodsArray => {
     const info = [];
     goodsArray.forEach(goodsInfo => {
-      const { id, goodsName, goodsType, goodsPrice } = goodsInfo;
+      const { id, goodsName, goodsPrice } = goodsInfo;
       info.push({
         id,
         goodsName,
-        goodsType,
         goodsPrice: this._addCommas(goodsPrice),
       });
     });
