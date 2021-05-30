@@ -211,12 +211,19 @@ const PriceController = class {
 
   // 필수 상품 정보 수정
   _editNecessaryPrice = async ({ goodsType, priceType, price }) => {
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
+
     this._modalView.showLoadingModal('상품 정보를 수정중입니다');
-    const { isSuccess, error, data } = await this._necessaryPriceInfoModel.editPrice(goodsType, price);
+    const { isSuccess, error, data } = await this._necessaryPriceInfoModel.editPrice(
+      accessToken,
+      centerId,
+      goodsType,
+      price
+    );
     this._modalView.removeModal();
     if (!isSuccess) {
       const { sort, title, description } = error;
-      return this._notificationView.addNotification(sort, title, description);
+      return this._notificationView.addNotification(sort, title, description, true);
     }
     const { price: priceString } = data;
     this._necessaryPriceInfoView.setPrice(priceType, priceString);

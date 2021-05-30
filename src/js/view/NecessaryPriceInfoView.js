@@ -1,5 +1,5 @@
 import View from '../core/View';
-import { NECESSARY_PRICE_TYPE, NECESSARY_GOODS_TYPE } from '../model/NecessaryPriceInfoModel';
+import { NECESSARY_GOODS_TYPE } from '../model/NecessaryPriceInfoModel';
 const tag = '[NecessaryPriceInfoView]';
 
 const NecessaryPriceInfoView = class extends View {
