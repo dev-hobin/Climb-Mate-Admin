@@ -164,15 +164,24 @@ const LevelController = class {
   };
   // 난이도 이미지 변경 확인
   _confirmLevelImage = async ({ type }) => {
-    // 로딩 모달 띄우기
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
+    const centerName = await this._userModel.getName();
+
     this._modalView.showLoadingModal('사진을 변경중입니다');
-    const isSuccess = await this._singleImageUploadModel.uploadImage(type);
+    const { isSuccess, error, data } = await this._singleImageUploadModel.editImage(
+      type,
+      accessToken,
+      centerId,
+      centerName
+    );
     if (!isSuccess) {
-      this._notificationView.addNotification('error', '사진 변경 실패', '서버 오류로 인해 사진 변경에 실패했습니다');
       this._modalView.removeModal();
+      return this._notificationView.addNotification(error.sort, error.title, error.description, true);
     } else {
+      const { imgUrl } = data;
+      this._levelImageInfoView.setImage(imgUrl);
       this._modalView.removeModal();
-      this._notificationView.addNotification('error', '난이도 사진 수정 성공', '성공적으로 난이도 사진을 수정헀습니다');
+      this._notificationView.addNotification('success', '사진 수정 완료', '성공적으로 사진을 수정했습니다', true);
     }
   };
   // 난이도 이미지 변경 취소

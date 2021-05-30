@@ -1,12 +1,20 @@
 const tag = '[Model]';
 
 const Model = class {
+  DATA_TYPE = {
+    FORM_DATA: 'form-data',
+    JSON: 'json',
+  };
   HOST = {
     SERVER: 'https://climbmate.co.kr',
     TEST_SERVER: 'http://13.209.4.105',
   };
   PATHS = {
     MAIN: '/AdminIndex.php',
+    SINGLE_IMAGE: {
+      PRICE: '/goodsPhotoUpload',
+      LEVEL: '/settingLevelUpload',
+    },
   };
   RES_CODE = {
     SUCCESS: 200,
@@ -18,14 +26,33 @@ const Model = class {
   }
 
   // 서버와 통신하는 메소드 (공통)
-  _sendHttpRequest = async (method, host, path, data) => {
+  _sendHttpRequest = async (method, host, path, data = '', dataType = '') => {
     let response;
     const url = host + path;
+
+    let header;
+    let body;
+    switch (dataType) {
+      case this.DATA_TYPE.FORM_DATA:
+        header = { 'Content-Type': 'multipart/form-data' };
+        body = data;
+        break;
+      case this.DATA_TYPE.JSON:
+        header = { 'Content-Type': 'application/json' };
+        body = JSON.stringify(data);
+        break;
+      default:
+        header = {};
+        body = JSON.stringify(data);
+        break;
+    }
+    console.log('보낸 헤더', header);
+    console.log('보낸 바디', body);
     try {
       response = await fetch(url, {
         method,
-        header: data ? { 'Content-Type': 'application/json' } : {},
-        body: JSON.stringify(data),
+        header,
+        body,
       });
 
       // 서버에서 리턴받은 resStatus 저장
@@ -99,8 +126,8 @@ const Model = class {
   };
 
   // POST
-  postRequest = async (host, path, data) => {
-    return await this._sendHttpRequest('POST', host, path, data);
+  postRequest = async (host, path, data, dataType = this.DATA_TYPE.JSON) => {
+    return await this._sendHttpRequest('POST', host, path, data, dataType);
   };
 
   // PUT

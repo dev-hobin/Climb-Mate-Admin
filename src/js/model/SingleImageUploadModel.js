@@ -155,14 +155,75 @@ const SingleImageUploadModel = class extends Model {
     return [validatedFiles, errorList];
   };
 
-  uploadImage = async type => {
-    if (!this._checkType(type)) throw '사용할 수 없는 타입입니다';
+  editImage = async (type, accessToken, centerId, centerName) => {
+    const { isSuccess, error, data } = await this._uploadImage(type, centerName, centerId);
+    if (!isSuccess) return { isSuccess, error, data };
 
-    console.log(tag, this._imageData[type].current);
-    console.log(tag, type, '이미지 업로드 중');
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log(tag, type, '업로드 완료 후 결과 반환');
-    return true;
+    const { imgUrl } = data;
+
+    if (type === SINGLE_IMAGE_UPLOADER_TYPE.PRICE) {
+      const reqData = {
+        reqCode: 1204,
+        reqBody: {
+          accessKey: accessToken,
+          id: centerId,
+          detailCenterGoodsImageURL: imgUrl,
+        },
+      };
+      console.log('보낸 데이터', reqData);
+      const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+      if (resCode == this.RES_CODE.FAIL) {
+        return {
+          isSuccess: false,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: resErr,
+          },
+          data: {},
+        };
+      } else {
+        return {
+          isSuccess: true,
+          error: {},
+          data: {
+            imgUrl: `${this.HOST.TEST_SERVER}/${imgUrl}`,
+          },
+        };
+      }
+    } else if (type === SINGLE_IMAGE_UPLOADER_TYPE.LEVEL) {
+      const reqData = {
+        reqCode: 1400,
+        reqBody: {
+          accessKey: accessToken,
+          id: centerId,
+          detailCenterLevelImageURL: imgUrl,
+        },
+      };
+      console.log('보낸 데이터', reqData);
+      const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+      if (resCode == this.RES_CODE.FAIL) {
+        return {
+          isSuccess: false,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: resErr,
+          },
+          data: {},
+        };
+      } else {
+        return {
+          isSuccess: true,
+          error: {},
+          data: {
+            imgUrl: `${this.HOST.TEST_SERVER}/${imgUrl}`,
+          },
+        };
+      }
+    } else throw '사용 가능한 타입이 아닙니다';
   };
   deleteImage = async type => {
     if (!this._checkType(type)) throw '사용할 수 없는 타입입니다';
@@ -206,6 +267,85 @@ const SingleImageUploadModel = class extends Model {
       default:
         return false;
     }
+  };
+
+  _uploadImage = async (type, centerName, centerId) => {
+    if (!this._checkType(type)) throw '사용할 수 없는 타입입니다';
+
+    const splitted = this.getCurrentImage(type).name.split('.');
+    const imgExt = splitted[splitted.length - 1];
+
+    const imgFormData = new FormData();
+    if (type === SINGLE_IMAGE_UPLOADER_TYPE.PRICE) {
+      imgFormData.append('goodsPhoto[]', this.getCurrentImage(type), `${centerName}.${centerId}.${imgExt}`);
+
+      const { resCode, resBody, resErr } = await this.postRequest(
+        this.HOST.TEST_SERVER,
+        this.PATHS.SINGLE_IMAGE.PRICE,
+        imgFormData,
+        this.DATA_TYPE.FORM_DATA
+      );
+
+      console.log({ resCode, resBody, resErr });
+
+      if (resCode == this.RES_CODE.FAIL) {
+        const { success, error: errorDescription } = resBody;
+        return {
+          isSuccess: success,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: resErr || errorDescription,
+          },
+          data: {},
+        };
+      } else {
+        const {
+          imageUrlArray: [{ originalUrl, success }],
+        } = resBody;
+        return {
+          isSuccess: success,
+          error: {},
+          data: {
+            imgUrl: originalUrl,
+          },
+        };
+      }
+    } else if (type === SINGLE_IMAGE_UPLOADER_TYPE.LEVEL) {
+      imgFormData.append('settingLevel[]', this.getCurrentImage(type), `${centerName}.${centerId}.${imgExt}`);
+      const { resCode, resBody, resErr } = await this.postRequest(
+        this.HOST.TEST_SERVER,
+        this.PATHS.SINGLE_IMAGE.LEVEL,
+        imgFormData,
+        this.DATA_TYPE.FORM_DATA
+      );
+
+      console.log({ resCode, resBody, resErr });
+
+      if (resCode == this.RES_CODE.FAIL) {
+        const { success, error: errorDescription } = resBody;
+        return {
+          isSuccess: success,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: resErr || errorDescription,
+          },
+          data: {},
+        };
+      } else {
+        const {
+          imageUrlArray: [{ originalUrl, success }],
+        } = resBody;
+        return {
+          isSuccess: success,
+          error: {},
+          data: {
+            imgUrl: originalUrl,
+          },
+        };
+      }
+    } else throw '사용할 수 없는 타입입니다';
   };
 };
 
