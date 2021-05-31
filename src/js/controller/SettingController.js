@@ -49,14 +49,14 @@ const SettingController = class {
       .on('@addImages', event => this._addImages(event.detail))
       .on('@changeImageLocation', event => this._changeImageLocation(event.detail))
       .on('@showAlert', event => this._showAlertModal(event.detail))
-      .on('@uploadImages', event => this._uploadImages(event.detail));
+      .on('@editImages', event => this._editImages(event.detail));
 
     this._enduranceImageUploadView //
       .setup(document.querySelector(`[data-uploader="endurance"]`))
       .on('@addImages', event => this._addImages(event.detail))
       // .on('@changeImageLocation', event => this._changeImageLocation(event.detail))
       .on('@showAlert', event => this._showAlertModal(event.detail))
-      .on('@uploadImages', event => this._uploadImages(event.detail));
+      .on('@editImages', event => this._editImages(event.detail));
 
     this._lifeCycle();
   };
@@ -160,28 +160,20 @@ const SettingController = class {
   // _changeImageLocation = ({ type, beforeIndex, afterIndex }) => {
   //   this._imageUploadModel.changeImageLocation(type, beforeIndex, afterIndex);
   // };
-  // 이미지 업로드
-  _uploadImages = async ({ type }) => {
-    console.log(type);
-    if (!this._imageUploadModel.isImagesChanged(type))
-      return this._notificationView.addNotification('caution', '변경사항 없음', '수정할 사진이 없습니다', true);
-    // 로딩 모달 띄우기
-    this._modalView.showLoadingModal('사진을 수정중입니다');
 
-    // 사진 업로드 결과 받기
-    const isSuccess = await this._imageUploadModel.uploadImages(type);
-    if (isSuccess) {
-      this._modalView.removeModal();
-      this._notificationView.addNotification('success', '사진 수정에 성공', '성공적으로 사진을 수정했습니다', true);
-      console.log(tag, type, `이미지 업로드 결과 : ${isSuccess}`);
-      console.log(`${tag} 사진 수정 완료 후 데이터 수정`);
+  // 이미지 수정
+  _editImages = async ({ type }) => {
+    if (!this._imageUploadModel.isImagesChanged(type))
+      return this._notificationView.addNotification('caution', '변경사항 없음', '수정사항이 없습니다', true);
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
+    this._modalView.showLoadingModal('사진을 수정중입니다');
+    const { isSuccess, error, data } = await this._imageUploadModel.editImages(accessToken, centerId, type);
+    console.log({ isSuccess, error, data });
+    this._modalView.removeModal();
+    if (!isSuccess) {
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
     } else {
-      console.log(tag, type, `이미지 업로드 결과 : ${isSuccess}`);
-      this._notificationView.addNotification(
-        'error',
-        '이미지 업로드 실패',
-        '서버 오류로 인해 이미지 업로드에 실패했습니다'
-      );
+      this._notificationView.addNotification('success', '사진 수정 완료', '성공적으로 사진을 수정했습니다', true);
     }
   };
 };

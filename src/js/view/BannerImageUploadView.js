@@ -19,7 +19,7 @@ const BannerImageUploadView = class extends View {
     this._addBtn = element.querySelector('[data-add-btn]');
     this._imageInput = element.querySelector('[data-image-input]');
     this._imageList = element.querySelector('[data-image-list]');
-    this._uploadBtn = element.querySelector('[data-upload-btn]');
+    this._editBtn = element.querySelector('[data-edit-btn]');
 
     this._bindEvents();
     return this;
@@ -36,6 +36,8 @@ const BannerImageUploadView = class extends View {
         this._addItemEvent(item);
         return item;
       });
+    // 이미지 리스트 비우기
+    this._imageList.innerHTML = '';
     // 이미지 리스트에 아이템들 추가
     this._imageList.append(...itemsArray);
     // 이미지 개수 설정
@@ -98,8 +100,8 @@ const BannerImageUploadView = class extends View {
       const fileList = [...event.target.files];
       this.trigger('@addImages', { type: 'banner', fileList });
     });
-    // 업로드 트리거 이벤트 달기
-    this._uploadBtn.addEventListener('click', () => this.trigger('@uploadImages', { type: 'banner' }));
+    // 수정 트리거 이벤트 달기
+    this._editBtn.addEventListener('click', () => this.trigger('@editImages', { type: 'banner' }));
   };
 
   // 리스트 아이템 만들기

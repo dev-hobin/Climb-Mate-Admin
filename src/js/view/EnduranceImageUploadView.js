@@ -19,7 +19,7 @@ const EnduranceImageUploadView = class extends View {
     this._addBtn = element.querySelector('[data-add-btn]');
     this._imageInput = element.querySelector('[data-image-input]');
     this._imageList = element.querySelector('[data-image-list]');
-    this._uploadBtn = element.querySelector('[data-upload-btn]');
+    this._editBtn = element.querySelector('[data-edit-btn]');
 
     this._bindEvents();
 
@@ -100,7 +100,7 @@ const EnduranceImageUploadView = class extends View {
       this.trigger('@addImages', { type: 'endurance', fileList });
     });
     // 업로드 트리거 이벤트 달기
-    this._uploadBtn.addEventListener('click', () => this.trigger('@uploadImages', { type: 'endurance' }));
+    this._editBtn.addEventListener('click', () => this.trigger('@editImages', { type: 'endurance' }));
   };
 
   // 리스트 아이템 만들기

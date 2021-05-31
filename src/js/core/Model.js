@@ -15,6 +15,10 @@ const Model = class {
       PRICE: '/goodsPhotoUpload',
       LEVEL: '/settingLevelUpload',
     },
+    MULTI_IMAGES: {
+      BANNER: '/homeBannerUpload',
+      SETTING: '/settingImageUpload',
+    },
   };
   RES_CODE = {
     SUCCESS: 200,

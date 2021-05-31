@@ -104,7 +104,7 @@ const ExtraPriceInfoModel = class extends Model {
     const reqData = {
       reqCode: 1202,
       reqBody: {
-        accessToken,
+        accessKey: accessToken,
         id,
         goodsCenterId: centerId,
         goodsName,
@@ -151,7 +151,7 @@ const ExtraPriceInfoModel = class extends Model {
     const reqData = {
       reqCode: 1203,
       reqBody: {
-        accessToken,
+        accessKey: accessToken,
         id,
         goodsName: edittedGoodsName,
         goodsPrice: edittedPrice,

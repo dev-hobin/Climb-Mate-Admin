@@ -34,6 +34,11 @@ const ImageUploadModel = class extends Model {
   initImages = async (accessToken, type) => {
     if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
 
+    // 초기화
+    this._imageData[type].initial = [];
+    this._imageData[type].current = [];
+    this._imageData[type].deleted = [];
+
     let imagesInfo;
     if (type === IMAGE_UPLOADER_TYPE.BANNER) {
       const reqData = {
@@ -59,7 +64,7 @@ const ImageUploadModel = class extends Model {
           data: {},
         };
 
-      imagesInfo = bannerInfo;
+      imagesInfo = bannerInfo.sort(this._byImageOrder);
       console.log('배너 사진 정보', bannerInfo);
     } else if (type === IMAGE_UPLOADER_TYPE.BORDERING) {
       const reqData = {
@@ -85,7 +90,7 @@ const ImageUploadModel = class extends Model {
           data: {},
         };
 
-      imagesInfo = borderingInfo;
+      imagesInfo = borderingInfo.sort(this._byImageOrder);
       console.log('볼더링 사진 정보', borderingInfo);
     } else if (type === IMAGE_UPLOADER_TYPE.ENDURANCE) {
       const reqData = {
@@ -111,7 +116,7 @@ const ImageUploadModel = class extends Model {
           data: {},
         };
 
-      imagesInfo = enduranceInfo;
+      imagesInfo = enduranceInfo.sort(this._byImageOrder);
       console.log('지구력 사진 정보', enduranceInfo);
     } else throw '사용할 수 없는 이미지 업로더 타입입니다';
 
@@ -119,6 +124,7 @@ const ImageUploadModel = class extends Model {
       this._imageData[type].initial.push({ ...info });
       this._imageData[type].current.push({ ...info });
     });
+
     return {
       isSuccess: true,
       error: {},
@@ -178,8 +184,8 @@ const ImageUploadModel = class extends Model {
     for (const [index, { id, imageOrder, imageOriginalUrl, imageThumbUrl }] of this._imageData[
       type
     ].current.entries()) {
-      if (imageOrder !== String(index + 1) || this._imageData[type].initial[index]['imageOrder'] !== String(index + 1))
-        throw '사진의 순서 설정에 오류가 발생했습니다';
+      // 업로드 되지못한 파일 정보가 있을 경우
+      if (!id) return true;
       if (this._imageData[type].initial[index]['id'] !== id) return true;
     }
     return false;
@@ -224,9 +230,50 @@ const ImageUploadModel = class extends Model {
 
     return [validatedFiles, errorList];
   };
-  uploadImages = async type => {
+
+  editImages = async (accessToken, centerId, type) => {
     if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
-    const [files, urls, willDeleted] = this._addExtraInfo(type);
+    const [files, urls, willDeleted] = this._getChangeInfo(type);
+
+    const willAddedInfoArray = [];
+    if (files.length !== 0) {
+      const { isSuccess, error, data } = await this._requestUploadToServer(files, type, centerId);
+      if (!isSuccess) {
+        return { isSuccess, error, data };
+      } else {
+        const { uploadResultArray, uploadResultOrderArray } = data;
+        uploadResultArray.forEach((result, index) => {
+          const { success, originalUrl, thumbUrl } = result;
+          if (success) {
+            willAddedInfoArray.push({
+              imageCenterId: centerId,
+              imageOriginalUrl: originalUrl,
+              imageThumbUrl: thumbUrl,
+              imageOrder: uploadResultOrderArray[index],
+            });
+          } else {
+            return {
+              isSuccess: false,
+              error: {
+                sort: 'caution',
+                title: '사진 수정 실패',
+                description: '사진을 새로 추가하는 중 오류가 발생했습니다',
+              },
+              data: {},
+            };
+          }
+        });
+      }
+    }
+    const orderUpdateInfoArray = urls.map(info => {
+      const { id, imageOrder } = info;
+      return { id, imageOrder };
+    });
+
+    const willDeletedInfoArray = willDeleted.map(info => {
+      const { id, imageOrder, imageOriginalUrl, imageThumbUrl } = info;
+      return { imageCenterId: centerId, id, imageOriginalUrl, imageThumbUrl };
+    });
 
     console.log(tag, type, '업로드할 파일만 뽑아낸 정보');
     console.log(files);
@@ -235,11 +282,16 @@ const ImageUploadModel = class extends Model {
     console.log(tag, type, '삭제할 이미지');
     console.log(willDeleted);
 
-    console.log(tag, type, '이미지 업로드 중');
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log(tag, type, '업로드 완료 후 데이터 재설정');
-    console.log(tag, type, '성공 결과 반환');
-    return true;
+    const { isSuccess, error, data } = await this._requestEditToServer(
+      accessToken,
+      centerId,
+      type,
+      willAddedInfoArray,
+      orderUpdateInfoArray,
+      willDeletedInfoArray
+    );
+
+    return { isSuccess, error, data };
   };
 
   /* 메소드 */
@@ -248,6 +300,7 @@ const ImageUploadModel = class extends Model {
       const order = index + 1;
       info['imageOrder'] = String(order);
     });
+    this._imageData[type].current.sort(this._byImageOrder);
   };
   _checkImageCount = count => {
     if (count >= 30) return false;
@@ -280,7 +333,9 @@ const ImageUploadModel = class extends Model {
     }
   };
 
-  _addExtraInfo = type => {
+  _byImageOrder = (a, b) => Number(a['imageOrder']) - Number(b['imageOrder']);
+
+  _getChangeInfo = type => {
     const imageList = this._imageData[type].current.map((info, index) => {
       if (info.constructor.name === 'Object') {
         const { id, imageOrder, imageOriginalUrl, imageThumbUrl } = info;
@@ -295,6 +350,109 @@ const ImageUploadModel = class extends Model {
     const willDeleted = this._imageData[type].deleted.filter(infoObj => infoObj.constructor.name === 'Object');
 
     return [files, urls, willDeleted];
+  };
+  _requestEditToServer = async (accessToken, centerId, type, addedInfoArray, orderInfoArray, deletedInfoArray) => {
+    let reqData = null;
+    switch (true) {
+      case type === IMAGE_UPLOADER_TYPE.BANNER:
+        reqData = {
+          reqCode: 1300,
+          reqBody: {
+            accessKey: accessToken,
+            imageCenterId: centerId,
+            addHomeBannerImageArray: addedInfoArray,
+            orderUpdateHomeBannerImageArray: orderInfoArray,
+            deleteHomeBannerImageArray: deletedInfoArray,
+          },
+        };
+        break;
+      default:
+        throw '사용 불가능한 타입입니다';
+    }
+
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+    console.log(reqData);
+    console.log({ resCode, resBody, resErr });
+
+    if (resCode == this.RES_CODE.FAIL) {
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: '사진 수정에 실패했습니다',
+        },
+        data: {},
+      };
+    } else {
+      return {
+        isSuccess: true,
+        error: {},
+        data: {},
+      };
+    }
+  };
+  _requestUploadToServer = async (files, type, centerId) => {
+    if (!this._checkType(type)) throw '사용할 수 없는 타입입니다';
+
+    let arrayName;
+    let reqPath;
+    if (type === IMAGE_UPLOADER_TYPE.BANNER) {
+      arrayName = 'homeBannerImage[]';
+      reqPath = this.PATHS.MULTI_IMAGES.BANNER;
+    } else if (type === IMAGE_UPLOADER_TYPE.BORDERING) {
+      arrayName = 'settingImage[]';
+      reqPath = this.PATHS.MULTI_IMAGES.SETTING;
+    } else if (type === IMAGE_UPLOADER_TYPE.ENDURANCE) {
+      arrayName = 'settingImage[]';
+      reqPath = this.PATHS.MULTI_IMAGES.SETTING;
+    } else throw '사용할 수 없는 타입입니다';
+
+    const imgFormData = new FormData();
+
+    // ? 나중에 업로드된 이미지 순서값 찾을 때 사용
+    const imageOrderArray = [];
+
+    files.forEach(fileInfo => {
+      const { imageOrder, file } = fileInfo;
+      const splitted = file.name.split('.');
+      const imgExt = splitted[splitted.length - 1];
+      imgFormData.append(arrayName, file, `${String(file.lastModified) + String(file.size)}.${centerId}.${imgExt}`);
+      imageOrderArray.push(imageOrder);
+    });
+
+    const { resCode, resBody, resErr } = await this.postRequest(
+      this.HOST.TEST_SERVER,
+      reqPath,
+      imgFormData,
+      this.DATA_TYPE.FORM_DATA
+    );
+
+    console.log({ resCode, resBody, resErr });
+
+    if (resCode == this.RES_CODE.FAIL) {
+      const { success, error: errorDescription } = resBody;
+      return {
+        isSuccess: false,
+        error: {
+          sort: 'error',
+          title: '서버 오류',
+          description: resErr || errorDescription,
+        },
+        data: {},
+      };
+    } else {
+      const { imageUrlArray } = resBody;
+      return {
+        isSuccess: true,
+        error: {},
+        data: {
+          uploadResultArray: imageUrlArray,
+          uploadResultOrderArray: imageOrderArray,
+        },
+      };
+    }
   };
 };
 
