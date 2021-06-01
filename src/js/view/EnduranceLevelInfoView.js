@@ -83,7 +83,7 @@ const EnduranceLevelInfoView = class extends View {
     item.setAttribute('class', 'level-item');
     item.setAttribute('data-item', '');
 
-    const itemHtml = this._template.getItemHtml(level, color, colorName, levelName);
+    const itemHtml = this._template.getItemHtml(level, levelName, color, colorName);
     item.innerHTML = itemHtml;
 
     this._itemList.append(item);
@@ -299,7 +299,7 @@ class Template {
         <li class="empty-level-item" data-empty-item>상품을 추가해주세요</li>
         `;
   };
-  getItemHtml = (level, color, colorName, levelName) => {
+  getItemHtml = (level, levelName, color, colorName) => {
     return `
       <div class="level-item__level" data-item-level>Level - ${level}</div>
         <div class="level-item__color-container" data-color-container>
@@ -323,7 +323,7 @@ class Template {
     let initialHtml = '';
     return infoArray.reduce((html, item, index) => {
       const level = index + 1;
-      const { settingColor: color, settingName: colorName, levelName = `${level}번 이름` } = item;
+      const { settingColor: color, settingColorName: colorName, settingLevelName: levelName } = item;
       return (
         html +
         `

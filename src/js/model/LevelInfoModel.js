@@ -7,61 +7,6 @@ export const LEVEL_INFO_TYPE = {
   ENDURANCE: 'endurance',
 };
 
-const borderingDummy = [
-  {
-    color: '#7ec147',
-    colorName: '연두색',
-    levelName: 'v0',
-  },
-  {
-    color: '#006edb',
-    colorName: '파란색',
-    levelName: 'v1',
-  },
-  {
-    color: '#fb3a50',
-    colorName: '빨간색',
-    levelName: 'v2',
-  },
-  {
-    color: '#808080',
-    colorName: '회색',
-    levelName: 'v3',
-  },
-  {
-    color: '#333333',
-    colorName: '검은색',
-    levelName: 'v4',
-  },
-];
-const enduranceDummy = [
-  {
-    color: '#7ec147',
-    colorName: '연두색',
-    levelName: 'v0',
-  },
-  {
-    color: '#006edb',
-    colorName: '파란색',
-    levelName: 'v1',
-  },
-  {
-    color: '#fb3a50',
-    colorName: '빨간색',
-    levelName: 'v2',
-  },
-  {
-    color: '#808080',
-    colorName: '회색',
-    levelName: 'v3',
-  },
-  {
-    color: '#333333',
-    colorName: '검은색',
-    levelName: 'v4',
-  },
-];
-
 const LevelInfoModel = class extends Model {
   constructor() {
     super();
@@ -74,7 +19,6 @@ const LevelInfoModel = class extends Model {
 
   /* 인터페이스 */
   initInfo = async accessToken => {
-    console.log('볼더링 난이도 정보 더미 데이터', borderingDummy);
     const borderingReqData = {
       reqCode: 3012,
       reqBody: {

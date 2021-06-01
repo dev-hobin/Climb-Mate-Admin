@@ -323,7 +323,7 @@ class Template {
     let initialHtml = '';
     return infoArray.reduce((html, item, index) => {
       const level = index + 1;
-      const { settingColor: color, settingName: colorName, levelName = `${level}번 이름` } = item;
+      const { settingColor: color, settingColorName: colorName, settingLevelName: levelName } = item;
       return (
         html +
         `

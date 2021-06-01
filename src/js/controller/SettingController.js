@@ -163,17 +163,27 @@ const SettingController = class {
 
   // 이미지 수정
   _editImages = async ({ type }) => {
-    if (!this._imageUploadModel.isImagesChanged(type))
+    if (!this._imageUploadModel.isImagesChanged(type)) {
       return this._notificationView.addNotification('caution', '변경사항 없음', '수정사항이 없습니다', true);
+    }
     const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('사진을 수정중입니다');
     const { isSuccess, error, data } = await this._imageUploadModel.editImages(accessToken, centerId, type);
     console.log({ isSuccess, error, data });
-    this._modalView.removeModal();
     if (!isSuccess) {
+      this._modalView.removeModal();
       this._notificationView.addNotification(error.sort, error.title, error.description, true);
     } else {
-      this._notificationView.addNotification('success', '사진 수정 완료', '성공적으로 사진을 수정했습니다', true);
+      const { isSuccess, error, data } = await this._imageUploadModel.initImages(accessToken, type);
+      if (!isSuccess) {
+        this._modalView.removeModal();
+        this._notificationView.addNotification(error.sort, error.title, error.description);
+      } else {
+        const { images } = data;
+        this[`_${type}ImageUploadView`].initItems(images);
+        this._modalView.removeModal();
+        this._notificationView.addNotification('success', '사진 수정 완료', '성공적으로 사진을 수정했습니다', true);
+      }
     }
   };
 };

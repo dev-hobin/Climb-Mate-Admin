@@ -37,6 +37,8 @@ const EnduranceImageUploadView = class extends View {
         this._addItemEvent(item);
         return item;
       });
+    // 이미지 리스트 비우기
+    this._imageList.innerHTML = '';
     // 이미지 리스트에 아이템들 추가
     this._imageList.append(...itemsArray);
     // 이미지 개수 설정

@@ -50,8 +50,6 @@ const Model = class {
         body = JSON.stringify(data);
         break;
     }
-    console.log('보낸 헤더', header);
-    console.log('보낸 바디', body);
     try {
       response = await fetch(url, {
         method,
