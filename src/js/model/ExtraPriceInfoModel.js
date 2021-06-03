@@ -68,27 +68,28 @@ const ExtraPriceInfoModel = class extends Model {
       resErr,
     } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-    if (resCode == this.RES_CODE.FAIL)
+    if (resCode == this.RES_CODE.FAIL) {
       return {
         isSuccess: false,
         error: { sort: 'error', title: '서버 오류', description: resErr },
         data: {},
       };
-
-    this._info.push({
-      id: id,
-      goodsName,
-      goodsPrice: this._addCommas(goodsPrice),
-    });
-
-    return {
-      isSuccess: true,
-      error: {},
-      data: {
+    } else {
+      this._info.push({
+        id: id,
         goodsName,
         goodsPrice: this._addCommas(goodsPrice),
-      },
-    };
+      });
+
+      return {
+        isSuccess: true,
+        error: {},
+        data: {
+          goodsName,
+          goodsPrice: this._addCommas(goodsPrice),
+        },
+      };
+    }
   };
   deleteItem = async (accessToken, centerId, goodsName) => {
     if (!this._hasNamedItem(goodsName))

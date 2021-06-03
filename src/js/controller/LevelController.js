@@ -108,12 +108,12 @@ const LevelController = class {
       this._levelImageInfoView.setImage(imageUrl);
     }
 
-    const [borderingLevelInfoResult, enduranceLevelInfoResult] = await this._levelInfoModel.initInfo(accessToken);
+    // 볼더링 난이도 정보 설정
     const {
       isSuccess: isBorderingLevelInitSuccess,
       error: borderingLevelInitError,
       data: borderingLevelInitData,
-    } = borderingLevelInfoResult;
+    } = await this._levelInfoModel.initInfo(accessToken, LEVEL_INFO_TYPE.BORDERING);
 
     if (!isBorderingLevelInitSuccess) {
       this._notificationView.addNotification(
@@ -126,11 +126,12 @@ const LevelController = class {
       this._borderingLevelInfoView.initItems(borderingLevelInfo);
     }
 
+    // 지구력 난이도 정보 설정
     const {
       isSuccess: isEnduranceLevelInitSuccess,
       error: enduranceLevelInitError,
       data: enduranceLevelInitData,
-    } = enduranceLevelInfoResult;
+    } = await this._levelInfoModel.initInfo(accessToken, LEVEL_INFO_TYPE.ENDURANCE);
 
     if (!isEnduranceLevelInitSuccess) {
       this._notificationView.addNotification(
@@ -221,10 +222,12 @@ const LevelController = class {
 
   // 난이도 아이템 추가
   _addLevelItem = async ({ type, color, colorName, levelName }) => {
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
+
     this._modalView.showLoadingModal('난이도 정보 추가중입니다');
     const { isSuccess, error, data } = await this._levelInfoModel.addItem(
-      'centerId',
-      'accessKey',
+      accessToken,
+      centerId,
       type,
       color,
       colorName,
@@ -234,21 +237,25 @@ const LevelController = class {
     if (!isSuccess) {
       const { sort, title, description } = error;
       return this._notificationView.addNotification(sort, title, description, true);
+    } else {
+      const { isSuccess, error, data } = await this._levelInfoModel.initInfo(accessToken, type);
+      if (!isSuccess) {
+        this._notificationView.addNotification(error.sort, error.title, error.description, true);
+      } else {
+        const { levelInfo } = data;
+
+        switch (true) {
+          case type === LEVEL_INFO_TYPE.BORDERING:
+            this._borderingLevelInfoView.initItems(levelInfo);
+            break;
+          case type === LEVEL_INFO_TYPE.ENDURANCE:
+            this._enduranceLevelInfoView.initItems(levelInfo);
+            break;
+          default:
+            throw '사용할 수 없는 난이도 타입입니다';
+        }
+      }
     }
-
-    const { color: addedColor, colorName: addedColorName, levelName: addedLevelName } = data;
-
-    switch (true) {
-      case type === LEVEL_INFO_TYPE.BORDERING:
-        this._borderingLevelInfoView.addItem(addedColor, addedColorName, addedLevelName);
-        break;
-      case type === LEVEL_INFO_TYPE.ENDURANCE:
-        this._enduranceLevelInfoView.addItem(addedColor, addedColorName, addedLevelName);
-        break;
-      default:
-        throw '사용할 수 없는 난이도 타입입니다';
-    }
-
     this._notificationView.addNotification(
       'success',
       '난이도 정보 추가 성공',
@@ -257,10 +264,12 @@ const LevelController = class {
     );
   };
   _deleteLevelItem = async ({ type, color, levelName }) => {
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
+
     this._modalView.showLoadingModal('난이도 아이템 삭제중입니다');
     const { isSuccess, error, data } = await this._levelInfoModel.deleteItem(
-      'centerId',
-      'accessKey',
+      accessToken,
+      centerId,
       type,
       color,
       levelName
@@ -269,22 +278,25 @@ const LevelController = class {
     if (!isSuccess) {
       const { sort, title, description } = error;
       return this._notificationView.addNotification(sort, title, description, true);
+    } else {
+      const { isSuccess, error, data } = await this._levelInfoModel.initInfo(accessToken, type);
+      if (!isSuccess) {
+        this._notificationView.addNotification(error.sort, error.title, error.description, true);
+      } else {
+        const { levelInfo } = data;
+
+        switch (true) {
+          case type === LEVEL_INFO_TYPE.BORDERING:
+            this._borderingLevelInfoView.initItems(levelInfo);
+            break;
+          case type === LEVEL_INFO_TYPE.ENDURANCE:
+            this._enduranceLevelInfoView.initItems(levelInfo);
+            break;
+          default:
+            throw '사용할 수 없는 난이도 타입입니다';
+        }
+      }
     }
-
-    const { itemList } = data;
-    console.log(itemList);
-
-    switch (true) {
-      case type === LEVEL_INFO_TYPE.BORDERING:
-        this._borderingLevelInfoView.updateItemList(itemList);
-        break;
-      case type === LEVEL_INFO_TYPE.ENDURANCE:
-        this._enduranceLevelInfoView.updateItemList(itemList);
-        break;
-      default:
-        throw '사용할 수 없는 난이도 타입입니다';
-    }
-
     this._notificationView.addNotification(
       'success',
       '난이도 정보 삭제 성공',
@@ -301,10 +313,11 @@ const LevelController = class {
     currentColorName,
     currentLevelName,
   }) => {
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
+
     this._modalView.showLoadingModal('난이도 아이템 수정중입니다');
     const { isSuccess, error, data } = await this._levelInfoModel.editItem(
-      'centerId',
-      'accessKey',
+      accessToken,
       type,
       initialColor,
       initialColorName,
@@ -317,21 +330,25 @@ const LevelController = class {
     if (!isSuccess) {
       const { sort, title, description } = error;
       return this._notificationView.addNotification(sort, title, description, true);
+    } else {
+      const { isSuccess, error, data } = await this._levelInfoModel.initInfo(accessToken, type);
+      if (!isSuccess) {
+        this._notificationView.addNotification(error.sort, error.title, error.description, true);
+      } else {
+        const { levelInfo } = data;
+
+        switch (true) {
+          case type === LEVEL_INFO_TYPE.BORDERING:
+            this._borderingLevelInfoView.initItems(levelInfo);
+            break;
+          case type === LEVEL_INFO_TYPE.ENDURANCE:
+            this._enduranceLevelInfoView.initItems(levelInfo);
+            break;
+          default:
+            throw '사용할 수 없는 난이도 타입입니다';
+        }
+      }
     }
-
-    const { edittedColor, edittedColorName, edittedLevelName } = data;
-
-    switch (true) {
-      case type === LEVEL_INFO_TYPE.BORDERING:
-        this._borderingLevelInfoView.editItem(initialColor, edittedColor, edittedColorName, edittedLevelName);
-        break;
-      case type === LEVEL_INFO_TYPE.ENDURANCE:
-        this._enduranceLevelInfoView.editItem(initialColor, edittedColor, edittedColorName, edittedLevelName);
-        break;
-      default:
-        throw '사용할 수 없는 난이도 타입입니다';
-    }
-
     this._notificationView.addNotification(
       'success',
       '난이도 정보 수정 성공',

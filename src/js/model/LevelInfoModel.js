@@ -18,81 +18,87 @@ const LevelInfoModel = class extends Model {
   }
 
   /* 인터페이스 */
-  initInfo = async accessToken => {
-    const borderingReqData = {
-      reqCode: 3012,
-      reqBody: {
-        accessKey: accessToken,
-      },
-    };
-    const {
-      resCode: borderingResCode,
-      resBody: borderingLevelInfo,
-      resErr: borderingResErr,
-    } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, borderingReqData);
-    console.log('볼더링 난이도 정보', borderingLevelInfo);
+  initInfo = async (accessToken, type) => {
+    // 초기화
+    this._info[type] = [];
 
-    let borderingResResult;
-    if (borderingResCode == this.RES_CODE.FAIL) {
-      borderingResResult = {
-        isSuccess: false,
-        error: {
-          sort: 'error',
-          title: '서버 오류',
-          description: '볼더링 난이도 정보를 가져오는데 실패했습니다',
-        },
-        data: {},
-      };
-    } else {
-      borderingResResult = {
-        isSuccess: true,
-        error: {},
-        data: {
-          levelInfo: borderingLevelInfo,
+    if (type === LEVEL_INFO_TYPE.BORDERING) {
+      const reqData = {
+        reqCode: 3012,
+        reqBody: {
+          accessKey: accessToken,
         },
       };
-      borderingLevelInfo.forEach(info => this._info[LEVEL_INFO_TYPE.BORDERING].push({ ...info }));
-    }
 
-    const enduranceReqData = {
-      reqCode: 3013,
-      reqBody: {
-        accessKey: accessToken,
-      },
-    };
-    const {
-      resCode: enduranceResCode,
-      resBody: enduranceLevelInfo,
-      resErr: enduranceResErr,
-    } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, enduranceReqData);
-    console.log('지구력 난이도 정보', enduranceLevelInfo);
+      const {
+        resCode,
+        resBody: borderingLevelInfo,
+        resErr,
+      } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-    let enduranceResResult;
-    if (enduranceResCode == this.RES_CODE.FAIL) {
-      enduranceResResult = {
-        isSuccess: false,
-        error: {
-          sort: 'error',
-          title: '서버 오류',
-          description: '지구력 난이도 정보를 가져오는데 실패했습니다',
+      console.log('볼더링 난이도 정보', borderingLevelInfo);
+
+      if (resCode == this.RES_CODE.FAIL) {
+        return {
+          isSuccess: false,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: '볼더링 난이도 정보를 가져오는데 실패했습니다',
+          },
+          data: {},
+        };
+      } else {
+        borderingLevelInfo.forEach(info => this._info[type].push({ ...info }));
+
+        return {
+          isSuccess: true,
+          error: {},
+          data: {
+            levelInfo: borderingLevelInfo,
+          },
+        };
+      }
+    } else if (type === LEVEL_INFO_TYPE.ENDURANCE) {
+      const reqData = {
+        reqCode: 3013,
+        reqBody: {
+          accessKey: accessToken,
         },
-        data: {},
       };
-    } else {
-      enduranceResResult = {
-        isSuccess: true,
-        error: {},
-        data: {
-          levelInfo: enduranceLevelInfo,
-        },
-      };
-      enduranceLevelInfo.forEach(info => this._info[LEVEL_INFO_TYPE.ENDURANCE].push({ ...info }));
-    }
 
-    return [borderingResResult, enduranceResResult];
+      const {
+        resCode,
+        resBody: enduranceLevelInfo,
+        resErr,
+      } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+      console.log('지구력 난이도 정보', enduranceLevelInfo);
+
+      if (resCode == this.RES_CODE.FAIL) {
+        return {
+          isSuccess: false,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: '지구력 난이도 정보를 가져오는데 실패했습니다',
+          },
+          data: {},
+        };
+      } else {
+        enduranceLevelInfo.forEach(info => this._info[type].push({ ...info }));
+
+        return {
+          isSuccess: true,
+          error: {},
+          data: {
+            levelInfo: enduranceLevelInfo,
+          },
+        };
+      }
+    } else throw '사용 가능한 난이도 타입이 아닙니다';
   };
 
-  addItem = async (centerId, accessKey, type, color, colorName, levelName) => {
+  addItem = async (accessToken, centerId, type, color, colorName, levelName) => {
     if (this._hasSameColor(type, color))
       return {
         isSuccess: false,
@@ -111,27 +117,43 @@ const LevelInfoModel = class extends Model {
         error: { sort: 'caution', title: '난이도 정보 추가 실패', description: '같은 이름의 레벨이 존재합니다' },
         data: {},
       };
-    console.log(tag, '아이템 추가중...');
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    this._info[type].push({
-      color,
-      colorName,
-      levelName,
-    });
-    console.log(tag, '추가후 난이도 정보', this._info[type]);
-    console.log(tag, '난이도 추가 완료');
-    console.log(tag, '성공 결과 반환');
-    return {
-      isSuccess: true,
-      error: {},
-      data: {
-        color,
-        colorName,
-        levelName,
+
+    const reqData = {
+      reqCode: 1401,
+      reqBody: {
+        accessKey: accessToken,
+        settingCenterId: centerId,
+        settingColor: color,
+        settingColorName: colorName,
+        settingLevelName: levelName,
       },
     };
+
+    if (type === LEVEL_INFO_TYPE.BORDERING) {
+      reqData.reqBody['settingLevel'] = '볼더링';
+      reqData.reqBody['settingCenterDifficulty'] = this._info[type].length + 1;
+    } else if (type === LEVEL_INFO_TYPE.ENDURANCE) {
+      reqData.reqBody['settingLevel'] = '지구력';
+      reqData.reqBody['settingCenterDifficulty'] = this._info[type].length + 1;
+    } else throw '사용 가능한 레벨 타입이 아닙니다';
+
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+    if (resCode == this.RES_CODE.FAIL) {
+      return {
+        isSuccess: false,
+        error: { sort: 'error', title: '서버 오류', description: resErr },
+        data: {},
+      };
+    } else {
+      return {
+        isSuccess: true,
+        error: {},
+        data: {},
+      };
+    }
   };
-  deleteItem = async (centerId, accessKey, type, color, levelName) => {
+  deleteItem = async (accessToken, centerId, type, color, levelName) => {
     if (!this._hasSameColor(type, color))
       return {
         isSuccess: false,
@@ -152,26 +174,40 @@ const LevelInfoModel = class extends Model {
         },
         data: {},
       };
-    console.log(tag, '아이템 삭제중...');
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    this._info[type] = this._info[type].filter(info => {
-      if (info.color !== color || info.levelName !== levelName) return true;
-      return false;
-    });
-    console.log(tag, '삭제후 난이도 정보', this._info[type]);
-    console.log(tag, '난이도 아이템 삭제 완료');
-    console.log(tag, '성공 결과 반환');
-    return {
-      isSuccess: true,
-      error: {},
-      data: {
-        itemList: this._info[type],
+
+    // 삭제할 아이템 정보
+    const willDeletedItem = this._info[type].find(item => item.settingColor === color);
+    const { id, settingCenterDifficulty, settingLevel } = willDeletedItem;
+
+    const reqData = {
+      reqCode: 1403,
+      reqBody: {
+        accessKey: accessToken,
+        settingCenterId: centerId,
+        id,
+        settingCenterDifficulty,
+        settingLevel,
       },
     };
+
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+    if (resCode == this.RES_CODE.FAIL) {
+      return {
+        isSuccess: false,
+        error: { sort: 'error', title: '서버 오류', description: resErr },
+        data: {},
+      };
+    } else {
+      return {
+        isSuccess: true,
+        error: {},
+        data: {},
+      };
+    }
   };
   editItem = async (
-    centerId,
-    accessKey,
+    accessToken,
     type,
     initialColor,
     initialColorName,
@@ -210,63 +246,80 @@ const LevelInfoModel = class extends Model {
         },
         data: {},
       };
-    console.log(tag, '아이템 수정중...');
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    this._info[type] = this._info[type].map(info => {
-      if (info.color !== initialColor || info.levelName !== initialLevelName) return info;
-      info.color = currentColor;
-      info.colorName = currentColorName;
-      info.levelName = currentLevelName;
-      return info;
-    });
-    console.log(tag, '수정 후 난이도 정보', this._info[type]);
-    console.log(tag, '난이도 아이템 수정 완료');
-    console.log(tag, '성공 결과 반환');
-    return {
-      isSuccess: true,
-      error: {},
-      data: {
-        edittedColor: currentColor,
-        edittedColorName: currentColorName,
-        edittedLevelName: currentLevelName,
+
+    const willEdittedItem = this._info[type].find(item => item.settingColor === initialColor);
+    const { id, settingCenterDifficulty, settingColor, settingColorName, settingLevelName } = willEdittedItem;
+
+    const reqData = {
+      reqCode: 1402,
+      reqBody: {
+        accessKey: accessToken,
+        id,
+        settingCenterDifficulty,
+        settingColor: currentColor,
+        settingColorName: currentColorName,
+        settingLevelName: currentLevelName,
       },
     };
+    console.log(reqData);
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+    console.log({ resCode, resBody, resErr });
+
+    if (resCode == this.RES_CODE.FAIL) {
+      return {
+        isSuccess: false,
+        error: { sort: 'error', title: '서버 오류', description: resErr },
+        data: {},
+      };
+    } else {
+      return {
+        isSuccess: true,
+        error: {},
+        data: {},
+      };
+    }
   };
 
   /* 메소드 */
   _hasSameColor = (type, color) => {
-    if (this._info[type].filter(info => info.color === color).length > 0) return true;
+    if (this._info[type].find(info => info.settingColor === color)) return true;
     return false;
   };
   _hasSameColorName = (type, colorName) => {
-    if (this._info[type].filter(info => info.colorName === colorName).length > 0) return true;
+    if (this._info[type].find(info => info.settingColorName === colorName)) return true;
     return false;
   };
   _hasSameLevelName = (type, levelName) => {
-    if (this._info[type].filter(info => info.levelName === levelName).length > 0) return true;
+    if (this._info[type].find(info => info.settingLevelName === levelName)) return true;
     return false;
   };
 
   _hasAnotherSameColor = (type, initialColor, currentColor) => {
-    if (this._info[type].filter(info => info.color !== initialColor && info.color === currentColor).length > 0)
+    if (this._info[type].find(info => info.settingColor !== initialColor && info.settingColor === currentColor))
       return true;
     return false;
   };
   _hasAnotherSameColorName = (type, initialColorName, currentColorName) => {
     if (
-      this._info[type].filter(info => info.colorName !== initialColorName && info.colorName === currentColorName)
-        .length > 0
-    )
+      this._info[type].find(
+        info => info.settingColorName !== initialColorName && info.settingColorName === currentColorName
+      )
+    ) {
       return true;
-    return false;
+    } else {
+      return false;
+    }
   };
   _hasAnotherSameLevelName = (type, initialLevelName, currentLevelName) => {
     if (
-      this._info[type].filter(info => info.levelName !== initialLevelName && info.levelName === currentLevelName)
-        .length > 0
-    )
+      this._info[type].find(
+        info => info.settingLevelName !== initialLevelName && info.settingLevelName === currentLevelName
+      )
+    ) {
       return true;
-    return false;
+    } else {
+      return false;
+    }
   };
 };
 

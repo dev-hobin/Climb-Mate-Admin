@@ -26,6 +26,9 @@ const SingleImageUploadModel = class extends Model {
   initImage = async (accessToken, type) => {
     if (!this._checkType(type)) throw '사용할 수 없는 타입입니다';
 
+    this._imageData[type].initial = '';
+    this._imageData[type].current = '';
+
     let result;
     if (type === SINGLE_IMAGE_UPLOADER_TYPE.PRICE) {
       const reqData = {

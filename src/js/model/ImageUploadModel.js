@@ -391,9 +391,9 @@ const ImageUploadModel = class extends Model {
           reqBody: {
             accessKey: accessToken,
             imageCenterId: centerId,
-            addHomeBannerImageArray: addedInfoArray,
-            orderUpdateHomeBannerImageArray: orderInfoArray,
-            deleteHomeBannerImageArray: deletedInfoArray,
+            addSettingImageArray: addedInfoArray,
+            orderUpdateSettingImageArray: orderInfoArray,
+            deleteSettingImageArray: deletedInfoArray,
           },
         };
         break;
@@ -401,9 +401,8 @@ const ImageUploadModel = class extends Model {
         throw '사용 불가능한 타입입니다';
     }
 
-    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
-
     console.log(reqData);
+    const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
     console.log({ resCode, resBody, resErr });
 
     if (resCode == this.RES_CODE.FAIL) {

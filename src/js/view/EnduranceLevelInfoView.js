@@ -69,6 +69,8 @@ const EnduranceLevelInfoView = class extends View {
   };
 
   initItems = (infoArray = []) => {
+    // 초기화
+    this._itemList.innerHTM = '';
     if (infoArray.length === 0) return (this._itemList.innerHTML = this._template.getEmptyItemHtml());
     this._itemList.innerHTML = this._template.getItemsHtml(infoArray);
   };
