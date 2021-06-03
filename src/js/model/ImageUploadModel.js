@@ -18,11 +18,13 @@ const ImageUploadModel = class extends Model {
         deleted: [],
       },
       [IMAGE_UPLOADER_TYPE.BORDERING]: {
+        settingId: '',
         initial: [],
         current: [],
         deleted: [],
       },
       [IMAGE_UPLOADER_TYPE.ENDURANCE]: {
+        settingId: '',
         initial: [],
         current: [],
         deleted: [],
@@ -53,7 +55,7 @@ const ImageUploadModel = class extends Model {
         resErr,
       } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-      if (resCode == this.RES_CODE.FAIL)
+      if (resCode == this.RES_CODE.FAIL) {
         return {
           isSuccess: false,
           error: {
@@ -63,9 +65,10 @@ const ImageUploadModel = class extends Model {
           },
           data: {},
         };
-
-      imagesInfo = bannerInfo.sort(this._byImageOrder);
-      console.log('배너 사진 정보', bannerInfo);
+      } else {
+        imagesInfo = bannerInfo.sort(this._byImageOrder);
+        console.log('배너 사진 정보', bannerInfo);
+      }
     } else if (type === IMAGE_UPLOADER_TYPE.BORDERING) {
       const reqData = {
         reqCode: 3010,
@@ -75,11 +78,14 @@ const ImageUploadModel = class extends Model {
       };
       const {
         resCode,
-        resBody: borderingInfo,
+        resBody: {
+          statusId: { id: settingId },
+          settingImage: borderingInfo,
+        },
         resErr,
       } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
-
-      if (resCode == this.RES_CODE.FAIL)
+      console.log();
+      if (resCode == this.RES_CODE.FAIL) {
         return {
           isSuccess: false,
           error: {
@@ -89,9 +95,11 @@ const ImageUploadModel = class extends Model {
           },
           data: {},
         };
-
-      imagesInfo = borderingInfo.sort(this._byImageOrder);
-      console.log('볼더링 사진 정보', borderingInfo);
+      } else {
+        this._imageData[type].settingId = settingId;
+        imagesInfo = borderingInfo.sort(this._byImageOrder);
+        console.log('볼더링 사진 정보', borderingInfo);
+      }
     } else if (type === IMAGE_UPLOADER_TYPE.ENDURANCE) {
       const reqData = {
         reqCode: 3011,
@@ -101,11 +109,14 @@ const ImageUploadModel = class extends Model {
       };
       const {
         resCode,
-        resBody: enduranceInfo,
+        resBody: {
+          statusId: { id: settingId },
+          settingImage: enduranceInfo,
+        },
         resErr,
       } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-      if (resCode == this.RES_CODE.FAIL)
+      if (resCode == this.RES_CODE.FAIL) {
         return {
           isSuccess: false,
           error: {
@@ -115,9 +126,11 @@ const ImageUploadModel = class extends Model {
           },
           data: {},
         };
-
-      imagesInfo = enduranceInfo.sort(this._byImageOrder);
-      console.log('지구력 사진 정보', enduranceInfo);
+      } else {
+        this._imageData[type].settingId = settingId;
+        imagesInfo = enduranceInfo.sort(this._byImageOrder);
+        console.log('지구력 사진 정보', enduranceInfo);
+      }
     } else throw '사용할 수 없는 이미지 업로더 타입입니다';
 
     imagesInfo.forEach(info => {
@@ -230,7 +243,6 @@ const ImageUploadModel = class extends Model {
 
     return [validatedFiles, errorList];
   };
-
   editImages = async (accessToken, centerId, type) => {
     if (!this._checkType(type)) throw '사용할 수 없는 이미지 업로더 타입입니다';
     const [files, urls, willDeleted] = this._getChangeInfo(type);
@@ -245,12 +257,18 @@ const ImageUploadModel = class extends Model {
         uploadResultArray.forEach((result, index) => {
           const { success, originalUrl, thumbUrl } = result;
           if (success) {
-            willAddedInfoArray.push({
+            const imageInfoObj = {
               imageCenterId: centerId,
               imageOriginalUrl: originalUrl,
               imageThumbUrl: thumbUrl,
               imageOrder: uploadResultOrderArray[index],
-            });
+            };
+
+            if (type === IMAGE_UPLOADER_TYPE.BORDERING || type === IMAGE_UPLOADER_TYPE.ENDURANCE) {
+              imageInfoObj.imageCenterSettingId = this._imageData[type].settingId;
+            }
+
+            willAddedInfoArray.push(imageInfoObj);
           } else {
             return {
               isSuccess: false,
@@ -366,6 +384,19 @@ const ImageUploadModel = class extends Model {
           },
         };
         break;
+      case type === IMAGE_UPLOADER_TYPE.BORDERING:
+      case type === IMAGE_UPLOADER_TYPE.ENDURANCE:
+        reqData = {
+          reqCode: 1500,
+          reqBody: {
+            accessKey: accessToken,
+            imageCenterId: centerId,
+            addHomeBannerImageArray: addedInfoArray,
+            orderUpdateHomeBannerImageArray: orderInfoArray,
+            deleteHomeBannerImageArray: deletedInfoArray,
+          },
+        };
+        break;
       default:
         throw '사용 불가능한 타입입니다';
     }
@@ -398,15 +429,18 @@ const ImageUploadModel = class extends Model {
 
     let arrayName;
     let reqPath;
+    let sort;
     if (type === IMAGE_UPLOADER_TYPE.BANNER) {
       arrayName = 'homeBannerImage[]';
       reqPath = this.PATHS.MULTI_IMAGES.BANNER;
     } else if (type === IMAGE_UPLOADER_TYPE.BORDERING) {
       arrayName = 'settingImage[]';
-      reqPath = this.PATHS.MULTI_IMAGES.SETTING;
+      reqPath = this.PATHS.MULTI_IMAGES.BORDERING;
+      sort = 'bolder';
     } else if (type === IMAGE_UPLOADER_TYPE.ENDURANCE) {
       arrayName = 'settingImage[]';
-      reqPath = this.PATHS.MULTI_IMAGES.SETTING;
+      reqPath = this.PATHS.MULTI_IMAGES.ENDURANCE;
+      sort = 'endurance';
     } else throw '사용할 수 없는 타입입니다';
 
     const imgFormData = new FormData();
@@ -418,7 +452,16 @@ const ImageUploadModel = class extends Model {
       const { imageOrder, file } = fileInfo;
       const splitted = file.name.split('.');
       const imgExt = splitted[splitted.length - 1];
-      imgFormData.append(arrayName, file, `${String(file.lastModified) + String(file.size)}.${centerId}.${imgExt}`);
+      if (sort) {
+        imgFormData.append(
+          arrayName,
+          file,
+          `${String(file.lastModified) + String(file.size)}.${centerId}.${sort}.${imgExt}`
+        );
+        console.log(`${String(file.lastModified) + String(file.size)}.${centerId}.${sort}.${imgExt}`);
+      } else {
+        imgFormData.append(arrayName, file, `${String(file.lastModified) + String(file.size)}.${centerId}.${imgExt}`);
+      }
       imageOrderArray.push(imageOrder);
     });
 

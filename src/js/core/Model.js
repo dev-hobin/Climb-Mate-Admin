@@ -17,7 +17,8 @@ const Model = class {
     },
     MULTI_IMAGES: {
       BANNER: '/homeBannerUpload',
-      SETTING: '/settingImageUpload',
+      BORDERING: '/settingImageUploadBolder',
+      ENDURANCE: '/settingImageUploadEndurance',
     },
   };
   RES_CODE = {

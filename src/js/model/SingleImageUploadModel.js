@@ -2,8 +2,6 @@ import Model from '../core/Model.js';
 
 const tag = '[SingleImageUploadModel]';
 
-const dummyImage = 'http://placehold.it/200x200.jpg/ff0000/ffffff?text=1';
-
 export const SINGLE_IMAGE_UPLOADER_TYPE = {
   PRICE: 'PRICE',
   LEVEL: 'LEVEL',
@@ -30,7 +28,6 @@ const SingleImageUploadModel = class extends Model {
 
     let result;
     if (type === SINGLE_IMAGE_UPLOADER_TYPE.PRICE) {
-      console.log('가격표 이미지 정보 더미 데이터', dummyImage);
       const reqData = {
         reqCode: 3006,
         reqBody: { accessKey: accessToken },
@@ -40,8 +37,6 @@ const SingleImageUploadModel = class extends Model {
         resBody: [{ detailCenterGoodsImageURL }],
         resErr,
       } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
-
-      console.log(detailCenterGoodsImageURL);
 
       if (resCode == this.RES_CODE.FAIL) {
         result = {
@@ -54,11 +49,12 @@ const SingleImageUploadModel = class extends Model {
           data: {},
         };
       } else {
+        const imageUrl = detailCenterGoodsImageURL ? `${this.HOST.TEST_SERVER}/${detailCenterGoodsImageURL}` : '';
         result = {
           isSuccess: true,
           error: {},
           data: {
-            imageUrl: `${this.HOST.TEST_SERVER}/${detailCenterGoodsImageURL}`,
+            imageUrl,
           },
         };
       }
@@ -86,11 +82,12 @@ const SingleImageUploadModel = class extends Model {
           data: {},
         };
       } else {
+        const imageUrl = detailCenterLevelImageURL ? `${this.HOST.TEST_SERVER}/${detailCenterLevelImageURL}` : '';
         result = {
           isSuccess: true,
           error: {},
           data: {
-            imageUrl: `${this.HOST.TEST_SERVER}/${detailCenterLevelImageURL}`,
+            imageUrl,
           },
         };
       }
@@ -225,17 +222,70 @@ const SingleImageUploadModel = class extends Model {
       }
     } else throw '사용 가능한 타입이 아닙니다';
   };
-  deleteImage = async type => {
+  deleteImage = async (type, accessToken, centerId) => {
     if (!this._checkType(type)) throw '사용할 수 없는 타입입니다';
 
-    this._imageData[type].current = '';
+    if (type === SINGLE_IMAGE_UPLOADER_TYPE.PRICE) {
+      const reqData = {
+        reqCode: 1205,
+        reqBody: {
+          accessKey: accessToken,
+          id: centerId,
+        },
+      };
+      console.log('보낸 데이터', reqData);
+      const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
 
-    console.log(tag, type, '이미지 삭제중');
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log(tag, type, '삭제 완료 후 데이터 수정');
-    this._imageData[type].initial = this._imageData[type].current;
-    console.log(tag, type, '결과 반환');
-    return true;
+      if (resCode == this.RES_CODE.FAIL) {
+        return {
+          isSuccess: false,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: resErr,
+          },
+          data: {},
+        };
+      } else {
+        this._imageData[type].current = '';
+        this._imageData[type].initial = '';
+        return {
+          isSuccess: true,
+          error: {},
+          data: {},
+        };
+      }
+    } else if (type === SINGLE_IMAGE_UPLOADER_TYPE.LEVEL) {
+      const reqData = {
+        reqCode: 1404,
+        reqBody: {
+          accessKey: accessToken,
+          id: centerId,
+        },
+      };
+      console.log('보낸 데이터', reqData);
+      const { resCode, resBody, resErr } = await this.postRequest(this.HOST.TEST_SERVER, this.PATHS.MAIN, reqData);
+
+      if (resCode == this.RES_CODE.FAIL) {
+        return {
+          isSuccess: false,
+          error: {
+            sort: 'error',
+            title: '서버 오류',
+            description: resErr,
+          },
+          data: {},
+        };
+      } else {
+        this._imageData[type].current = '';
+        this._imageData[type].initial = '';
+        return {
+          isSuccess: true,
+          error: {},
+          data: {},
+        };
+      }
+    } else throw '사용 가능한 타입이 아닙니다';
   };
   cancelImage = type => {
     this._imageData[type].current = this._imageData[type].initial;

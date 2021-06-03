@@ -191,21 +191,31 @@ const PriceController = class {
   };
   // 가격표 이미지 삭제
   _deletePriceImage = async ({ type }) => {
-    // 로딩 모달 띄우기
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
+
     this._modalView.showLoadingModal('사진을 삭제중입니다');
-    const isSuccess = await this._singleImageUploadModel.deleteImage(type);
+    const { isSuccess, error, data } = await this._singleImageUploadModel.deleteImage(type, accessToken, centerId);
     if (!isSuccess) {
       this._modalView.removeModal();
-      this._notificationView.addNotification('error', '사진 삭제 실패', '서버 오류로 인해 사진 삭제에 실패했습니다');
+      return this._notificationView.addNotification(error.sort, error.title, error.description, true);
     } else {
+      const {
+        isSuccess: isPriceImageInitSuccess,
+        error: priceImageInitError,
+        data: priceImageInitData,
+      } = await this._singleImageUploadModel.initImage(accessToken, SINGLE_IMAGE_UPLOADER_TYPE.PRICE);
+      if (!isPriceImageInitSuccess) {
+        this._notificationView.addNotification(
+          priceImageInitError.sort,
+          priceImageInitError.title,
+          priceImageInitError.description
+        );
+      } else {
+        const { imageUrl } = priceImageInitData;
+        this._priceImageInfoView.setImage(imageUrl);
+      }
       this._modalView.removeModal();
-      this._priceImageInfoView.setEmptyImage();
-      this._notificationView.addNotification(
-        'success',
-        '가격표 사진 삭제 성공',
-        '성공적으로 가격표 사진을 삭제했습니다',
-        true
-      );
+      this._notificationView.addNotification('success', '사진 삭제 완료', '성공적으로 사진을 삭제했습니다', true);
     }
   };
 
