@@ -5,6 +5,8 @@ const ExtraPriceInfoView = class extends View {
   constructor() {
     super();
 
+    this.clickable = true;
+
     this._template = new Template();
   }
 
@@ -66,6 +68,8 @@ const ExtraPriceInfoView = class extends View {
     });
 
     this._addBtn.addEventListener('click', () => {
+      if (!this.clickable) return;
+
       const goodsName = this._nameInput.value.trim();
       const goodsPrice = this._priceInput.value;
 
@@ -76,6 +80,8 @@ const ExtraPriceInfoView = class extends View {
     });
 
     this._itemList.addEventListener('click', event => {
+      if (!this.clickable) return;
+
       const btnType = event.target.dataset.btn;
       if (!btnType) return;
       const item = event.target.closest('[data-item]');

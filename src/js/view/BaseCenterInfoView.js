@@ -6,6 +6,8 @@ const tag = '[BaseCenterInfoView]';
 const BaseCenterInfoView = class extends View {
   constructor() {
     super();
+
+    this.clickable = true;
   }
 
   /* 인터페이스 */
@@ -74,7 +76,10 @@ const BaseCenterInfoView = class extends View {
     this._introduceTextarea.addEventListener('input', event => {
       this.trigger('@changeIntroduce', { value: event.target.value });
     });
-    this._updateBtn.addEventListener('click', () => this.trigger('@updateCenterInfo'));
+    this._updateBtn.addEventListener('click', () => {
+      if (!this.clickable) return;
+      this.trigger('@updateCenterInfo');
+    });
   };
 };
 

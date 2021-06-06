@@ -5,6 +5,8 @@ const tag = '[BaseWoringTimeInfoView]';
 const BaseWorkingTimeInfoView = class extends View {
   constructor() {
     super();
+
+    this.clickable = true;
   }
 
   /* 인터페이스 */
@@ -55,6 +57,7 @@ const BaseWorkingTimeInfoView = class extends View {
     });
 
     this._updateBtn.addEventListener('click', () => {
+      if (!this.clickable) return;
       this.trigger('@updateWorkingTimeInfo');
     });
   };

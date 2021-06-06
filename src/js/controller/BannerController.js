@@ -36,18 +36,18 @@ const BannerController = class {
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
-      .on('@toggleSideMenu', event => this._toggleSideMenu(event.detail));
+      .on('@toggleSideMenu', event => this._toggleSideMenu(event));
 
-    this._modalView.setup(document.querySelector('main')).on('@deleteItem', event => this._deleteImage(event.detail));
+    this._modalView.setup(document.querySelector('main')).on('@deleteItem', event => this._deleteImage(event));
 
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
     this._bannerImageUploadView //
       .setup(document.querySelector(`[data-uploader="banner"]`))
-      .on('@addImages', event => this._addImages(event.detail))
-      .on('@changeImageLocation', event => this._changeImageLocation(event.detail))
-      .on('@showAlert', event => this._showAlertModal(event.detail))
-      .on('@editImages', event => this._editImages(event.detail));
+      .on('@addImages', event => this._addImages(event))
+      .on('@changeImageLocation', event => this._changeImageLocation(event))
+      .on('@showAlert', event => this._showAlertModal(event))
+      .on('@editImages', event => this._editImages(event));
 
     this._lifeCycle();
   };
@@ -87,6 +87,15 @@ const BannerController = class {
     }
   };
 
+  // 중복 클릭 방지
+  _setClickable = (view, clickable) => {
+    if (clickable) {
+      view.clickable = true;
+    } else {
+      view.clickable = false;
+    }
+  };
+
   // 헤더 어드민 메뉴 토글
   _toggleAdminMenu = () => {
     this._headerView.toggleAdminMenu();
@@ -97,7 +106,8 @@ const BannerController = class {
     this._sidebarView.toggleSidebar();
   };
   // 사이드 메뉴 토글
-  _toggleSideMenu = ({ menu }) => {
+  _toggleSideMenu = event => {
+    const { menu } = event.detail;
     this._sidebarView.toggleSideMenu(menu);
   };
 
@@ -105,7 +115,9 @@ const BannerController = class {
   _logout = () => this._userModel.logout();
 
   // 이미지 추가
-  _addImages = async ({ type, fileList }) => {
+  _addImages = async event => {
+    const { type, fileList } = event.detail;
+
     const currentImages = this._imageUploadModel.getCurrentImages(type);
     // 추가한 파일들 유효성 검사하여 유효성 검사 통과한 이미지 파일들과 유효성 검사 실패한 이유가 담긴 에러 리스트 반환
     const [validatedImageFiles, errorList] = this._imageUploadModel.vaildateImageFiles(fileList, currentImages.length);
@@ -129,21 +141,31 @@ const BannerController = class {
     }
   };
   // 경고 모달 보여주기
-  _showAlertModal = ({ description, eventInfo }) => {
+  _showAlertModal = event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
+
+    const { description, eventInfo } = event.detail;
     this._modalView.showAlertModal(description, eventInfo);
+
+    this._setClickable(view, true);
   };
   // 이미지 삭제
-  _deleteImage = ({ type, index }) => {
+  _deleteImage = event => {
+    const { type, index } = event.detail;
     this._imageUploadModel.addDeletedImages(type, index);
     this[`_${type}ImageUploadView`].removeItem(index);
     console.log(tag, type, '이미지 삭제');
   };
   // 이미지 자리 변경
-  _changeImageLocation = ({ type, beforeIndex, afterIndex }) => {
+  _changeImageLocation = event => {
+    const { type, beforeIndex, afterIndex } = event.detail;
     this._imageUploadModel.changeImageLocation(type, beforeIndex, afterIndex);
   };
   // 이미지 수정
-  _editImages = async ({ type }) => {
+  _editImages = async event => {
+    const { type } = event.detail;
+
     if (!this._imageUploadModel.isImagesChanged(type)) {
       return this._notificationView.addNotification('caution', '변경사항 없음', '수정사항이 없습니다', true);
     }

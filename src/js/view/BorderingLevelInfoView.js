@@ -9,6 +9,8 @@ const BorderingLevelInfoView = class extends View {
   constructor() {
     super();
 
+    this.clickable = true;
+
     this._template = new Template();
   }
 
@@ -118,6 +120,7 @@ const BorderingLevelInfoView = class extends View {
     });
 
     this._itemList.addEventListener('click', event => {
+      if (!this.clickable) return;
       const btnType = event.target.dataset.btn;
       if (!btnType) return;
       const item = event.target.closest('[data-item]');
@@ -156,7 +159,6 @@ const BorderingLevelInfoView = class extends View {
 
           colorPicker
             .on('init', instance => {
-              console.log(instance);
               const { root: btnContainer } = instance.getRoot();
               btnContainer.setAttribute('data-initial-color', initialColor);
               btnContainer.setAttribute('data-current-color', initialColor);
@@ -235,6 +237,8 @@ const BorderingLevelInfoView = class extends View {
     });
 
     this._addBtn.addEventListener('click', () => {
+      if (!this.clickable) return;
+
       const color = this._colorPicker.getSelectedColor().toHEXA().toString().toLowerCase();
       const colorName = this._colorNameInput.value.trim();
       const levelName = this._levelNameInput.value.trim();

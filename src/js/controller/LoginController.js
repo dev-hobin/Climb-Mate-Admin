@@ -17,8 +17,12 @@ const LoginController = class {
 
   /* 인터페이스 */
   init = () => {
-    this._loginView.setup(document.querySelector('[data-login-view]')).on('@login', event => this._login(event.detail));
-    this._notificationView.setup(document.querySelector('[data-notification]'));
+    this._loginView //
+      .setup(document.querySelector('[data-login-view]'))
+      .on('@login', event => this._login(event));
+
+    this._notificationView //
+      .setup(document.querySelector('[data-notification]'));
 
     this._lifeCycle();
   };
@@ -30,14 +34,29 @@ const LoginController = class {
     if (this._userModel.isLogged()) return location.replace('/baseInfo.html');
   };
 
+  // 중복 클릭 방지
+  _setClickable = (view, clickable) => {
+    if (clickable) {
+      view.clickable = true;
+    } else {
+      view.clickable = false;
+    }
+  };
+
   // 로그인
-  _login = async ({ id, password }) => {
+  _login = async event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
+
+    const { id, password } = event.detail;
     const { isSuccess, error, data } = await this._userModel.login(id, password);
     if (!isSuccess) {
+      this._setClickable(view, true);
       const { sort, title, description } = error;
-      return this._notificationView.addNotification(sort, title, description, true);
+      this._notificationView.addNotification(sort, title, description, true);
+    } else {
+      location.href = '/baseInfo.html';
     }
-    location.href = '/baseInfo.html';
   };
 };
 

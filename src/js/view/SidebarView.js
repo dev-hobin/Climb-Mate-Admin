@@ -5,6 +5,8 @@ const tag = '[SidebarView]';
 const SidebarView = class extends View {
   constructor() {
     super();
+
+    this.clickable = true;
   }
 
   /* 인터페이스 */
@@ -39,6 +41,7 @@ const SidebarView = class extends View {
   _bindEvents = () => {
     // 사이드바 메뉴 리스트 토글
     this.menuList.addEventListener('click', event => {
+      if (!this.clickable) return;
       if (event.target.tagName !== 'BUTTON') return;
       const listItem = event.target.parentElement;
       const toggleMenuName = listItem.dataset.toggleMenu;

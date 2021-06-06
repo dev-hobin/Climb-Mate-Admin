@@ -40,19 +40,19 @@ const DetailInfoController = class {
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
-      .on('@toggleSideMenu', event => this._toggleSideMenu(event.detail));
+      .on('@toggleSideMenu', event => this._toggleSideMenu(event));
 
     this._facilityInfoView //
       .setup(document.querySelector(`[data-facilities]`))
-      .on('@checkFacility', event => this._updateFacilityCheckInfo(event.detail))
-      .on('@editExtraInfo', event => this._editFacilityExtraInfo(event.detail))
-      .on('@updateFacility', this._updateFacility);
+      .on('@checkFacility', event => this._changeFacilityCheckInfo(event))
+      .on('@editExtraInfo', event => this._editFacilityExtraInfo(event))
+      .on('@updateFacility', event => this._updateFacility(event));
 
     this._toolInfoView //
       .setup(document.querySelector(`[data-tools]`))
-      .on('@checkTool', event => this._updateToolCheckInfo(event.detail))
-      .on('@editExtraInfo', event => this._editToolExtraInfo(event.detail))
-      .on('@updateTool', this._updateTool);
+      .on('@checkTool', event => this._changeToolCheckInfo(event))
+      .on('@editExtraInfo', event => this._editToolExtraInfo(event))
+      .on('@updateTool', event => this._updateTool(event));
 
     this._modalView.setup(document.querySelector('main'));
     this._notificationView.setup(document.querySelector('[data-notification]'));
@@ -108,47 +108,79 @@ const DetailInfoController = class {
     }
   };
 
+  // 중복 클릭 방지
+  _setClickable = (view, clickable) => {
+    if (clickable) {
+      view.clickable = true;
+    } else {
+      view.clickable = false;
+    }
+  };
+
   // 헤더 어드민 메뉴 토글
   _toggleAdminMenu = () => this._headerView.toggleAdminMenu();
 
   // 사이드바 토글
   _toggleSidebar = () => this._sidebarView.toggleSidebar();
   // 사이드 메뉴 토글
-  _toggleSideMenu = ({ menu }) => this._sidebarView.toggleSideMenu(menu);
+  _toggleSideMenu = event => {
+    const { menu } = event.detail;
+    this._sidebarView.toggleSideMenu(menu);
+  };
 
   // 로그아웃
   _logout = () => this._userModel.logout();
 
-  _updateFacilityCheckInfo = ({ facilityType, checked }) => {
+  _changeFacilityCheckInfo = event => {
+    const { facilityType, checked } = event.detail;
     this._facilityInfoModel.updateCheckInfo(facilityType, checked);
   };
-  _editFacilityExtraInfo = ({ extra, info }) => {
+  _editFacilityExtraInfo = event => {
+    const { extra, info } = event.detail;
     this._facilityInfoModel.updateExtraInfo(extra, info);
   };
-  _updateFacility = async () => {
+  _updateFacility = async event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
+
     const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('시설 정보 수정중입니다');
     const { isSuccess, error, data } = await this._facilityInfoModel.update(accessToken, centerId);
     this._modalView.removeModal();
 
-    if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-    this._notificationView.addNotification('success', '시설 정보 수정', '성공적으로 시설 정보를 수정했습니다', true);
+    if (!isSuccess) {
+      this._setClickable(view, true);
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
+    } else {
+      this._setClickable(view, true);
+      this._notificationView.addNotification('success', '시설 정보 수정', '성공적으로 시설 정보를 수정했습니다', true);
+    }
   };
 
-  _updateToolCheckInfo = ({ toolType, checked }) => {
+  _changeToolCheckInfo = event => {
+    const { toolType, checked } = event.detail;
     this._toolInfoModel.updateCheckInfo(toolType, checked);
   };
-  _editToolExtraInfo = ({ extra, info }) => {
+  _editToolExtraInfo = event => {
+    const { extra, info } = event.detail;
     this._toolInfoModel.updateExtraInfo(extra, info);
   };
-  _updateTool = async () => {
+  _updateTool = async event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
+
     const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('도구 정보 수정중입니다');
     const { isSuccess, error, data } = await this._toolInfoModel.update(accessToken, centerId);
     this._modalView.removeModal();
 
-    if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-    this._notificationView.addNotification('success', '도구 정보 수정', '성공적으로 도구 정보를 수정했습니다', true);
+    if (!isSuccess) {
+      this._setClickable(view, true);
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
+    } else {
+      this._setClickable(view, true);
+      this._notificationView.addNotification('success', '도구 정보 수정', '성공적으로 도구 정보를 수정했습니다', true);
+    }
   };
 };
 

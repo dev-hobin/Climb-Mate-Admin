@@ -21,16 +21,16 @@ const NoticeController = class {
       .setup(document.querySelector(`[data-header]`))
       .on('@toggleSidebar', () => this._toggleSidebar())
       .on('@toggleAdminMenu', () => this._toggleAdminMenu())
-      .on('@clickAdminMenu', event => console.log(event.detail));
+      .on('@clickAdminMenu', event => console.log(event));
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
-      .on('@toggleSideMenu', event => this._toggleSideMenu(event.detail));
+      .on('@toggleSideMenu', event => this._toggleSideMenu(event));
 
     this._modalView
       .setup(document.querySelector('main'))
-      .on('@deleteBorderingItem', event => this._deleteBorderingImage(event.detail))
-      .on('@deleteEnduranceItem', event => this._deleteEnduranceImage(event.detail));
+      .on('@deleteBorderingItem', event => this._deleteBorderingImage(event))
+      .on('@deleteEnduranceItem', event => this._deleteEnduranceImage(event));
 
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
@@ -48,6 +48,16 @@ const NoticeController = class {
       depth2: 'notice',
     });
   };
+
+  // 중복 클릭 방지
+  _setClickable = (view, clickable) => {
+    if (clickable) {
+      view.clickable = true;
+    } else {
+      view.clickable = false;
+    }
+  };
+
   // 헤더 어드민 메뉴 토글
   _toggleAdminMenu = () => {
     this._headerView.toggleAdminMenu();
@@ -57,12 +67,19 @@ const NoticeController = class {
     this._sidebarView.toggleSidebar();
   };
   // 사이드 메뉴 토글
-  _toggleSideMenu = ({ menu }) => {
+  _toggleSideMenu = event => {
+    const { menu } = event.detail;
     this._sidebarView.toggleSideMenu(menu);
   };
   // 경고 모달 보여주기
-  _showAlertModal = ({ description, eventInfo }) => {
+  _showAlertModal = event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
+
+    const { description, eventInfo } = event.detail;
     this._modalView.showAlertModal(description, eventInfo);
+
+    this._setClickable(view, true);
   };
 };
 

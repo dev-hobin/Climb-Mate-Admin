@@ -6,6 +6,8 @@ const NotificationView = class extends View {
   constructor() {
     super();
 
+    this.clickable = true;
+
     this._template = new Template();
   }
 

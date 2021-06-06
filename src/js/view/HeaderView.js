@@ -5,6 +5,8 @@ const tag = '[HeaderView]';
 const HeaderView = class extends View {
   constructor() {
     super();
+
+    this.clickable = true;
   }
 
   /* 인터페이스 */
@@ -36,11 +38,13 @@ const HeaderView = class extends View {
     this._sidebarToggleBtn.addEventListener('click', () => this.trigger('@toggleSidebar', {}));
     // 어드민 메뉴 토글 버튼
     this._adminMenuBtn.addEventListener('click', event => {
+      if (!this.clickable) return;
       if (!event.target.dataset.hasOwnProperty('adminMenuBtn')) return;
       this.trigger('@toggleAdminMenu', {});
     });
     // 어드민 메뉴 리스트 클릭
     this._adminMenuList.addEventListener('click', event => {
+      if (!this.clickable) return;
       const menuName = event.target.dataset.adminMenu;
       if (!menuName) return;
       switch (true) {

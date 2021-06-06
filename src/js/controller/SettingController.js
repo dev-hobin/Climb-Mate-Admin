@@ -38,25 +38,27 @@ const SettingController = class {
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
-      .on('@toggleSideMenu', event => this._toggleSideMenu(event.detail));
+      .on('@toggleSideMenu', event => this._toggleSideMenu(event));
 
-    this._modalView.setup(document.querySelector('main')).on('@deleteItem', event => this._deleteImage(event.detail));
+    this._modalView //
+      .setup(document.querySelector('main'))
+      .on('@deleteItem', event => this._deleteImage(event));
 
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
     this._borderingImageUploadView //
       .setup(document.querySelector(`[data-uploader="bordering"]`))
-      .on('@addImages', event => this._addImages(event.detail))
-      .on('@changeImageLocation', event => this._changeImageLocation(event.detail))
-      .on('@showAlert', event => this._showAlertModal(event.detail))
-      .on('@editImages', event => this._editImages(event.detail));
+      .on('@addImages', event => this._addImages(event))
+      .on('@changeImageLocation', event => this._changeImageLocation(event))
+      .on('@showAlert', event => this._showAlertModal(event))
+      .on('@editImages', event => this._editImages(event));
 
     this._enduranceImageUploadView //
       .setup(document.querySelector(`[data-uploader="endurance"]`))
-      .on('@addImages', event => this._addImages(event.detail))
-      // .on('@changeImageLocation', event => this._changeImageLocation(event.detail))
-      .on('@showAlert', event => this._showAlertModal(event.detail))
-      .on('@editImages', event => this._editImages(event.detail));
+      .on('@addImages', event => this._addImages(event))
+      // .on('@changeImageLocation', event => this._changeImageLocation(event))
+      .on('@showAlert', event => this._showAlertModal(event))
+      .on('@editImages', event => this._editImages(event));
 
     this._lifeCycle();
   };
@@ -113,19 +115,36 @@ const SettingController = class {
     }
   };
 
+  // 중복 클릭 방지
+  _setClickable = (view, clickable) => {
+    if (clickable) {
+      view.clickable = true;
+    } else {
+      view.clickable = false;
+    }
+  };
+
   // 헤더 어드민 메뉴 토글
   _toggleAdminMenu = () => this._headerView.toggleAdminMenu();
 
   // 사이드바 토글
   _toggleSidebar = () => this._sidebarView.toggleSidebar();
   // 사이드 메뉴 토글
-  _toggleSideMenu = ({ menu }) => this._sidebarView.toggleSideMenu(menu);
+  _toggleSideMenu = event => {
+    const { menu } = event.detail;
+    this._sidebarView.toggleSideMenu(menu);
+  };
 
   // 로그아웃
   _logout = () => this._userModel.logout();
 
   // 이미지 추가
-  _addImages = async ({ type, fileList }) => {
+  _addImages = async event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
+
+    const { type, fileList } = event.detail;
+
     const currentImages = this._imageUploadModel.getCurrentImages(type);
     // 추가한 파일들 유효성 검사하여 유효성 검사 통과한 이미지 파일들과 유효성 검사 실패한 이유가 담긴 에러 리스트 반환
     const [validatedImageFiles, errorList] = this._imageUploadModel.vaildateImageFiles(fileList, currentImages.length);
@@ -142,19 +161,37 @@ const SettingController = class {
       console.log(tag, type, '이미지 리스트에 아이템들 추가');
     }
 
-    if (errorList.length === 0) return;
-    for (const errorInfo of errorList) {
-      const { title, description } = errorInfo;
-      this._notificationView.addErrorNotification(title, description);
+    if (errorList.length === 0) {
+      this._setClickable(view, true);
+    } else {
+      for (const errorInfo of errorList) {
+        const { title, description } = errorInfo;
+        this._notificationView.addErrorNotification(title, description);
+      }
+      this._setClickable(view, true);
     }
   };
   // 경고 모달 보여주기
-  _showAlertModal = ({ description, eventInfo }) => this._modalView.showAlertModal(description, eventInfo);
+  _showAlertModal = event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
+
+    const { description, eventInfo } = event.detail;
+    this._modalView.showAlertModal(description, eventInfo);
+
+    this._setClickable(view, true);
+  };
   // 이미지 삭제
-  _deleteImage = ({ type, index }) => {
+  _deleteImage = event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
+
+    const { type, index } = event.detail;
+
     this._imageUploadModel.addDeletedImages(type, index);
     this[`_${type}ImageUploadView`].removeItem(index);
     console.log(tag, type, '이미지 삭제');
+    this._setClickable(view, true);
   };
   // // 이미지 자리 변경
   // _changeImageLocation = ({ type, beforeIndex, afterIndex }) => {
@@ -162,8 +199,14 @@ const SettingController = class {
   // };
 
   // 이미지 수정
-  _editImages = async ({ type }) => {
+  _editImages = async event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
+
+    const { type } = event.detail;
+
     if (!this._imageUploadModel.isImagesChanged(type)) {
+      this._setClickable(view, true);
       return this._notificationView.addNotification('caution', '변경사항 없음', '수정사항이 없습니다', true);
     }
     const [accessToken, centerId] = this._userModel.getCenterInfo();
@@ -171,14 +214,17 @@ const SettingController = class {
     const { isSuccess, error, data } = await this._imageUploadModel.editImages(accessToken, centerId, type);
     console.log({ isSuccess, error, data });
     if (!isSuccess) {
+      this._setClickable(view, true);
       this._modalView.removeModal();
       this._notificationView.addNotification(error.sort, error.title, error.description, true);
     } else {
       const { isSuccess, error, data } = await this._imageUploadModel.initImages(accessToken, type);
       if (!isSuccess) {
+        this._setClickable(view, true);
         this._modalView.removeModal();
         this._notificationView.addNotification(error.sort, error.title, error.description);
       } else {
+        this._setClickable(view, true);
         const { images } = data;
         this[`_${type}ImageUploadView`].initItems(images);
         this._modalView.removeModal();

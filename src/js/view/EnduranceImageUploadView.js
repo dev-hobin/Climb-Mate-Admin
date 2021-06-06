@@ -7,6 +7,8 @@ const EnduranceImageUploadView = class extends View {
   constructor() {
     super();
 
+    this.clickable = true;
+
     // this._dragStartIndex = null;
     // this._dragEndIndex = null;
   }
@@ -102,7 +104,10 @@ const EnduranceImageUploadView = class extends View {
       this.trigger('@addImages', { type: 'endurance', fileList });
     });
     // 업로드 트리거 이벤트 달기
-    this._editBtn.addEventListener('click', () => this.trigger('@editImages', { type: 'endurance' }));
+    this._editBtn.addEventListener('click', () => {
+      if (!this.clickable) return;
+      this.trigger('@editImages', { type: 'endurance' });
+    });
   };
 
   // 리스트 아이템 만들기
@@ -152,6 +157,8 @@ const EnduranceImageUploadView = class extends View {
     // 아이템 삭제 트리거 이벤트
     const deleteBtn = item.querySelector('[data-delete-btn]');
     deleteBtn.addEventListener('click', () => {
+      if (!this.clickable) return;
+
       const deletedIndex = Array.from(item.parentNode.children).indexOf(item);
       this.trigger('@showAlert', {
         description: '정말로 삭제하시겠습니까?',

@@ -6,6 +6,8 @@ const tag = '[ToolInfoView]';
 const ToolInfoView = class extends View {
   constructor() {
     super();
+
+    this.clickable = true;
   }
 
   /* 인터페이스 */
@@ -39,6 +41,7 @@ const ToolInfoView = class extends View {
   /* 메서드 */
   _bindEvents = () => {
     this._itemList.addEventListener('click', event => {
+      if (!this.clickable) return;
       if (event.target.type !== 'checkbox') return;
       const checkbox = event.target;
       const toolType = event.target.closest('[data-item]').dataset.item;
@@ -54,7 +57,10 @@ const ToolInfoView = class extends View {
       this.trigger('@editExtraInfo', { extra: TOOL_EXTRA_INFO.HEALTH, info: textValue });
     });
 
-    this._updateBtn.addEventListener('click', () => this.trigger('@updateTool'));
+    this._updateBtn.addEventListener('click', () => {
+      if (!this.clickable) return;
+      this.trigger('@updateTool');
+    });
   };
 };
 

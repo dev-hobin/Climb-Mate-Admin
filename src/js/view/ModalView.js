@@ -7,6 +7,8 @@ const tag = '[ModalView]';
 const ModalView = class extends View {
   constructor() {
     super();
+
+    this.clickable = true;
   }
 
   /* 인터페이스 */
@@ -92,8 +94,11 @@ const ModalView = class extends View {
       case 'bordering':
       case 'endurance':
         confirm.addEventListener('click', () => {
+          if (!this.clickable) return;
+
           this.trigger('@deleteItem', { type, index });
           this.removeModal();
+          this.clickable = true;
         });
         break;
       default:
@@ -105,14 +110,18 @@ const ModalView = class extends View {
     switch (type) {
       case SINGLE_IMAGE_UPLOADER_TYPE.PRICE:
         confirm.addEventListener('click', () => {
-          this.removeModal();
+          if (!this.clickable) return;
           this.trigger('@confirmPriceImageDelete', { type });
+          this.removeModal();
+          this.clickable = true;
         });
         break;
       case SINGLE_IMAGE_UPLOADER_TYPE.LEVEL:
         confirm.addEventListener('click', () => {
-          this.removeModal();
+          if (!this.clickable) return;
           this.trigger('@confirmLevelImageDelete', { type });
+          this.removeModal();
+          this.clickable = true;
         });
         break;
       default:
@@ -122,15 +131,19 @@ const ModalView = class extends View {
   // 추가 상품 정보에서 아이템 삭제하는 이벤트
   _addExtraPriceInfoDeleteItemEvent = (confirm, { goodsName }) => {
     confirm.addEventListener('click', () => {
-      this.removeModal();
+      if (!this.clickable) return;
       this.trigger('@confirmExtraPriceItemDelete', { goodsName });
+      this.removeModal();
+      this.clickable = true;
     });
   };
   // 난이도 정보에서 아이템 삭제하는 이벤트
   _addLevelInfoDeleteItemEvent = (confirm, { type, color, levelName }) => {
     confirm.addEventListener('click', () => {
-      this.removeModal();
+      if (!this.clickable) return;
       this.trigger('@confirmLevelInfoItemDelete', { type, color, levelName });
+      this.removeModal();
+      this.clickable = true;
     });
   };
 };

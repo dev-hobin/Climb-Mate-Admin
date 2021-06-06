@@ -50,41 +50,41 @@ const BaseInfoController = class {
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
-      .on('@toggleSideMenu', event => this._toggleSideMenu(event.detail));
+      .on('@toggleSideMenu', event => this._toggleSideMenu(event));
 
     this._modalView.setup(document.querySelector('main'));
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
     this._baseCenterInfoView //
       .setup(document.querySelector(`[data-center-info]`))
-      .on('@chageExtraAddress', event => this._changeExtraAddress(event.detail))
-      .on('@changeCallNum', event => this._changeCallNum(event.detail))
-      .on('@changePhoneCallNum', event => this._changePhoneCallNum(event.detail))
-      .on('@changeIntroduce', event => this._changeIntroduce(event.detail))
-      .on('@updateCenterInfo', this._updateCenterInfo);
+      .on('@chageExtraAddress', event => this._changeExtraAddress(event))
+      .on('@changeCallNum', event => this._changeCallNum(event))
+      .on('@changePhoneCallNum', event => this._changePhoneCallNum(event))
+      .on('@changeIntroduce', event => this._changeIntroduce(event))
+      .on('@updateCenterInfo', event => this._updateCenterInfo(event));
 
     this._baseSettingInfoView //
       .setup(document.querySelector('[data-setting-info]'))
-      .on('@changeSettingRatio', event => this._changeSettingRatio(event.detail))
-      .on('@changeSettingRatioDescription', event => this._changeSettingRatioDescription(event.detail))
-      .on('@changeSettingCycle', event => this._changeSettingCycle(event.detail))
-      .on('@chageNextSettingDate', event => this._chageNextSettingDate(event.detail))
-      .on('@chageRecentSettingDate', event => this._chageRecentSettingDate(event.detail))
-      .on('@updateSettingInfo', this._updateSettingInfo);
+      .on('@changeSettingRatio', event => this._changeSettingRatio(event))
+      .on('@changeSettingRatioDescription', event => this._changeSettingRatioDescription(event))
+      .on('@changeSettingCycle', event => this._changeSettingCycle(event))
+      .on('@chageNextSettingDate', event => this._chageNextSettingDate(event))
+      .on('@chageRecentSettingDate', event => this._chageRecentSettingDate(event))
+      .on('@updateSettingInfo', event => this._updateSettingInfo(event));
 
     this._baseWorkingTimeInfoView //
       .setup(document.querySelector('[data-working-time-info]'))
-      .on('@changeWeekdayTime', event => this._changeWeekdayTime(event.detail))
-      .on('@changeWeekendTime', event => this._changeWeekendTime(event.detail))
-      .on('@changeHolidayTime', event => this._changeHolidayTime(event.detail))
-      .on('@changeNoticeTime', event => this._changeNoticeTime(event.detail))
-      .on('@updateWorkingTimeInfo', this._updateWorkingTimeInfo);
+      .on('@changeWeekdayTime', event => this._changeWeekdayTime(event))
+      .on('@changeWeekendTime', event => this._changeWeekendTime(event))
+      .on('@changeHolidayTime', event => this._changeHolidayTime(event))
+      .on('@changeNoticeTime', event => this._changeNoticeTime(event))
+      .on('@updateWorkingTimeInfo', event => this._updateWorkingTimeInfo(event));
 
     this._baseSocialInfoView //
       .setup(document.querySelector('[data-social-info]'))
-      .on('@checkSocial', event => this._checkSocial(event.detail))
-      .on('@changeSocialUrl', event => this._changeSocialUrl(event.detail))
-      .on('@updateSocialInfo', this._updateSocialInfo);
+      .on('@checkSocial', event => this._checkSocial(event))
+      .on('@changeSocialUrl', event => this._changeSocialUrl(event))
+      .on('@updateSocialInfo', event => this._updateSocialInfo(event));
 
     this._lifeCycle();
   };
@@ -175,6 +175,15 @@ const BaseInfoController = class {
     }
   };
 
+  // 중복 클릭 방지
+  _setClickable = (view, clickable) => {
+    if (clickable) {
+      view.clickable = true;
+    } else {
+      view.clickable = false;
+    }
+  };
+
   // 헤더 어드민 메뉴 토글
   _toggleAdminMenu = () => {
     this._headerView.toggleAdminMenu();
@@ -185,7 +194,8 @@ const BaseInfoController = class {
     this._sidebarView.toggleSidebar();
   };
   // 사이드 메뉴 토글
-  _toggleSideMenu = ({ menu }) => {
+  _toggleSideMenu = event => {
+    const { menu } = event.detail;
     this._sidebarView.toggleSideMenu(menu);
   };
 
@@ -193,73 +203,132 @@ const BaseInfoController = class {
   _logout = () => this._userModel.logout();
 
   // 센터 기본 정보 변경
-  _changeExtraAddress = ({ value }) => this._baseCenterInfoModel.changeExtraAddress(value);
-  _changeCallNum = ({ number, index }) => this._baseCenterInfoModel.changeCallNum(number, index);
-  _changePhoneCallNum = ({ number, index }) => this._baseCenterInfoModel.changePhoneCallNum(number, index);
-  _changeIntroduce = ({ value }) => this._baseCenterInfoModel.changeIntroduce(value);
+  _changeExtraAddress = event => {
+    const { value } = event.detail;
+    this._baseCenterInfoModel.changeExtraAddress(value);
+  };
+  _changeCallNum = event => {
+    const { number, index } = event.detail;
+    this._baseCenterInfoModel.changeCallNum(number, index);
+  };
+  _changePhoneCallNum = event => {
+    const { number, index } = event.detail;
+    this._baseCenterInfoModel.changePhoneCallNum(number, index);
+  };
+  _changeIntroduce = event => {
+    const { value } = event.detail;
+    this._baseCenterInfoModel.changeIntroduce(value);
+  };
 
-  _updateCenterInfo = async () => {
+  _updateCenterInfo = async event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
+
     const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('센터 정보 수정중입니다');
     const { isSuccess, error, data } = await this._baseCenterInfoModel.update(accessToken, centerId);
     this._modalView.removeModal();
 
-    if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-    return this._notificationView.addNotification(
-      'success',
-      '센터 정보 수정',
-      '센터 정보가 정상적으로 수정되었습니다',
-      true
-    );
+    if (!isSuccess) {
+      this._setClickable(view, true);
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
+    } else {
+      this._setClickable(view, true);
+      this._notificationView.addNotification(
+        'success',
+        '센터 정보 수정',
+        '센터 정보가 정상적으로 수정되었습니다',
+        true
+      );
+    }
   };
 
   // 센터 세팅 정보 변경
-  _changeSettingRatio = ({ bordering, endurance }) =>
+  _changeSettingRatio = event => {
+    const { bordering, endurance } = event.detail;
     this._baseSettingInfoModel.changeSettingRatio(bordering, endurance);
-  _changeSettingRatioDescription = ({ value }) => this._baseSettingInfoModel.changeSettingRatioDescription(value);
-  _changeSettingCycle = ({ value }) => this._baseSettingInfoModel.changeSettingCycle(value);
-  _chageNextSettingDate = ({ value }) => this._baseSettingInfoModel.chageNextSettingDate(value);
-  _chageRecentSettingDate = ({ value }) => this._baseSettingInfoModel.chageRecentSettingDate(value);
+  };
+  _changeSettingRatioDescription = event => {
+    const { value } = event.detail;
+    this._baseSettingInfoModel.changeSettingRatioDescription(value);
+  };
+  _changeSettingCycle = event => {
+    const { value } = event.detail;
+    this._baseSettingInfoModel.changeSettingCycle(value);
+  };
+  _chageNextSettingDate = event => {
+    const { value } = event.detail;
+    this._baseSettingInfoModel.chageNextSettingDate(value);
+  };
+  _chageRecentSettingDate = event => {
+    const { value } = event.detail;
+    this._baseSettingInfoModel.chageRecentSettingDate(value);
+  };
 
-  _updateSettingInfo = async () => {
+  _updateSettingInfo = async event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
+
     const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('세팅 정보 수정중입니다');
     const { isSuccess, error, data } = await this._baseSettingInfoModel.update(accessToken, centerId);
     this._modalView.removeModal();
 
-    if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-    return this._notificationView.addNotification(
-      'success',
-      '세팅 정보 수정',
-      '성공적으로 세팅 정보를 수정했습니다',
-      true
-    );
+    if (!isSuccess) {
+      this._setClickable(view, true);
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
+    } else {
+      this._setClickable(view, true);
+      this._notificationView.addNotification('success', '세팅 정보 수정', '성공적으로 세팅 정보를 수정했습니다', true);
+    }
   };
 
   // 운영시간 정보 변경
-  _changeWeekdayTime = ({ value }) => this._baseWorkingTimeInfoModel.changeWeekdayTime(value);
-  _changeWeekendTime = ({ value }) => this._baseWorkingTimeInfoModel.changeWeekendTime(value);
-  _changeHolidayTime = ({ value }) => this._baseWorkingTimeInfoModel.changeHolidayTime(value);
-  _changeNoticeTime = ({ value }) => this._baseWorkingTimeInfoModel.changeNoticeTime(value);
+  _changeWeekdayTime = event => {
+    const { value } = event.detail;
+    this._baseWorkingTimeInfoModel.changeWeekdayTime(value);
+  };
+  _changeWeekendTime = event => {
+    const { value } = event.detail;
+    this._baseWorkingTimeInfoModel.changeWeekendTime(value);
+  };
+  _changeHolidayTime = event => {
+    const { value } = event.detail;
+    this._baseWorkingTimeInfoModel.changeHolidayTime(value);
+  };
+  _changeNoticeTime = event => {
+    const { value } = event.detail;
+    this._baseWorkingTimeInfoModel.changeNoticeTime(value);
+  };
 
-  _updateWorkingTimeInfo = async () => {
+  _updateWorkingTimeInfo = async event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
+
     const [accessToken, centerId] = this._userModel.getCenterInfo();
 
     this._modalView.showLoadingModal('운영시간 정보 수정중입니다');
     const { isSuccess, error, data } = await this._baseWorkingTimeInfoModel.update(accessToken, centerId);
     this._modalView.removeModal();
 
-    if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-    this._notificationView.addNotification(
-      'success',
-      '운영시간 정보 수정',
-      '성공적으로 운영시간 정보를 수정했습니다',
-      true
-    );
+    if (!isSuccess) {
+      this._setClickable(view, true);
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
+    } else {
+      this._setClickable(view, true);
+      this._notificationView.addNotification(
+        'success',
+        '운영시간 정보 수정',
+        '성공적으로 운영시간 정보를 수정했습니다',
+        true
+      );
+    }
   };
 
   // 소셜 정보 변경
-  _checkSocial = ({ socialType, overCount }) => {
+  _checkSocial = event => {
+    const { socialType, overCount } = event.detail;
+
     if (overCount) {
       this._notificationView.addNotification(
         'caution',
@@ -270,18 +339,26 @@ const BaseInfoController = class {
       this._baseSocialInfoModel.checkSocial(socialType);
     }
   };
-  _changeSocialUrl = ({ socialType, url }) => {
+  _changeSocialUrl = event => {
+    const { socialType, url } = event.detail;
     this._baseSocialInfoModel.changeSocialUrl(socialType, url);
   };
-  _updateSocialInfo = async () => {
+  _updateSocialInfo = async event => {
+    const view = event.currentTarget;
+    this._setClickable(view, false);
     const [accessToken, centerId] = this._userModel.getCenterInfo();
 
     this._modalView.showLoadingModal('소셜 정보를 수정중입니다');
     const { isSuccess, error, data } = await this._baseSocialInfoModel.update(accessToken, centerId);
     this._modalView.removeModal();
 
-    if (!isSuccess) return this._notificationView.addNotification(error.sort, error.title, error.description, true);
-    this._notificationView.addNotification('success', '소셜 정보 수정', '성공적으로 소셜 정보를 수정했습니다', true);
+    if (!isSuccess) {
+      this._setClickable(view, true);
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
+    } else {
+      this._setClickable(view, true);
+      this._notificationView.addNotification('success', '소셜 정보 수정', '성공적으로 소셜 정보를 수정했습니다', true);
+    }
   };
 };
 

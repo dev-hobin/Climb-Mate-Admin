@@ -7,6 +7,8 @@ const BorderingImageUploadView = class extends View {
   constructor() {
     super();
 
+    this.clickable = true;
+
     // this._dragStartIndex = null;
     // this._dragEndIndex = null;
   }
@@ -103,7 +105,10 @@ const BorderingImageUploadView = class extends View {
       this.trigger('@addImages', { type: 'bordering', fileList });
     });
     // 업로드 트리거 이벤트 달기
-    this._editBtn.addEventListener('click', () => this.trigger('@editImages', { type: 'bordering' }));
+    this._editBtn.addEventListener('click', () => {
+      if (!this.clickable) return;
+      this.trigger('@editImages', { type: 'bordering' });
+    });
   };
 
   // 리스트 아이템 만들기

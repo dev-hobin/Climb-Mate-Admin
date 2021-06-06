@@ -5,6 +5,8 @@ const tag = '[LoginView]';
 const LoginView = class extends View {
   constructor() {
     super();
+
+    this.clickable = true;
   }
 
   /* 인터페이스 */
@@ -23,6 +25,8 @@ const LoginView = class extends View {
   /* 메서드 */
   _bindEvents = () => {
     this._loginBtn.addEventListener('click', () => {
+      if (!this.clickable) return;
+
       const id = this._idInput.value.trim();
       const password = this._passwordInput.value.trim();
 

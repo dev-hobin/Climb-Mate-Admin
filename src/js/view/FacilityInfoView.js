@@ -6,6 +6,8 @@ const tag = '[FacilityInfoView]';
 const FacilityInfoView = class extends View {
   constructor() {
     super();
+
+    this.clickable = true;
   }
 
   /* 인터페이스 */
@@ -41,6 +43,7 @@ const FacilityInfoView = class extends View {
   /* 메서드 */
   _bindEvents = () => {
     this._itemList.addEventListener('click', event => {
+      if (!this.clickable) return;
       if (event.target.type !== 'checkbox') return;
       const checkbox = event.target;
       const facilityType = event.target.closest('[data-item]').dataset.item;
@@ -57,7 +60,10 @@ const FacilityInfoView = class extends View {
       this.trigger('@editExtraInfo', { extra: FACILITY_EXTRA_INFO.PARKING_LOT, info: textValue });
     });
 
-    this._updateBtn.addEventListener('click', () => this.trigger('@updateFacility'));
+    this._updateBtn.addEventListener('click', () => {
+      if (!this.clickable) return;
+      this.trigger('@updateFacility');
+    });
   };
 };
 

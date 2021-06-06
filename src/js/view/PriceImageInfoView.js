@@ -8,6 +8,8 @@ const PriceImageInfoView = class extends View {
   constructor() {
     super();
 
+    this.clickable = true;
+
     this._template = new Template();
   }
 
@@ -56,6 +58,7 @@ const PriceImageInfoView = class extends View {
     });
 
     this._btnContainer.addEventListener('click', event => {
+      if (!this.clickable) return;
       const btnType = event.target.dataset.btn;
       if (!btnType) return;
       switch (true) {

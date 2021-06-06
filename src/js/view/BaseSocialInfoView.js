@@ -7,6 +7,8 @@ const tag = '[BaseSocialInfoView]';
 const BaseSocialInfoView = class extends View {
   constructor() {
     super();
+
+    this.clickable = true;
   }
 
   /* 인터페이스 */
@@ -57,6 +59,7 @@ const BaseSocialInfoView = class extends View {
     });
 
     this._updateBtn.addEventListener('click', () => {
+      if (!this.clickable) return;
       this.trigger('@updateSocialInfo');
     });
   };
