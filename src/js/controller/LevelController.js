@@ -229,15 +229,13 @@ const LevelController = class {
   };
   // 난이도 이미지 삭제
   _deleteLevelImage = async event => {
-    const { view, type } = event.detail;
-    this._setClickable(view, false);
+    const { type } = event.detail;
 
     const [accessToken, centerId] = this._userModel.getCenterInfo();
 
     this._modalView.showLoadingModal('사진을 삭제중입니다');
     const { isSuccess, error, data } = await this._singleImageUploadModel.deleteImage(type, accessToken, centerId);
     if (!isSuccess) {
-      this._setClickable(view, true);
       this._modalView.removeModal();
       this._notificationView.addNotification(error.sort, error.title, error.description, true);
     } else {
@@ -256,7 +254,6 @@ const LevelController = class {
         const { imageUrl } = levelImageInitData;
         this._levelImageInfoView.setImage(imageUrl);
       }
-      this._setClickable(view, true);
       this._modalView.removeModal();
       this._notificationView.addNotification('success', '사진 삭제 완료', '성공적으로 사진을 삭제했습니다', true);
     }
@@ -312,8 +309,7 @@ const LevelController = class {
     }
   };
   _deleteLevelItem = async event => {
-    const { view, type, color, levelName } = event.detail;
-    this._setClickable(view, false);
+    const { type, color, levelName } = event.detail;
 
     const [accessToken, centerId] = this._userModel.getCenterInfo();
 
@@ -327,13 +323,11 @@ const LevelController = class {
     );
     this._modalView.removeModal();
     if (!isSuccess) {
-      this._setClickable(view, true);
       const { sort, title, description } = error;
       this._notificationView.addNotification(sort, title, description, true);
     } else {
       const { isSuccess, error, data } = await this._levelInfoModel.initInfo(accessToken, type);
       if (!isSuccess) {
-        this._setClickable(view, true);
         this._notificationView.addNotification(error.sort, error.title, error.description, true);
       } else {
         const { levelInfo } = data;
@@ -348,7 +342,6 @@ const LevelController = class {
           default:
             throw '사용할 수 없는 난이도 타입입니다';
         }
-        this._setClickable(view, true);
         this._notificationView.addNotification(
           'success',
           '난이도 정보 삭제 성공',

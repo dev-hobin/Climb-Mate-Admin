@@ -96,7 +96,7 @@ const ModalView = class extends View {
         confirm.addEventListener('click', () => {
           if (!this.clickable) return;
 
-          this.trigger('@deleteItem', { view: this, type, index });
+          this.trigger('@deleteItem', { type, index });
           this.removeModal();
           this.clickable = true;
         });
@@ -112,7 +112,7 @@ const ModalView = class extends View {
         confirm.addEventListener('click', () => {
           if (!this.clickable) return;
 
-          this.trigger('@confirmPriceImageDelete', { view: this, type });
+          this.trigger('@confirmPriceImageDelete', { type });
           this.removeModal();
           this.clickable = true;
         });
@@ -121,7 +121,7 @@ const ModalView = class extends View {
         confirm.addEventListener('click', () => {
           if (!this.clickable) return;
 
-          this.trigger('@confirmLevelImageDelete', { view: this, type });
+          this.trigger('@confirmLevelImageDelete', { type });
           this.removeModal();
           this.clickable = true;
         });
@@ -135,7 +135,7 @@ const ModalView = class extends View {
     confirm.addEventListener('click', () => {
       if (!this.clickable) return;
 
-      this.trigger('@confirmExtraPriceItemDelete', { view: this, goodsName });
+      this.trigger('@confirmExtraPriceItemDelete', { goodsName });
       this.removeModal();
       this.clickable = true;
     });
@@ -145,7 +145,7 @@ const ModalView = class extends View {
     confirm.addEventListener('click', () => {
       if (!this.clickable) return;
 
-      this.trigger('@confirmLevelInfoItemDelete', { view: this, type, color, levelName });
+      this.trigger('@confirmLevelInfoItemDelete', { type, color, levelName });
       this.removeModal();
       this.clickable = true;
     });

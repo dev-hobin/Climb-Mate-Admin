@@ -225,14 +225,12 @@ const PriceController = class {
   };
   // 가격표 이미지 삭제
   _deletePriceImage = async event => {
-    const { view, type } = event.detail;
-    this._setClickable(view, false);
+    const { type } = event.detail;
 
     const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('사진을 삭제중입니다');
     const { isSuccess, error, data } = await this._singleImageUploadModel.deleteImage(type, accessToken, centerId);
     if (!isSuccess) {
-      this._setClickable(view, true);
       this._modalView.removeModal();
       this._notificationView.addNotification(error.sort, error.title, error.description, true);
     } else {
@@ -243,14 +241,12 @@ const PriceController = class {
       } = await this._singleImageUploadModel.initImage(accessToken, SINGLE_IMAGE_UPLOADER_TYPE.PRICE);
       this._modalView.removeModal();
       if (!isPriceImageInitSuccess) {
-        this._setClickable(view, true);
         this._notificationView.addNotification(
           priceImageInitError.sort,
           priceImageInitError.title,
           priceImageInitError.description
         );
       } else {
-        this._setClickable(view, true);
         const { imageUrl } = priceImageInitData;
         this._priceImageInfoView.setImage(imageUrl);
         this._notificationView.addNotification('success', '사진 삭제 완료', '성공적으로 사진을 삭제했습니다', true);
@@ -314,19 +310,16 @@ const PriceController = class {
   };
   // 추가 상품 정보 삭제
   _deleteExtraItem = async event => {
-    const { view, goodsName } = event.detail;
-    this._setClickable(view, false);
+    const { goodsName } = event.detail;
 
     const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('상품을 삭제중입니다');
     const { isSuccess, error, data } = await this._extraPriceInfoModel.deleteItem(accessToken, centerId, goodsName);
     this._modalView.removeModal();
     if (!isSuccess) {
-      this._setClickable(view, true);
       const { sort, title, description } = error;
       this._notificationView.addNotification(sort, title, description, true);
     } else {
-      this._setClickable(view, true);
       const { goodsName: name } = data;
       this._extraPriceInfoView.deleteItem(name);
       this._notificationView.addNotification('success', '상품 정보 삭제 성공', '성공적으로 상품을 삭제했습니다', true);

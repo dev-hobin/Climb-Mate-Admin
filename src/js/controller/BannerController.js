@@ -156,14 +156,11 @@ const BannerController = class {
   };
   // 이미지 삭제
   _deleteImage = event => {
-    const { view, type, index } = event.detail;
-    this._setClickable(view, false);
+    const { type, index } = event.detail;
 
     this._imageUploadModel.addDeletedImages(type, index);
     this[`_${type}ImageUploadView`].removeItem(index);
     console.log(tag, type, '이미지 삭제');
-
-    this._setClickable(view, true);
   };
   // 이미지 자리 변경
   _changeImageLocation = event => {
