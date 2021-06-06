@@ -102,12 +102,12 @@ const BorderingImageUploadView = class extends View {
     this._imageInput.addEventListener('change', event => {
       if (event.target.files.length === 0) return;
       const fileList = [...event.target.files];
-      this.trigger('@addImages', { type: 'bordering', fileList });
+      this.trigger('@addImages', { view: this, type: 'bordering', fileList });
     });
     // 업로드 트리거 이벤트 달기
     this._editBtn.addEventListener('click', () => {
       if (!this.clickable) return;
-      this.trigger('@editImages', { type: 'bordering' });
+      this.trigger('@editImages', { view: this, type: 'bordering' });
     });
   };
 
@@ -160,6 +160,7 @@ const BorderingImageUploadView = class extends View {
     deleteBtn.addEventListener('click', () => {
       const deletedIndex = Array.from(item.parentNode.children).indexOf(item);
       this.trigger('@showAlert', {
+        view: this,
         description: '정말로 삭제하시겠습니까?',
         eventInfo: {
           eventName: 'image-uploader__delete-image',

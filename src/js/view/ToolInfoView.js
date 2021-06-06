@@ -45,7 +45,7 @@ const ToolInfoView = class extends View {
       if (event.target.type !== 'checkbox') return;
       const checkbox = event.target;
       const toolType = event.target.closest('[data-item]').dataset.item;
-      this.trigger('@checkTool', { toolType, checked: checkbox.checked });
+      this.trigger('@checkTool', { view: this, toolType, checked: checkbox.checked });
       // 헬스도구 체크 해제했을 경우 텍스트 박스 안보이게
       if (toolType === TOOL_TYPE.HEATH) {
         if (checkbox.checked) this._healthTextContainer.classList.add('show');
@@ -54,12 +54,12 @@ const ToolInfoView = class extends View {
     });
     this._healthTextArea.addEventListener('keyup', event => {
       const textValue = event.target.value;
-      this.trigger('@editExtraInfo', { extra: TOOL_EXTRA_INFO.HEALTH, info: textValue });
+      this.trigger('@editExtraInfo', { view: this, extra: TOOL_EXTRA_INFO.HEALTH, info: textValue });
     });
 
     this._updateBtn.addEventListener('click', () => {
       if (!this.clickable) return;
-      this.trigger('@updateTool');
+      this.trigger('@updateTool', { view: this });
     });
   };
 };

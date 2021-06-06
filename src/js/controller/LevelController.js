@@ -166,7 +166,7 @@ const LevelController = class {
   };
   // 경고 모달 보여주기
   _showAlertModal = event => {
-    const view = event.currentTarget;
+    const { view } = event.detail;
     this._setClickable(view, false);
 
     const { description, eventInfo } = event.detail;
@@ -180,13 +180,18 @@ const LevelController = class {
 
   // 난이도 이미지 변경
   _changeLevelImage = event => {
+    const { view } = event.detail;
+    this._setClickable(view, false);
+
     const { type, fileList } = event.detail;
     this._singleImageUploadModel.changeCurrentImage(type, fileList);
     this._levelImageInfoView.setTempImage(fileList[0]);
+
+    this._setClickable(view, true);
   };
   // 난이도 이미지 변경 확인
   _confirmLevelImage = async event => {
-    const view = event.currentTarget;
+    const { view } = event.detail;
     this._setClickable(view, false);
 
     const { type } = event.detail;
@@ -214,16 +219,19 @@ const LevelController = class {
   };
   // 난이도 이미지 변경 취소
   _cancelLevelImage = event => {
-    const { type } = event.detail;
+    const { view, type } = event.detail;
+    this._setClickable(view, false);
+
     const initialImageUrl = this._singleImageUploadModel.cancelImage(type);
     this._levelImageInfoView.setImage(initialImageUrl);
+
+    this._setClickable(view, true);
   };
   // 난이도 이미지 삭제
   _deleteLevelImage = async event => {
-    const view = event.currentTarget;
+    const { view, type } = event.detail;
     this._setClickable(view, false);
 
-    const { type } = event.detail;
     const [accessToken, centerId] = this._userModel.getCenterInfo();
 
     this._modalView.showLoadingModal('사진을 삭제중입니다');
@@ -256,10 +264,9 @@ const LevelController = class {
 
   // 난이도 아이템 추가
   _addLevelItem = async event => {
-    const view = event.currentTarget;
+    const { view, type, color, colorName, levelName } = event.detail;
     this._setClickable(view, false);
 
-    const { type, color, colorName, levelName } = event.detail;
     const [accessToken, centerId] = this._userModel.getCenterInfo();
 
     this._modalView.showLoadingModal('난이도 정보 추가중입니다');
@@ -305,10 +312,9 @@ const LevelController = class {
     }
   };
   _deleteLevelItem = async event => {
-    const view = event.currentTarget;
+    const { view, type, color, levelName } = event.detail;
     this._setClickable(view, false);
 
-    const { type, color, levelName } = event.detail;
     const [accessToken, centerId] = this._userModel.getCenterInfo();
 
     this._modalView.showLoadingModal('난이도 아이템 삭제중입니다');
@@ -353,11 +359,17 @@ const LevelController = class {
     }
   };
   _editLevelItem = async event => {
-    const view = event.currentTarget;
+    const {
+      view,
+      type,
+      initialColor,
+      initialColorName,
+      initialLevelName,
+      currentColor,
+      currentColorName,
+      currentLevelName,
+    } = event.detail;
     this._setClickable(view, false);
-
-    const { type, initialColor, initialColorName, initialLevelName, currentColor, currentColorName, currentLevelName } =
-      event.detail;
 
     const [accessToken, centerId] = this._userModel.getCenterInfo();
 

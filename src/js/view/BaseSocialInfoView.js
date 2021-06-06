@@ -44,9 +44,9 @@ const BaseSocialInfoView = class extends View {
         const socialType = event.target.closest('[data-social-item]').dataset.socialItem;
         if (this._getCheckedCount() > 2) {
           event.target.checked = false;
-          this.trigger('@checkSocial', { socialType, overCount: true });
+          this.trigger('@checkSocial', { view: this, socialType, overCount: true });
         } else {
-          this.trigger('@checkSocial', { socialType, overCount: false });
+          this.trigger('@checkSocial', { view: this, socialType, overCount: false });
         }
       });
     });
@@ -54,13 +54,13 @@ const BaseSocialInfoView = class extends View {
     this._urlInputs.forEach(input => {
       input.addEventListener('input', event => {
         const socialType = event.target.closest('[data-social-item]').dataset.socialItem;
-        this.trigger('@changeSocialUrl', { socialType, url: event.target.value });
+        this.trigger('@changeSocialUrl', { view: this, socialType, url: event.target.value });
       });
     });
 
     this._updateBtn.addEventListener('click', () => {
       if (!this.clickable) return;
-      this.trigger('@updateSocialInfo');
+      this.trigger('@updateSocialInfo', { view: this });
     });
   };
 

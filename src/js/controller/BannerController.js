@@ -116,7 +116,8 @@ const BannerController = class {
 
   // 이미지 추가
   _addImages = async event => {
-    const { type, fileList } = event.detail;
+    const { view, type, fileList } = event.detail;
+    this._setClickable(view, false);
 
     const currentImages = this._imageUploadModel.getCurrentImages(type);
     // 추가한 파일들 유효성 검사하여 유효성 검사 통과한 이미지 파일들과 유효성 검사 실패한 이유가 담긴 에러 리스트 반환
@@ -134,28 +135,35 @@ const BannerController = class {
       console.log(tag, type, '이미지 리스트에 아이템들 추가');
     }
 
-    if (errorList.length === 0) return;
-    for (const errorInfo of errorList) {
-      const { title, description } = errorInfo;
-      this._notificationView.addNotification('error', title, description);
+    if (errorList.length === 0) {
+      this._setClickable(view, true);
+    } else {
+      for (const errorInfo of errorList) {
+        const { title, description } = errorInfo;
+        this._notificationView.addNotification('error', title, description);
+      }
+      this._setClickable(view, true);
     }
   };
   // 경고 모달 보여주기
   _showAlertModal = event => {
-    const view = event.currentTarget;
+    const { view, description, eventInfo } = event.detail;
     this._setClickable(view, false);
 
-    const { description, eventInfo } = event.detail;
     this._modalView.showAlertModal(description, eventInfo);
 
     this._setClickable(view, true);
   };
   // 이미지 삭제
   _deleteImage = event => {
-    const { type, index } = event.detail;
+    const { view, type, index } = event.detail;
+    this._setClickable(view, false);
+
     this._imageUploadModel.addDeletedImages(type, index);
     this[`_${type}ImageUploadView`].removeItem(index);
     console.log(tag, type, '이미지 삭제');
+
+    this._setClickable(view, true);
   };
   // 이미지 자리 변경
   _changeImageLocation = event => {
@@ -164,7 +172,8 @@ const BannerController = class {
   };
   // 이미지 수정
   _editImages = async event => {
-    const { type } = event.detail;
+    const { view, type } = event.detail;
+    this._setClickable(view, false);
 
     if (!this._imageUploadModel.isImagesChanged(type)) {
       return this._notificationView.addNotification('caution', '변경사항 없음', '수정사항이 없습니다', true);
@@ -174,6 +183,7 @@ const BannerController = class {
     const { isSuccess, error, data } = await this._imageUploadModel.editImages(accessToken, centerId, type);
     console.log({ isSuccess, error, data });
     if (!isSuccess) {
+      this._setClickable(view, true);
       this._modalView.removeModal();
       this._notificationView.addNotification(error.sort, error.title, error.description, true);
     } else {
@@ -183,6 +193,7 @@ const BannerController = class {
         data: bannerInfoInitData,
       } = await this._imageUploadModel.initImages(accessToken, type);
       if (!isBannerInfoInitSuccess) {
+        this._setClickable(view, true);
         this._modalView.removeModal();
         this._notificationView.addNotification(
           bannerInfoInitError.sort,
@@ -192,6 +203,7 @@ const BannerController = class {
       } else {
         const { images } = bannerInfoInitData;
         this._bannerImageUploadView.initItems(images);
+        this._setClickable(view, true);
         this._modalView.removeModal();
         this._notificationView.addNotification('success', '사진 수정 완료', '성공적으로 사진을 수정했습니다', true);
       }

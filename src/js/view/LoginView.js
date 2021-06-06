@@ -33,7 +33,7 @@ const LoginView = class extends View {
       if (!id) return this._idInput.focus();
       if (!password) return this._passwordInput.focus();
 
-      this.trigger('@login', { id, password });
+      this.trigger('@login', { view: this, id, password });
     });
   };
 };

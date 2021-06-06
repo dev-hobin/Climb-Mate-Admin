@@ -140,10 +140,8 @@ const SettingController = class {
 
   // 이미지 추가
   _addImages = async event => {
-    const view = event.currentTarget;
+    const { view, type, fileList } = event.detail;
     this._setClickable(view, false);
-
-    const { type, fileList } = event.detail;
 
     const currentImages = this._imageUploadModel.getCurrentImages(type);
     // 추가한 파일들 유효성 검사하여 유효성 검사 통과한 이미지 파일들과 유효성 검사 실패한 이유가 담긴 에러 리스트 반환
@@ -173,24 +171,22 @@ const SettingController = class {
   };
   // 경고 모달 보여주기
   _showAlertModal = event => {
-    const view = event.currentTarget;
+    const { view, description, eventInfo } = event.detail;
     this._setClickable(view, false);
 
-    const { description, eventInfo } = event.detail;
     this._modalView.showAlertModal(description, eventInfo);
 
     this._setClickable(view, true);
   };
   // 이미지 삭제
   _deleteImage = event => {
-    const view = event.currentTarget;
+    const { view, type, index } = event.detail;
     this._setClickable(view, false);
-
-    const { type, index } = event.detail;
 
     this._imageUploadModel.addDeletedImages(type, index);
     this[`_${type}ImageUploadView`].removeItem(index);
     console.log(tag, type, '이미지 삭제');
+
     this._setClickable(view, true);
   };
   // // 이미지 자리 변경
@@ -200,10 +196,8 @@ const SettingController = class {
 
   // 이미지 수정
   _editImages = async event => {
-    const view = event.currentTarget;
+    const { view, type } = event.detail;
     this._setClickable(view, false);
-
-    const { type } = event.detail;
 
     if (!this._imageUploadModel.isImagesChanged(type)) {
       this._setClickable(view, true);
@@ -220,14 +214,14 @@ const SettingController = class {
     } else {
       const { isSuccess, error, data } = await this._imageUploadModel.initImages(accessToken, type);
       if (!isSuccess) {
-        this._setClickable(view, true);
         this._modalView.removeModal();
+        this._setClickable(view, true);
         this._notificationView.addNotification(error.sort, error.title, error.description);
       } else {
-        this._setClickable(view, true);
         const { images } = data;
         this[`_${type}ImageUploadView`].initItems(images);
         this._modalView.removeModal();
+        this._setClickable(view, true);
         this._notificationView.addNotification('success', '사진 수정 완료', '성공적으로 사진을 수정했습니다', true);
       }
     }

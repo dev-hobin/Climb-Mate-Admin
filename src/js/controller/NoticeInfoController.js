@@ -72,10 +72,9 @@ const NoticeInfoController = class {
   };
   // 경고 모달 보여주기
   _showAlertModal = event => {
-    const view = event.currentTarget;
+    const { view, description, eventInfo } = event.detail;
     this._setClickable(view, false);
 
-    const { description, eventInfo } = event.detail;
     this._modalView.showAlertModal(description, eventInfo);
 
     this._setClickable(view, true);

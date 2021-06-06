@@ -137,6 +137,7 @@ const BorderingLevelInfoView = class extends View {
           initialColor = colorContainer.querySelector('[data-item-color]').dataset.itemColor;
           initialLevelName = levelNameContainer.querySelector('[data-level-name]').textContent;
           this.trigger('@showAlert', {
+            view: this,
             description: '정말로 삭제하시겠습니까?',
             eventInfo: {
               eventName: 'level-info__delete-item',
@@ -208,6 +209,7 @@ const BorderingLevelInfoView = class extends View {
           if (!currentLevelName) return colorContainer.querySelector('[data-color-name-input]').focus();
 
           this.trigger('@confirmEditItem', {
+            view: this,
             type: LEVEL_INFO_TYPE.BORDERING,
             initialColor,
             initialColorName,
@@ -246,7 +248,7 @@ const BorderingLevelInfoView = class extends View {
       if (!colorName) return this._colorNameInput.focus();
       if (!levelName) return this._levelNameInput.focus();
 
-      this.trigger('@addItem', { type: LEVEL_INFO_TYPE.BORDERING, color, colorName, levelName });
+      this.trigger('@addItem', { view: this, type: LEVEL_INFO_TYPE.BORDERING, color, colorName, levelName });
     });
   };
 

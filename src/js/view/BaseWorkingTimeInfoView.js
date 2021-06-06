@@ -44,21 +44,21 @@ const BaseWorkingTimeInfoView = class extends View {
   /* 메서드 */
   _bindEvents = () => {
     this._weekdayInput.addEventListener('input', event => {
-      this.trigger('@changeWeekdayTime', { value: event.target.value });
+      this.trigger('@changeWeekdayTime', { view: this, value: event.target.value });
     });
     this._weekendInput.addEventListener('input', event => {
-      this.trigger('@changeWeekendTime', { value: event.target.value });
+      this.trigger('@changeWeekendTime', { view: this, value: event.target.value });
     });
     this._holidayInput.addEventListener('input', event => {
-      this.trigger('@changeHolidayTime', { value: event.target.value });
+      this.trigger('@changeHolidayTime', { view: this, value: event.target.value });
     });
     this._noticeInput.addEventListener('input', event => {
-      this.trigger('@changeNoticeTime', { value: event.target.value });
+      this.trigger('@changeNoticeTime', { view: this, value: event.target.value });
     });
 
     this._updateBtn.addEventListener('click', () => {
       if (!this.clickable) return;
-      this.trigger('@updateWorkingTimeInfo');
+      this.trigger('@updateWorkingTimeInfo', { view: this });
     });
   };
 };

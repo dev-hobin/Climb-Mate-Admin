@@ -54,7 +54,7 @@ const PriceImageInfoView = class extends View {
     this._imageInput.addEventListener('change', event => {
       if (event.target.files.length === 0) return;
       const fileList = [...event.target.files];
-      this.trigger('@changeImage', { type: SINGLE_IMAGE_UPLOADER_TYPE.PRICE, fileList });
+      this.trigger('@changeImage', { view: this, type: SINGLE_IMAGE_UPLOADER_TYPE.PRICE, fileList });
     });
 
     this._btnContainer.addEventListener('click', event => {
@@ -63,13 +63,14 @@ const PriceImageInfoView = class extends View {
       if (!btnType) return;
       switch (true) {
         case btnType === 'confirm':
-          this.trigger('@confirmImage', { type: SINGLE_IMAGE_UPLOADER_TYPE.PRICE });
+          this.trigger('@confirmImage', { view: this, type: SINGLE_IMAGE_UPLOADER_TYPE.PRICE });
           break;
         case btnType === 'cancel':
-          this.trigger('@cancelImage', { type: SINGLE_IMAGE_UPLOADER_TYPE.PRICE });
+          this.trigger('@cancelImage', { view: this, type: SINGLE_IMAGE_UPLOADER_TYPE.PRICE });
           break;
         case btnType === 'delete':
           this.trigger('@showAlert', {
+            view: this,
             description: '정말로 삭제하시겠습니까?',
             eventInfo: {
               eventName: 'single-image-uploader__delete-image',

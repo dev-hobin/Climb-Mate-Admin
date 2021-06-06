@@ -165,10 +165,9 @@ const PriceController = class {
   };
   // 경고 모달 보여주기
   _showAlertModal = event => {
-    const view = event.currentTarget;
+    const { view, description, eventInfo } = event.detail;
     this._setClickable(view, false);
 
-    const { description, eventInfo } = event.detail;
     this._modalView.showAlertModal(description, eventInfo);
 
     this._setClickable(view, true);
@@ -179,16 +178,18 @@ const PriceController = class {
 
   // 가격표 이미지 변경
   _changePriceImage = event => {
-    const { type, fileList } = event.detail;
+    const { view, type, fileList } = event.detail;
+    this._setClickable(view, false);
+
     this._singleImageUploadModel.changeCurrentImage(type, fileList);
     this._priceImageInfoView.setTempImage(fileList[0]);
+
+    this._setClickable(view, true);
   };
   // 가격표 이미지 변경 확인
   _confirmPriceImage = async event => {
-    const view = event.currentTarget;
+    const { view, type } = event.detail;
     this._setClickable(view, false);
-
-    const { type } = event.detail;
 
     const [accessToken, centerId] = this._userModel.getCenterInfo();
     const centerName = await this._userModel.getName();
@@ -201,44 +202,46 @@ const PriceController = class {
       centerName
     );
     if (!isSuccess) {
-      this._setClickable(view, true);
       this._modalView.removeModal();
+      this._setClickable(view, true);
       this._notificationView.addNotification(error.sort, error.title, error.description, true);
     } else {
-      this._setClickable(view, true);
       const { imgUrl } = data;
       this._priceImageInfoView.setImage(imgUrl);
       this._modalView.removeModal();
+      this._setClickable(view, true);
       this._notificationView.addNotification('success', '사진 수정 완료', '성공적으로 사진을 수정했습니다', true);
     }
   };
   // 가격표 이미지 변경 취소
   _cancelPriceImage = event => {
-    const { type } = event.detail;
+    const { view, type } = event.detail;
+    this._setClickable(view, false);
 
     const initialImageUrl = this._singleImageUploadModel.cancelImage(type);
     this._priceImageInfoView.setImage(initialImageUrl);
+
+    this._setClickable(view, true);
   };
   // 가격표 이미지 삭제
   _deletePriceImage = async event => {
-    const view = event.currentTarget;
+    const { view, type } = event.detail;
     this._setClickable(view, false);
 
-    const { type } = event.detail;
     const [accessToken, centerId] = this._userModel.getCenterInfo();
-
     this._modalView.showLoadingModal('사진을 삭제중입니다');
     const { isSuccess, error, data } = await this._singleImageUploadModel.deleteImage(type, accessToken, centerId);
     if (!isSuccess) {
-      this._setClickable(view, false);
+      this._setClickable(view, true);
       this._modalView.removeModal();
-      return this._notificationView.addNotification(error.sort, error.title, error.description, true);
+      this._notificationView.addNotification(error.sort, error.title, error.description, true);
     } else {
       const {
         isSuccess: isPriceImageInitSuccess,
         error: priceImageInitError,
         data: priceImageInitData,
       } = await this._singleImageUploadModel.initImage(accessToken, SINGLE_IMAGE_UPLOADER_TYPE.PRICE);
+      this._modalView.removeModal();
       if (!isPriceImageInitSuccess) {
         this._setClickable(view, true);
         this._notificationView.addNotification(
@@ -250,7 +253,6 @@ const PriceController = class {
         this._setClickable(view, true);
         const { imageUrl } = priceImageInitData;
         this._priceImageInfoView.setImage(imageUrl);
-        this._modalView.removeModal();
         this._notificationView.addNotification('success', '사진 삭제 완료', '성공적으로 사진을 삭제했습니다', true);
       }
     }
@@ -258,10 +260,9 @@ const PriceController = class {
 
   // 필수 상품 정보 수정
   _editNecessaryPrice = async event => {
-    const view = event.currentTarget;
+    const { view, goodsType, priceType, price } = event.detail;
     this._setClickable(view, false);
 
-    const { goodsType, priceType, price } = event.detail;
     const [accessToken, centerId] = this._userModel.getCenterInfo();
 
     this._modalView.showLoadingModal('상품 정보를 수정중입니다');
@@ -286,10 +287,9 @@ const PriceController = class {
 
   // 추가 상품 정보 아이템 추가
   _addExtraItem = async event => {
-    const view = event.currentTarget;
+    const { view, goodsName, goodsPrice } = event.detail;
     this._setClickable(view, false);
 
-    const { goodsName, goodsPrice } = event.detail;
     const [accessToken, centerId] = this._userModel.getCenterInfo();
 
     this._modalView.showLoadingModal('상품을 추가중입니다');
@@ -314,10 +314,9 @@ const PriceController = class {
   };
   // 추가 상품 정보 삭제
   _deleteExtraItem = async event => {
-    const view = event.currentTarget;
+    const { view, goodsName } = event.detail;
     this._setClickable(view, false);
 
-    const { goodsName } = event.detail;
     const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('상품을 삭제중입니다');
     const { isSuccess, error, data } = await this._extraPriceInfoModel.deleteItem(accessToken, centerId, goodsName);
@@ -335,10 +334,9 @@ const PriceController = class {
   };
   // 추가 상품 정보 수정
   _editItem = async event => {
-    const view = event.currentTarget;
+    const { view, initialGoodsName, edittedGoodsName, edittedPrice } = event.detail;
     this._setClickable(view, false);
 
-    const { initialGoodsName, edittedGoodsName, edittedPrice } = event.detail;
     const [accessToken, centerId] = this._userModel.getCenterInfo();
     this._modalView.showLoadingModal('상품을 수정중입니다');
     const { isSuccess, error, data } = await this._extraPriceInfoModel.editItem(

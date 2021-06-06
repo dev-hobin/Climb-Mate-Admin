@@ -18,11 +18,11 @@ const ModalView = class extends View {
     return this;
   };
 
-  showLoadingModal = (loaingMessage = '') => {
+  showLoadingModal = (loadingMessage = '') => {
     const modal = document.createElement('div');
     modal.setAttribute('class', 'modal');
     modal.setAttribute('data-modal', '');
-    modal.innerHTML = this._getLoaingContentsHtml(loaingMessage);
+    modal.innerHTML = this._getLoaingContentsHtml(loadingMessage);
 
     this._element.append(modal);
   };
@@ -96,7 +96,7 @@ const ModalView = class extends View {
         confirm.addEventListener('click', () => {
           if (!this.clickable) return;
 
-          this.trigger('@deleteItem', { type, index });
+          this.trigger('@deleteItem', { view: this, type, index });
           this.removeModal();
           this.clickable = true;
         });
@@ -111,7 +111,8 @@ const ModalView = class extends View {
       case SINGLE_IMAGE_UPLOADER_TYPE.PRICE:
         confirm.addEventListener('click', () => {
           if (!this.clickable) return;
-          this.trigger('@confirmPriceImageDelete', { type });
+
+          this.trigger('@confirmPriceImageDelete', { view: this, type });
           this.removeModal();
           this.clickable = true;
         });
@@ -119,7 +120,8 @@ const ModalView = class extends View {
       case SINGLE_IMAGE_UPLOADER_TYPE.LEVEL:
         confirm.addEventListener('click', () => {
           if (!this.clickable) return;
-          this.trigger('@confirmLevelImageDelete', { type });
+
+          this.trigger('@confirmLevelImageDelete', { view: this, type });
           this.removeModal();
           this.clickable = true;
         });
@@ -132,7 +134,8 @@ const ModalView = class extends View {
   _addExtraPriceInfoDeleteItemEvent = (confirm, { goodsName }) => {
     confirm.addEventListener('click', () => {
       if (!this.clickable) return;
-      this.trigger('@confirmExtraPriceItemDelete', { goodsName });
+
+      this.trigger('@confirmExtraPriceItemDelete', { view: this, goodsName });
       this.removeModal();
       this.clickable = true;
     });
@@ -141,7 +144,8 @@ const ModalView = class extends View {
   _addLevelInfoDeleteItemEvent = (confirm, { type, color, levelName }) => {
     confirm.addEventListener('click', () => {
       if (!this.clickable) return;
-      this.trigger('@confirmLevelInfoItemDelete', { type, color, levelName });
+
+      this.trigger('@confirmLevelInfoItemDelete', { view: this, type, color, levelName });
       this.removeModal();
       this.clickable = true;
     });

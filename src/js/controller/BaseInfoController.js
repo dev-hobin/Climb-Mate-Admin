@@ -221,7 +221,7 @@ const BaseInfoController = class {
   };
 
   _updateCenterInfo = async event => {
-    const view = event.currentTarget;
+    const { view } = event.detail;
     this._setClickable(view, false);
 
     const [accessToken, centerId] = this._userModel.getCenterInfo();
@@ -266,7 +266,7 @@ const BaseInfoController = class {
   };
 
   _updateSettingInfo = async event => {
-    const view = event.currentTarget;
+    const { view } = event.detail;
     this._setClickable(view, false);
 
     const [accessToken, centerId] = this._userModel.getCenterInfo();
@@ -302,7 +302,7 @@ const BaseInfoController = class {
   };
 
   _updateWorkingTimeInfo = async event => {
-    const view = event.currentTarget;
+    const { view } = event.detail;
     this._setClickable(view, false);
 
     const [accessToken, centerId] = this._userModel.getCenterInfo();
@@ -344,8 +344,9 @@ const BaseInfoController = class {
     this._baseSocialInfoModel.changeSocialUrl(socialType, url);
   };
   _updateSocialInfo = async event => {
-    const view = event.currentTarget;
+    const { view } = event.detail;
     this._setClickable(view, false);
+
     const [accessToken, centerId] = this._userModel.getCenterInfo();
 
     this._modalView.showLoadingModal('소셜 정보를 수정중입니다');

@@ -49,7 +49,7 @@ const BaseCenterInfoView = class extends View {
   _bindEvents = () => {
     this._extraAddressInput.addEventListener('input', () => {
       const value = this._extraAddressInput.value;
-      this.trigger('@chageExtraAddress', { value });
+      this.trigger('@chageExtraAddress', { view: this, value });
     });
     Array.from(this._callNumberInputs).forEach((input, index) => {
       // index -> 0: 첫 번째 칸, 1: 두 번째 칸, 2: 세 번째 칸
@@ -57,6 +57,7 @@ const BaseCenterInfoView = class extends View {
         if (event.target.value.length > 4) return (event.target.value = event.target.value.substring(0, 4));
         event.target.value = event.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
         this.trigger('@changeCallNum', {
+          view: this,
           number: event.target.value,
           index,
         });
@@ -68,17 +69,18 @@ const BaseCenterInfoView = class extends View {
         if (event.target.value.length > 4) return (event.target.value = event.target.value.substring(0, 4));
         event.target.value = event.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
         this.trigger('@changePhoneCallNum', {
+          view: this,
           number: event.target.value,
           index,
         });
       });
     });
     this._introduceTextarea.addEventListener('input', event => {
-      this.trigger('@changeIntroduce', { value: event.target.value });
+      this.trigger('@changeIntroduce', { view: this, value: event.target.value });
     });
     this._updateBtn.addEventListener('click', () => {
       if (!this.clickable) return;
-      this.trigger('@updateCenterInfo');
+      this.trigger('@updateCenterInfo', { view: this });
     });
   };
 };

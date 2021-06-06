@@ -76,7 +76,7 @@ const ExtraPriceInfoView = class extends View {
       if (goodsName.length === 0) return this._nameInput.focus();
       if (goodsPrice.length === 0) return this._priceInput.focus();
 
-      this.trigger('@addItem', { goodsName, goodsPrice });
+      this.trigger('@addItem', { view: this, goodsName, goodsPrice });
     });
 
     this._itemList.addEventListener('click', event => {
@@ -106,6 +106,7 @@ const ExtraPriceInfoView = class extends View {
         case btnType === 'delete':
           initialGoodsName = goodsNameContainer.querySelector('[data-goods-name]').textContent;
           this.trigger('@showAlert', {
+            view: this,
             description: '정말로 삭제하시겠습니까?',
             eventInfo: {
               eventName: 'extra-price-info__delete-item',
@@ -122,6 +123,7 @@ const ExtraPriceInfoView = class extends View {
           if (edittedPrice.length === 0) return priceContainer.querySelector('[data-price-input]').focus();
 
           this.trigger('@confirmEditItem', {
+            view: this,
             initialGoodsName,
             edittedGoodsName,
             edittedPrice,

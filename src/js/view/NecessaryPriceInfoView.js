@@ -56,7 +56,7 @@ const NecessaryPriceInfoView = class extends View {
           break;
         case btnType === 'confirm':
           const priceInputValue = priceContainer.querySelector('[data-price-input]').value;
-          this.trigger('@confirmPriceEdit', { goodsType, priceType, price: priceInputValue });
+          this.trigger('@confirmPriceEdit', { view: this, goodsType, priceType, price: priceInputValue });
           break;
         case btnType === 'cancel':
           const initialPrice = priceContainer.querySelector('[data-initial-price]').dataset.initialPrice;

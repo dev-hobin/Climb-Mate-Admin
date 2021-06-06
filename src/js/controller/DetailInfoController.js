@@ -140,7 +140,7 @@ const DetailInfoController = class {
     this._facilityInfoModel.updateExtraInfo(extra, info);
   };
   _updateFacility = async event => {
-    const view = event.currentTarget;
+    const { view } = event.detail;
     this._setClickable(view, false);
 
     const [accessToken, centerId] = this._userModel.getCenterInfo();
@@ -166,7 +166,7 @@ const DetailInfoController = class {
     this._toolInfoModel.updateExtraInfo(extra, info);
   };
   _updateTool = async event => {
-    const view = event.currentTarget;
+    const { view } = event.detail;
     this._setClickable(view, false);
 
     const [accessToken, centerId] = this._userModel.getCenterInfo();

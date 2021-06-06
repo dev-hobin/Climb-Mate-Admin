@@ -45,10 +45,9 @@ const LoginController = class {
 
   // 로그인
   _login = async event => {
-    const view = event.currentTarget;
+    const { view, id, password } = event.detail;
     this._setClickable(view, false);
 
-    const { id, password } = event.detail;
     const { isSuccess, error, data } = await this._userModel.login(id, password);
     if (!isSuccess) {
       this._setClickable(view, true);

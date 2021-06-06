@@ -60,7 +60,7 @@ const BaseSettingInfoView = class extends View {
       event.target.value = thisRatio;
       this._enduranceRatioInput.value = anotherRatio;
 
-      this.trigger('@changeSettingRatio', { bordering: thisRatio, endurance: anotherRatio });
+      this.trigger('@changeSettingRatio', { view: this, bordering: thisRatio, endurance: anotherRatio });
     });
     this._enduranceRatioInput.addEventListener('input', event => {
       event.target.value = event.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
@@ -72,25 +72,25 @@ const BaseSettingInfoView = class extends View {
       event.target.value = thisRatio;
       this._borderingRatioInput.value = anotherRatio;
 
-      this.trigger('@changeSettingRatio', { bordering: anotherRatio, endurance: thisRatio });
+      this.trigger('@changeSettingRatio', { view: this, bordering: anotherRatio, endurance: thisRatio });
     });
     this._settingRatioInput.addEventListener('input', event => {
-      this.trigger('@changeSettingRatioDescription', { value: event.target.value });
+      this.trigger('@changeSettingRatioDescription', { view: this, value: event.target.value });
     });
 
     this._settingCycleInput.addEventListener('input', event => {
-      this.trigger('@changeSettingCycle', { value: event.target.value });
+      this.trigger('@changeSettingCycle', { view: this, value: event.target.value });
     });
     this._nextSettingDateInput.addEventListener('input', event => {
-      this.trigger('@chageNextSettingDate', { value: event.target.value });
+      this.trigger('@chageNextSettingDate', { view: this, value: event.target.value });
     });
     this._recentSettingDateInput.addEventListener('input', event => {
-      this.trigger('@chageRecentSettingDate', { value: event.target.value });
+      this.trigger('@chageRecentSettingDate', { view: this, value: event.target.value });
     });
 
     this._updateBtn.addEventListener('click', () => {
       if (!this.clickable) return;
-      this.trigger('@updateSettingInfo');
+      this.trigger('@updateSettingInfo', { view: this });
     });
   };
 };

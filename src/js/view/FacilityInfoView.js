@@ -47,7 +47,7 @@ const FacilityInfoView = class extends View {
       if (event.target.type !== 'checkbox') return;
       const checkbox = event.target;
       const facilityType = event.target.closest('[data-item]').dataset.item;
-      this.trigger('@checkFacility', { facilityType, checked: checkbox.checked });
+      this.trigger('@checkFacility', { view: this, facilityType, checked: checkbox.checked });
       // 주차장 체크 해제했을 경우 텍스트 박스 안보이게
       if (facilityType === FACILITY_TYPE.PARKING_LOT) {
         if (checkbox.checked) this._parkignLotTextContainer.classList.add('show');
@@ -57,12 +57,12 @@ const FacilityInfoView = class extends View {
 
     this._parkignLotTextArea.addEventListener('keyup', event => {
       const textValue = event.target.value;
-      this.trigger('@editExtraInfo', { extra: FACILITY_EXTRA_INFO.PARKING_LOT, info: textValue });
+      this.trigger('@editExtraInfo', { view: this, extra: FACILITY_EXTRA_INFO.PARKING_LOT, info: textValue });
     });
 
     this._updateBtn.addEventListener('click', () => {
       if (!this.clickable) return;
-      this.trigger('@updateFacility');
+      this.trigger('@updateFacility', { view: this });
     });
   };
 };
