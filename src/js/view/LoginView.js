@@ -35,6 +35,32 @@ const LoginView = class extends View {
 
       this.trigger('@login', { view: this, id, password });
     });
+    this._idInput.addEventListener('keyup', event => {
+      if (event.keyCode === 13) {
+        if (!this.clickable) return;
+
+        const id = this._idInput.value.trim();
+        const password = this._passwordInput.value.trim();
+
+        if (!id) return this._idInput.focus();
+        if (!password) return this._passwordInput.focus();
+
+        this.trigger('@login', { view: this, id, password });
+      }
+    });
+    this._passwordInput.addEventListener('keyup', event => {
+      if (event.keyCode === 13) {
+        if (!this.clickable) return;
+
+        const id = this._idInput.value.trim();
+        const password = this._passwordInput.value.trim();
+
+        if (!id) return this._idInput.focus();
+        if (!password) return this._passwordInput.focus();
+
+        this.trigger('@login', { view: this, id, password });
+      }
+    });
   };
 };
 
