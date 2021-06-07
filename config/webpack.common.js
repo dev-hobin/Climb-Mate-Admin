@@ -14,8 +14,8 @@ module.exports = {
     detailInfo: './src/js/detailInfo',
     price: './src/js/price',
     setting: './src/js/setting',
-    notice: './src/js/notice',
-    noticeInfo: './src/js/noticeInfo',
+    // notice: './src/js/notice',
+    // noticeInfo: './src/js/noticeInfo',
     level: './src/js/level',
   },
   module: {
@@ -65,16 +65,16 @@ module.exports = {
       filename: 'setting.html',
       chunks: ['setting'],
     }),
-    new HtmlWebpackPlugin({
-      template: paths.src + '/template/notice.html',
-      filename: 'notice.html',
-      chunks: ['notice'],
-    }),
-    new HtmlWebpackPlugin({
-      template: paths.src + '/template/noticeInfo.html',
-      filename: 'noticeInfo.html',
-      chunks: ['noticeInfo'],
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: paths.src + '/template/notice.html',
+    //   filename: 'notice.html',
+    //   chunks: ['notice'],
+    // }),
+    // new HtmlWebpackPlugin({
+    //   template: paths.src + '/template/noticeInfo.html',
+    //   filename: 'noticeInfo.html',
+    //   chunks: ['noticeInfo'],
+    // }),
     new HtmlWebpackPlugin({
       template: paths.src + '/template/level.html',
       filename: 'level.html',
