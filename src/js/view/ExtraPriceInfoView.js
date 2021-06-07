@@ -63,8 +63,8 @@ const ExtraPriceInfoView = class extends View {
       priceInput.value = priceInput.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
       // 둘째자리 이상일때 맨앞에 0 제거
       if (priceInput.value.length > 1) priceInput.value = priceInput.value.replace(/(^0+)/, '');
-      // 초기값은 0
-      if (priceInput.value.length === 0) priceInput.value = 0;
+      // 초기값은 1
+      if (priceInput.value.length === 0) priceInput.value = 1;
     });
 
     this._addBtn.addEventListener('click', () => {
@@ -163,8 +163,8 @@ const ExtraPriceInfoView = class extends View {
           inputEl.value = inputEl.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
           // 둘째자리 이상일때 맨앞에 0 제거
           if (inputEl.value.length > 1) inputEl.value = inputEl.value.replace(/(^0+)/, '');
-          // 초기값은 0
-          if (inputEl.value.length === 0) inputEl.value = 0;
+          // 초기값은 1
+          if (inputEl.value.length === 0) inputEl.value = 1;
           break;
         default:
           return;
