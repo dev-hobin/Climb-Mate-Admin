@@ -54,8 +54,8 @@ const BaseCenterInfoView = class extends View {
     Array.from(this._callNumberInputs).forEach((input, index) => {
       // index -> 0: 첫 번째 칸, 1: 두 번째 칸, 2: 세 번째 칸
       input.addEventListener('input', event => {
-        if (event.target.value.length > 4) return (event.target.value = event.target.value.substring(0, 4));
         event.target.value = event.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+        if (event.target.value.length > 4) return (event.target.value = event.target.value.substring(0, 4));
         this.trigger('@changeCallNum', {
           view: this,
           number: event.target.value,
@@ -66,8 +66,8 @@ const BaseCenterInfoView = class extends View {
     Array.from(this._phoneCallNumberInputs).forEach((input, index) => {
       // index -> 0: 첫 번째 칸, 1: 두 번째 칸, 2: 세 번째 칸
       input.addEventListener('input', event => {
-        if (event.target.value.length > 4) return (event.target.value = event.target.value.substring(0, 4));
         event.target.value = event.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+        if (event.target.value.length > 4) return (event.target.value = event.target.value.substring(0, 4));
         this.trigger('@changePhoneCallNum', {
           view: this,
           number: event.target.value,
@@ -80,6 +80,16 @@ const BaseCenterInfoView = class extends View {
     });
     this._updateBtn.addEventListener('click', () => {
       if (!this.clickable) return;
+
+      const emptyCallNumInput = Array.from(this._callNumberInputs) //
+        .find(input => input.value.trim().length === 0);
+      if (emptyCallNumInput) return emptyCallNumInput.focus();
+
+      const emptyPhoneCallNumInput = Array.from(this._phoneCallNumberInputs) //
+        .find(input => input.value.trim().length === 0);
+
+      if (emptyPhoneCallNumInput) return emptyCallNumInput.focus();
+
       this.trigger('@updateCenterInfo', { view: this });
     });
   };
