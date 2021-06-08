@@ -94,7 +94,7 @@ const BaseInfoController = class {
   // 라이프 사이클
   _lifeCycle = async () => {
     // 로그인 확인
-    if (!this._userModel.isLogged()) return location.replace('/login.html');
+    if (!this._userModel.isLogged()) return location.replace('/login');
     // 사용할 액세스키
     let accessToken = this._userModel.getAccessToken();
     // 센터 이름 세팅

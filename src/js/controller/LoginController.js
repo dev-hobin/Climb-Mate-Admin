@@ -31,7 +31,7 @@ const LoginController = class {
 
   // 라이프 사이클
   _lifeCycle = async () => {
-    if (this._userModel.isLogged()) return location.replace('/baseInfo.html');
+    if (this._userModel.isLogged()) return location.replace('/baseInfo');
   };
 
   // 중복 클릭 방지
@@ -54,7 +54,7 @@ const LoginController = class {
       const { sort, title, description } = error;
       this._notificationView.addNotification(sort, title, description, true);
     } else {
-      location.href = '/baseInfo.html';
+      location.href = '/baseInfo';
     }
   };
 };
