@@ -75,10 +75,16 @@ const BaseSettingInfoView = class extends View {
       this.trigger('@changeSettingRatio', { view: this, bordering: anotherRatio, endurance: thisRatio });
     });
     this._settingRatioInput.addEventListener('input', event => {
+      if (event.target.value.length > 200) {
+        event.target.value = event.target.value.substr(0, 200);
+      }
       this.trigger('@changeSettingRatioDescription', { view: this, value: event.target.value });
     });
 
     this._settingCycleInput.addEventListener('input', event => {
+      if (event.target.value.length > 200) {
+        event.target.value = event.target.value.substr(0, 200);
+      }
       this.trigger('@changeSettingCycle', { view: this, value: event.target.value });
     });
     this._nextSettingDateInput.addEventListener('input', event => {

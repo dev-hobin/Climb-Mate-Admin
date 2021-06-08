@@ -56,6 +56,9 @@ const FacilityInfoView = class extends View {
     });
 
     this._parkignLotTextArea.addEventListener('keyup', event => {
+      if (event.target.value.length > 200) {
+        event.target.value = event.target.value.substr(0, 200);
+      }
       const textValue = event.target.value;
       this.trigger('@editExtraInfo', { view: this, extra: FACILITY_EXTRA_INFO.PARKING_LOT, info: textValue });
     });

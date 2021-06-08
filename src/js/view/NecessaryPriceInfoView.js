@@ -72,10 +72,12 @@ const NecessaryPriceInfoView = class extends View {
       const priceInput = event.target;
       // 숫자만 입력
       priceInput.value = priceInput.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+      // 9번째 자리수를 넘어갈 수 없음
+      if (priceInput.value.length > 9) priceInput.value = priceInput.value.substr(0, 9);
       // 둘째자리 이상일때 맨앞에 0 제거
       if (priceInput.value.length > 1) priceInput.value = priceInput.value.replace(/(^0+)/, '');
-      // 초기값은 0
-      if (priceInput.value.length === 0) priceInput.value = 0;
+      // 초기값은 1
+      if (priceInput.value.length === 0) priceInput.value = 1;
     });
   };
 };

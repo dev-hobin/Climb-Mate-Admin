@@ -47,8 +47,12 @@ const BaseCenterInfoView = class extends View {
 
   /* 메서드 */
   _bindEvents = () => {
-    this._extraAddressInput.addEventListener('input', () => {
-      const value = this._extraAddressInput.value;
+    this._extraAddressInput.addEventListener('input', event => {
+      if (event.target.value.length > 40) {
+        event.target.value = event.target.value.substr(0, 40);
+      }
+
+      const value = event.target.value;
       this.trigger('@chageExtraAddress', { view: this, value });
     });
     Array.from(this._callNumberInputs).forEach((input, index) => {
@@ -76,6 +80,9 @@ const BaseCenterInfoView = class extends View {
       });
     });
     this._introduceTextarea.addEventListener('input', event => {
+      if (event.target.value.length > 1500) {
+        event.target.value = event.target.value.substr(0, 1500);
+      }
       this.trigger('@changeIntroduce', { view: this, value: event.target.value });
     });
     this._updateBtn.addEventListener('click', () => {

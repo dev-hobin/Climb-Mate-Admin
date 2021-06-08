@@ -53,6 +53,9 @@ const ToolInfoView = class extends View {
       }
     });
     this._healthTextArea.addEventListener('keyup', event => {
+      if (event.target.value.length > 200) {
+        event.target.value = event.target.value.substr(0, 200);
+      }
       const textValue = event.target.value;
       this.trigger('@editExtraInfo', { view: this, extra: TOOL_EXTRA_INFO.HEALTH, info: textValue });
     });

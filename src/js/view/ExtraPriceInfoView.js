@@ -57,10 +57,17 @@ const ExtraPriceInfoView = class extends View {
 
   /* 메소드 */
   _bindEvents = () => {
+    this._nameInput.addEventListener('input', event => {
+      const nameInput = event.target;
+      if (nameInput.value.length > 50) nameInput.value = nameInput.value.substr(0, 50);
+    });
+
     this._priceInput.addEventListener('input', event => {
       const priceInput = event.target;
       // 숫자만 입력
       priceInput.value = priceInput.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+      // 9번째 자리수를 넘어갈 수 없음
+      if (priceInput.value.length > 9) priceInput.value = priceInput.value.substr(0, 9);
       // 둘째자리 이상일때 맨앞에 0 제거
       if (priceInput.value.length > 1) priceInput.value = priceInput.value.replace(/(^0+)/, '');
       // 초기값은 1
@@ -155,12 +162,14 @@ const ExtraPriceInfoView = class extends View {
 
       switch (true) {
         case inputEl.dataset.hasOwnProperty('nameInput'):
-          // ? 이름 인풋값 예외처리 할 수 있는 곳 -> 일단 데이터 보낼 때 trim으로 보내는 걸로 함
+          if (inputEl.value.length > 50) inputEl.value = inputEl.value.substr(0, 50);
           break;
 
         case inputEl.dataset.hasOwnProperty('priceInput'):
           // 숫자만 입력
           inputEl.value = inputEl.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+          // 9번째 자리수를 넘어갈 수 없음
+          if (inputEl.value.length > 9) inputEl.value = inputEl.value.substr(0, 9);
           // 둘째자리 이상일때 맨앞에 0 제거
           if (inputEl.value.length > 1) inputEl.value = inputEl.value.replace(/(^0+)/, '');
           // 초기값은 1

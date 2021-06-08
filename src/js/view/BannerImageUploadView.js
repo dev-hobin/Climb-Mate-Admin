@@ -105,6 +105,13 @@ const BannerImageUploadView = class extends View {
     // 수정 트리거 이벤트 달기
     this._editBtn.addEventListener('click', () => {
       if (!this.clickable) return;
+      const imageCount = this._imageList.querySelectorAll('[data-image-item]').length;
+      if (imageCount === 0) {
+        this._imageList.querySelector('.image-uploader__none-info').textContent =
+          '사진은 최소 1장 이상이 반드시 필요합니다';
+        return;
+      }
+
       this.trigger('@editImages', { view: this, type: 'banner' });
     });
   };

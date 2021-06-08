@@ -46,6 +46,13 @@ const LoginView = class extends View {
         if (!password) return this._passwordInput.focus();
 
         this.trigger('@login', { view: this, id, password });
+      } else {
+        if (event.target.value.trim().length <= 50) {
+          return;
+        } else {
+          event.target.value = event.target.value.substr(0, 50);
+          return false;
+        }
       }
     });
     this._passwordInput.addEventListener('keyup', event => {
@@ -59,6 +66,12 @@ const LoginView = class extends View {
         if (!password) return this._passwordInput.focus();
 
         this.trigger('@login', { view: this, id, password });
+      } else {
+        if (event.target.value.trim().length <= 16) {
+          return;
+        } else {
+          event.target.value = event.target.value.substr(0, 16);
+        }
       }
     });
   };

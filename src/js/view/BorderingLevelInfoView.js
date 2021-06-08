@@ -119,6 +119,17 @@ const BorderingLevelInfoView = class extends View {
       saveBtn.addEventListener('click', () => instance.hide());
     });
 
+    this._colorNameInput.addEventListener('input', event => {
+      if (event.target.value.length > 10) {
+        event.target.value = event.target.value.substr(0, 10);
+      }
+    });
+    this._levelNameInput.addEventListener('input', event => {
+      if (event.target.value.length > 10) {
+        event.target.value = event.target.value.substr(0, 10);
+      }
+    });
+
     this._itemList.addEventListener('click', event => {
       if (!this.clickable) return;
       const btnType = event.target.dataset.btn;
@@ -180,6 +191,12 @@ const BorderingLevelInfoView = class extends View {
           colorNameInput.setAttribute('data-color-name-input', '');
           colorNameInput.setAttribute('placeholder', '색깔');
 
+          colorNameInput.addEventListener('input', event => {
+            if (event.target.value.length > 10) {
+              event.target.value = event.target.value.substr(0, 10);
+            }
+          });
+
           colorContainer.querySelector('[data-item-color-name]').remove();
           colorContainer.append(colorNameInput);
 
@@ -189,6 +206,12 @@ const BorderingLevelInfoView = class extends View {
           levelNameInput.setAttribute('data-initial-level-name', initialLevelName);
           levelNameInput.setAttribute('data-level-name-input', '');
           levelNameInput.setAttribute('placeholder', '난이도');
+
+          levelNameInput.addEventListener('input', event => {
+            if (event.target.value.length > 10) {
+              event.target.value = event.target.value.substr(0, 10);
+            }
+          });
 
           levelNameContainer.querySelector('[data-level-name]').remove();
           levelNameContainer.append(levelNameInput);

@@ -53,6 +53,9 @@ const BaseSocialInfoView = class extends View {
 
     this._urlInputs.forEach(input => {
       input.addEventListener('input', event => {
+        if (event.target.value.length > 200) {
+          event.target.value = event.target.value.substr(0, 200);
+        }
         const socialType = event.target.closest('[data-social-item]').dataset.socialItem;
         this.trigger('@changeSocialUrl', { view: this, socialType, url: event.target.value });
       });
