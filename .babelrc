@@ -1,4 +1,16 @@
+// {
+//   "presets": [["@babel/preset-env", { "debug": true, "useBuiltIns": "usage", "corejs": 3.1 }]],
+//   "plugins": ["@babel/plugin-proposal-class-properties", "transform-remove-console"]
+// }
 {
-  "presets": [["@babel/preset-env", { "debug": true, "useBuiltIns": "usage", "corejs": 3.1 }]],
-  "plugins": ["@babel/plugin-proposal-class-properties"]
+  "env": {
+    "development": {
+      "presets": [["@babel/preset-env", { "debug": true, "useBuiltIns": "usage", "corejs": 3.1 }]],
+      "plugins": ["@babel/plugin-proposal-class-properties"]
+    },
+    "production": {
+      "presets": [["@babel/preset-env", { "debug": false, "useBuiltIns": "usage", "corejs": 3.1 }]],
+      "plugins": ["@babel/plugin-proposal-class-properties", "transform-remove-console"]
+    }
+  }
 }
