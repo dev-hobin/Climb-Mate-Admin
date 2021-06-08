@@ -1,3 +1,5 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
@@ -8,7 +10,7 @@ module.exports = merge(common, {
   target: 'web',
   devtool: 'inline-source-map',
   devServer: {
-    contentBase: paths.build,
+    contentBase: paths.output.dev,
     hot: true,
     historyApiFallback: {
       rewrites: [
@@ -24,6 +26,16 @@ module.exports = merge(common, {
     },
   },
 
+  entry: {
+    login: paths.src + '/js/login',
+    banner: paths.src + '/js/banner',
+    baseInfo: paths.src + '/js/baseInfo',
+    detailInfo: paths.src + '/js/detailInfo',
+    price: paths.src + '/js/price',
+    setting: paths.src + '/js/setting',
+    level: paths.src + '/js/level',
+  },
+
   module: {
     rules: [
       {
@@ -35,5 +47,48 @@ module.exports = merge(common, {
         ],
       },
     ],
+  },
+
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: paths.src + '/template/login.html',
+      filename: 'login.html',
+      chunks: ['login'],
+    }),
+    new HtmlWebpackPlugin({
+      template: paths.src + '/template/banner.html',
+      filename: 'banner.html',
+      chunks: ['banner'],
+    }),
+    new HtmlWebpackPlugin({
+      template: paths.src + '/template/baseInfo.html',
+      filename: 'baseInfo.html',
+      chunks: ['baseInfo'],
+    }),
+    new HtmlWebpackPlugin({
+      template: paths.src + '/template/detailInfo.html',
+      filename: 'detailInfo.html',
+      chunks: ['detailInfo'],
+    }),
+    new HtmlWebpackPlugin({
+      template: paths.src + '/template/price.html',
+      filename: 'price.html',
+      chunks: ['price'],
+    }),
+    new HtmlWebpackPlugin({
+      template: paths.src + '/template/setting.html',
+      filename: 'setting.html',
+      chunks: ['setting'],
+    }),
+    new HtmlWebpackPlugin({
+      template: paths.src + '/template/level.html',
+      filename: 'level.html',
+      chunks: ['level'],
+    }),
+  ],
+  output: {
+    path: paths.output.dev,
+    filename: 'js/[name]_bundle.[contenthash].js',
+    assetModuleFilename: 'assets/[hash][ext][query]',
   },
 });

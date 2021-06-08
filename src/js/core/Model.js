@@ -6,8 +6,7 @@ const Model = class {
     JSON: 'json',
   };
   HOST = {
-    SERVER: 'https://climbmate.co.kr',
-    TEST_SERVER: 'http://13.209.4.105',
+    SERVER: 'http://13.209.4.105',
   };
   PATHS = {
     MAIN: '/AdminIndex.php',
