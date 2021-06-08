@@ -10,6 +10,18 @@ module.exports = merge(common, {
   devServer: {
     contentBase: paths.build,
     hot: true,
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/$/, to: '/login.html' },
+        { from: /^\/banner/, to: '/banner.html' },
+        { from: /^\/baseInfo/, to: '/baseInfo.html' },
+        { from: /^\/detailInfo/, to: '/detailInfo.html' },
+        { from: /^\/level/, to: '/level.html' },
+        { from: /^\/login/, to: '/login.html' },
+        { from: /^\/price/, to: '/price.html' },
+        { from: /^\/setting/, to: '/setting.html' },
+      ],
+    },
   },
 
   module: {
