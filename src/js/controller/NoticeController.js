@@ -19,18 +19,18 @@ const NoticeController = class {
   init = () => {
     this._headerView //
       .setup(document.querySelector(`[data-header]`))
-      .on('@toggleSidebar', () => this._toggleSidebar())
-      .on('@toggleAdminMenu', () => this._toggleAdminMenu())
-      .on('@clickAdminMenu', event => console.log(event));
+      .on('@toggleSidebar', () => this._toggleSidebar());
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
-      .on('@toggleSideMenu', event => this._toggleSideMenu(event));
+      .on('@toggleSideMenu', event => this._toggleSideMenu(event))
+      .on('@showAlert', event => this._showAlertModal(event));
 
     this._modalView
       .setup(document.querySelector('main'))
       .on('@deleteBorderingItem', event => this._deleteBorderingImage(event))
-      .on('@deleteEnduranceItem', event => this._deleteEnduranceImage(event));
+      .on('@deleteEnduranceItem', event => this._deleteEnduranceImage(event))
+      .on('@logout', event => this._logout());
 
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
@@ -58,10 +58,6 @@ const NoticeController = class {
     }
   };
 
-  // 헤더 어드민 메뉴 토글
-  _toggleAdminMenu = () => {
-    this._headerView.toggleAdminMenu();
-  };
   // 사이드바 토글
   _toggleSidebar = () => {
     this._sidebarView.toggleSidebar();
@@ -71,11 +67,16 @@ const NoticeController = class {
     const { menu } = event.detail;
     this._sidebarView.toggleSideMenu(menu);
   };
+
+  // 로그아웃
+  _logout = () => this._userModel.logout();
+
   // 경고 모달 보여주기
   _showAlertModal = event => {
-    const { view, description, eventInfo } = event.detail;
+    const { view } = event.detail;
     this._setClickable(view, false);
 
+    const { description, eventInfo } = event.detail;
     this._modalView.showAlertModal(description, eventInfo);
 
     this._setClickable(view, true);

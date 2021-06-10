@@ -13,7 +13,9 @@ const SidebarView = class extends View {
   setup = element => {
     this.init(element);
 
-    this.menuList = element.querySelector(`[data-menu-list]`);
+    this._detailLink = element.querySelector(`[data-detail-link]`);
+    this._menuList = element.querySelector(`[data-menu-list]`);
+    this._logoutBtn = element.querySelector(`[data-logout-btn]`);
 
     this._bindEvents();
 
@@ -35,17 +37,33 @@ const SidebarView = class extends View {
     if (parent) this._element.querySelector(`[data-toggle-menu="${parent}"]`).classList.add('active');
     if (child) this._element.querySelector(`[data-menu="${child}"]`).classList.add('active');
   };
+  // 디테일 페이지 링크 설정
+  initDetailLink = id => {
+    this._detailLink.setAttribute('href', `/detail?id=${id}`);
+  };
 
   // 메소드
 
   _bindEvents = () => {
     // 사이드바 메뉴 리스트 토글
-    this.menuList.addEventListener('click', event => {
+    this._menuList.addEventListener('click', event => {
       if (!this.clickable) return;
       if (event.target.tagName !== 'BUTTON') return;
       const listItem = event.target.parentElement;
+      if (listItem.dataset.menu === 'logout') return;
+
       const toggleMenuName = listItem.dataset.toggleMenu;
       this.trigger('@toggleSideMenu', { menu: toggleMenuName });
+    });
+    // 로그아웃
+    this._logoutBtn.addEventListener('click', () => {
+      this.trigger('@showAlert', {
+        view: this,
+        description: '정말로 로그아웃 하시겠습니까??',
+        eventInfo: {
+          eventName: 'sidebar__logout',
+        },
+      });
     });
   };
 };

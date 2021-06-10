@@ -96,7 +96,9 @@ const BaseSettingInfoView = class extends View {
 
     this._updateBtn.addEventListener('click', () => {
       if (!this.clickable) return;
-      if (this._recentSettingDateInput.trim().length === 0) return this._recentSettingDateInput.focus();
+      if (this._settingRatioInput.value.trim().length === 0) return this._settingRatioInput.focus();
+      if (this._settingCycleInput.value.trim().length === 0) return this._settingCycleInput.focus();
+      if (this._recentSettingDateInput.value.trim().length === 0) return this._recentSettingDateInput.focus();
       this.trigger('@updateSettingInfo', { view: this });
     });
   };

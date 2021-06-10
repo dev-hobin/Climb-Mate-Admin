@@ -54,6 +54,10 @@ const ModalView = class extends View {
         this._addLevelInfoDeleteItemEvent(confirm, eventInfo);
         break;
 
+      case eventName === 'sidebar__logout':
+        this._addLogoutEvent(confirm);
+        break;
+
       default:
         throw `${tag} 올바른 이벤트 정보가 아닙니다 :${eventName}`;
     }
@@ -147,6 +151,18 @@ const ModalView = class extends View {
 
       this.trigger('@confirmLevelInfoItemDelete', { type, color, levelName });
       this.removeModal();
+
+      this.clickable = true;
+    });
+  };
+  // 로그아웃 이벤트
+  _addLogoutEvent = confirm => {
+    confirm.addEventListener('click', () => {
+      if (!this.clickable) return;
+
+      this.trigger('@logout');
+      this.removeModal();
+
       this.clickable = true;
     });
   };

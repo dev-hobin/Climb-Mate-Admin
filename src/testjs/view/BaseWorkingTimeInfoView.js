@@ -73,7 +73,6 @@ const BaseWorkingTimeInfoView = class extends View {
       if (this._weekdayInput.value.trim().length === 0) return this._weekdayInput.focus();
       if (this._weekendInput.value.trim().length === 0) return this._weekdayInput.focus();
       if (this._holidayInput.value.trim().length === 0) return this._weekdayInput.focus();
-
       this.trigger('@updateWorkingTimeInfo', { view: this });
     });
   };

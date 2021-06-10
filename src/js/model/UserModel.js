@@ -82,6 +82,7 @@ const UserModel = class extends Model {
         .join('')
     );
     const jwtObj = JSON.parse(jsonPayload);
+    console.log(jwtObj);
 
     return [accessToken, jwtObj['data']['adminCenterId']];
   };

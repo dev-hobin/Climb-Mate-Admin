@@ -14,21 +14,13 @@
         <button class="header__menu-toggle-btn" data-sidebar-toggle-btn><i class="fas fa-bars"></i></button>
         <a href="/admin/login" class="header__logo">Climb:Mate 관리</a>
       </div>
-      <button class="header__admin-menu-btn" data-admin-menu-btn>
-        <span class="header__admin-name" data-center-name>사과 클라이밍</span
-        ><i class="fas fa-chevron-left header__admin-menu-btn-icon"></i>
-        <nav class="admin-navigation">
-          <ul class="admin-navigation__list" data-admin-menu-list>
-            <li class="admin-navigation__item" data-admin-menu="logOut">로그아웃</li>
-          </ul>
-        </nav>
-      </button>
+      <div class="header__center-name" data-center-name></div>
     </header>
     <nav class="sidebar" data-sidebar>
       <ul class="sidebar__depth-1-list" data-menu-list>
-        <!-- <li class="sidebar__depth-1-item" data-menu="dashboard">
-          <a href="#" class="sidebar__depth-1-link">대시보드</a>
-        </li> -->
+        <li class="sidebar__depth-1-item" data-menu="detail">
+          <a href="/detail" target="_blank" class="sidebar__depth-1-link" data-detail-link>클라이밍장 소개 페이지</a>
+        </li>
         <li class="sidebar__depth-1-item" data-toggle-menu="centerInfo">
           <button class="sidebar__depth-1-toggle-btn">센터 정보 관리</button>
           <ul class="sidebar__depth-2-list">
@@ -55,6 +47,9 @@
             </li>
           </ul>
         </li>
+        <li class="sidebar__depth-1-item" data-menu="logout">
+          <button class="sidebar__depth-1-btn" data-logout-btn>로그아웃</button>
+        </li>
         <!-- <li class="sidebar__depth-1-item" data-toggle-menu="care">
           <button class="sidebar__depth-1-toggle-btn">고객 관리</button>
           <ul class="sidebar__depth-2-list">
@@ -71,15 +66,15 @@
     <main class="main">
       <h1 class="visually-hidden">난이도 정보</h1>
       <article class="single-image-uploader" data-level-image-info>
-        <h2 class="single-image-uploader__title">난이도 이미지</h2>
+        <h2 class="single-image-uploader__title">난이도 사진</h2>
         <div class="single-image-uploader__container">
           <label class="single-image-uploader__image-label">
             <input class="single-image-uploader__image-input" type="file" data-level-image-input />
             <figure class="single-image-uploader__figure">
               <img
                 class="single-image-uploader__image"
-                src="/admin/assets/images/empty-picture.png"
-                alt="난이도 이미지"
+                src="/web/admin/assets/images/empty-picture.png"
+                alt="난이도 사진"
                 data-level-image
               />
             </figure>

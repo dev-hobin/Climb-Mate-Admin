@@ -39,7 +39,7 @@ const UserModel = class extends Model {
   };
   logout = () => {
     this.deleteCookie('accessToken');
-    location.replace('/login.html');
+    location.replace('/admin/login');
   };
   isLogged = () => {
     const accessToken = this.getCookie('accessToken');
@@ -62,14 +62,14 @@ const UserModel = class extends Model {
 
     if (resCode == this.RES_CODE.FAIL) {
       this.deleteCookie('accessToken');
-      return location.replace('/login.html');
+      return location.replace('/admin/login');
     }
     return centerName;
   };
   getAccessToken = () => this.getCookie('accessToken');
   getCenterInfo = () => {
     const accessToken = this.getCookie('accessToken');
-    if (!accessToken) return location.replace('/login.html');
+    if (!accessToken) return location.replace('/admin/login');
 
     const base64Url = accessToken.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');

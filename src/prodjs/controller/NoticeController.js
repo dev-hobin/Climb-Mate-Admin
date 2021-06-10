@@ -19,9 +19,7 @@ const NoticeController = class {
   init = () => {
     this._headerView //
       .setup(document.querySelector(`[data-header]`))
-      .on('@toggleSidebar', () => this._toggleSidebar())
-      .on('@toggleAdminMenu', () => this._toggleAdminMenu())
-      .on('@clickAdminMenu', event => console.log(event));
+      .on('@toggleSidebar', () => this._toggleSidebar());
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
@@ -58,10 +56,6 @@ const NoticeController = class {
     }
   };
 
-  // 헤더 어드민 메뉴 토글
-  _toggleAdminMenu = () => {
-    this._headerView.toggleAdminMenu();
-  };
   // 사이드바 토글
   _toggleSidebar = () => {
     this._sidebarView.toggleSidebar();

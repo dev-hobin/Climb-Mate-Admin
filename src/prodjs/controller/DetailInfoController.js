@@ -34,13 +34,12 @@ const DetailInfoController = class {
   init = () => {
     this._headerView //
       .setup(document.querySelector(`[data-header]`))
-      .on('@toggleSidebar', () => this._toggleSidebar())
-      .on('@toggleAdminMenu', () => this._toggleAdminMenu())
-      .on('@clickLogout', () => this._logout());
+      .on('@toggleSidebar', () => this._toggleSidebar());
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
-      .on('@toggleSideMenu', event => this._toggleSideMenu(event));
+      .on('@toggleSideMenu', event => this._toggleSideMenu(event))
+      .on('@showAlert', event => this._showAlertModal(event));
 
     this._facilityInfoView //
       .setup(document.querySelector(`[data-facilities]`))
@@ -54,7 +53,10 @@ const DetailInfoController = class {
       .on('@editExtraInfo', event => this._editToolExtraInfo(event))
       .on('@updateTool', event => this._updateTool(event));
 
-    this._modalView.setup(document.querySelector('main'));
+    this._modalView //
+      .setup(document.querySelector('main'))
+      .on('@logout', event => this._logout());
+
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
     this._lifeCycle();
@@ -66,12 +68,12 @@ const DetailInfoController = class {
   _lifeCycle = async () => {
     // 로그인 확인
     if (!this._userModel.isLogged()) return location.replace('/admin/login');
-    // 사용할 액세스키
-    let accessToken = this._userModel.getAccessToken();
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
     // 센터 이름 세팅
     const centerName = await this._userModel.getName();
     this._headerView.setCenterName(centerName);
     /* 사이드바 메뉴 설정 */
+    this._sidebarView.initDetailLink(centerId);
     this._sidebarView.initMenu({
       depth1: 'centerInfo',
       depth2: 'detailInfo',
@@ -117,9 +119,6 @@ const DetailInfoController = class {
     }
   };
 
-  // 헤더 어드민 메뉴 토글
-  _toggleAdminMenu = () => this._headerView.toggleAdminMenu();
-
   // 사이드바 토글
   _toggleSidebar = () => this._sidebarView.toggleSidebar();
   // 사이드 메뉴 토글
@@ -130,6 +129,17 @@ const DetailInfoController = class {
 
   // 로그아웃
   _logout = () => this._userModel.logout();
+
+  // 경고 모달 보여주기
+  _showAlertModal = event => {
+    const { view } = event.detail;
+    this._setClickable(view, false);
+
+    const { description, eventInfo } = event.detail;
+    this._modalView.showAlertModal(description, eventInfo);
+
+    this._setClickable(view, true);
+  };
 
   _changeFacilityCheckInfo = event => {
     const { facilityType, checked } = event.detail;

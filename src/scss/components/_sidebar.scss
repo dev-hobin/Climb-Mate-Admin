@@ -41,11 +41,24 @@
     display: block;
     text-decoration: none;
     color: $color-sidebar-text;
-    padding: 0.5rem 16px;
+    padding: 0.75rem 16px;
 
     &:hover,
     &.active {
       color: $color-white-smoke;
+    }
+  }
+  &__depth-1-btn {
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 700;
+    color: $color-sidebar-text;
+    padding: 0.75rem 16px;
+    text-align: start;
+
+    &:hover {
+      color: $color-white-smoke;
+      background-color: $color-sidebar-active;
     }
   }
   &__depth-1-toggle-btn {
@@ -54,7 +67,7 @@
     font-size: 1rem;
     font-weight: 700;
     color: $color-sidebar-text;
-    padding: 0.5rem 16px;
+    padding: 0.75rem 16px;
     text-align: start;
 
     &::before {

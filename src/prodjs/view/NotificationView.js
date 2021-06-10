@@ -39,8 +39,18 @@ const NotificationView = class extends View {
         notification.innerHTML = this._getErrorContentsHtml(title, description);
         break;
     }
+
+    const timeOutRemoveId = setTimeout(() => {
+      if (!notification) return;
+      else return notification.remove();
+    }, 3000);
+
     // 닫기 이벤트 달아주기
-    notification.querySelector('[data-close-btn]').addEventListener('click', () => notification.remove());
+    notification.querySelector('[data-close-btn]').addEventListener('click', () => {
+      notification.remove();
+      clearTimeout(timeOutRemoveId);
+    });
+
     this._element.append(notification);
   };
 };

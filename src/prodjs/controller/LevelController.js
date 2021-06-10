@@ -37,18 +37,18 @@ const LevelController = class {
   init = () => {
     this._headerView //
       .setup(document.querySelector(`[data-header]`))
-      .on('@toggleSidebar', () => this._toggleSidebar())
-      .on('@toggleAdminMenu', () => this._toggleAdminMenu())
-      .on('@clickLogout', () => this._logout());
+      .on('@toggleSidebar', () => this._toggleSidebar());
 
     this._sidebarView //
       .setup(document.querySelector(`[data-sidebar]`))
-      .on('@toggleSideMenu', event => this._toggleSideMenu(event));
+      .on('@toggleSideMenu', event => this._toggleSideMenu(event))
+      .on('@showAlert', event => this._showAlertModal(event));
 
     this._modalView
       .setup(document.querySelector('main'))
       .on('@confirmLevelImageDelete', event => this._deleteLevelImage(event))
-      .on('@confirmLevelInfoItemDelete', event => this._deleteLevelItem(event));
+      .on('@confirmLevelInfoItemDelete', event => this._deleteLevelItem(event))
+      .on('@logout', event => this._logout());
 
     this._notificationView.setup(document.querySelector('[data-notification]'));
 
@@ -80,12 +80,12 @@ const LevelController = class {
   _lifeCycle = async () => {
     // 로그인 확인
     if (!this._userModel.isLogged()) return location.replace('/admin/login');
-    // 사용할 액세스키
-    let accessToken = this._userModel.getAccessToken();
+    const [accessToken, centerId] = this._userModel.getCenterInfo();
     // 센터 이름 세팅
     const centerName = await this._userModel.getName();
     this._headerView.setCenterName(centerName);
     /* 사이드바 메뉴 설정 */
+    this._sidebarView.initDetailLink(centerId);
     this._sidebarView.initMenu({
       depth1: 'centerInfo',
       depth2: 'level',
@@ -154,9 +154,6 @@ const LevelController = class {
     }
   };
 
-  // 헤더 어드민 메뉴 토글
-  _toggleAdminMenu = () => this._headerView.toggleAdminMenu();
-
   // 사이드바 토글
   _toggleSidebar = () => this._sidebarView.toggleSidebar();
   // 사이드 메뉴 토글
@@ -164,6 +161,10 @@ const LevelController = class {
     const { menu } = event.detail;
     this._sidebarView.toggleSideMenu(menu);
   };
+
+  // 로그아웃
+  _logout = () => this._userModel.logout();
+
   // 경고 모달 보여주기
   _showAlertModal = event => {
     const { view } = event.detail;
@@ -174,9 +175,6 @@ const LevelController = class {
 
     this._setClickable(view, true);
   };
-
-  // 로그아웃
-  _logout = () => this._userModel.logout();
 
   // 난이도 이미지 변경
   _changeLevelImage = event => {

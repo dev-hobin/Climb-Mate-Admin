@@ -97,6 +97,8 @@ const BaseCenterInfoView = class extends View {
 
       if (emptyPhoneCallNumInput) return emptyCallNumInput.focus();
 
+      if (this._introduceTextarea.value.trim().length === 0) return this._introduceTextarea.focus();
+
       this.trigger('@updateCenterInfo', { view: this });
     });
   };
