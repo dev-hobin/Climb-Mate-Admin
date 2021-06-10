@@ -27,9 +27,6 @@ module.exports = merge(common, {
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: '/web/admin/assets/',
-            },
           },
           'css-loader',
           'sass-loader',

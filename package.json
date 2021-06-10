@@ -7,7 +7,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack serve --config config/webpack.dev.js",
     "dev-build": "cross-env NODE_ENV=development webpack --config config/webpack.dev.js",
-    "test-build": "cross-env NODE_ENV=production webpack --config config/webpack.test.js",
+    "test-build": "cross-env NODE_ENV=test webpack --config config/webpack.test.js",
     "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod.js"
   },
   "repository": {

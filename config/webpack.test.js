@@ -10,13 +10,13 @@ module.exports = merge(common, {
   target: 'browserslist',
   devtool: false,
   entry: {
-    login: paths.src + '/js/login',
-    banner: paths.src + '/js/banner',
-    baseInfo: paths.src + '/js/baseInfo',
-    detailInfo: paths.src + '/js/detailInfo',
-    price: paths.src + '/js/price',
-    setting: paths.src + '/js/setting',
-    level: paths.src + '/js/level',
+    login: paths.src + '/testjs/login',
+    banner: paths.src + '/testjs/banner',
+    baseInfo: paths.src + '/testjs/baseInfo',
+    detailInfo: paths.src + '/testjs/detailInfo',
+    price: paths.src + '/testjs/price',
+    setting: paths.src + '/testjs/setting',
+    level: paths.src + '/testjs/level',
   },
   module: {
     rules: [
@@ -25,9 +25,6 @@ module.exports = merge(common, {
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: '/testWeb/admin/assets/',
-            },
           },
           'css-loader',
           'sass-loader',

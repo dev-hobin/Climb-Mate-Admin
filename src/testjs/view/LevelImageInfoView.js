@@ -1,10 +1,10 @@
 import View from '../core/View';
 import { SINGLE_IMAGE_UPLOADER_TYPE } from '../model/SingleImageUploadModel';
 
-const tag = '[PriceImageInfoView]';
+const tag = '[LevelImageInfoView]';
 
-const emptyImageUrl = '/web/admin/assets/images/empty-picture.png';
-const PriceImageInfoView = class extends View {
+const emptyImageUrl = '/testWeb/admin/assets/images/empty-picture.png';
+const LevelImageInfoView = class extends View {
   constructor() {
     super();
 
@@ -17,8 +17,8 @@ const PriceImageInfoView = class extends View {
   setup = element => {
     this.init(element);
 
-    this._imageInput = element.querySelector('[data-price-image-input]');
-    this._image = element.querySelector('[data-price-image]');
+    this._imageInput = element.querySelector('[data-level-image-input]');
+    this._image = element.querySelector('[data-level-image]');
 
     this._btnContainer = element.querySelector('[data-btn-container]');
 
@@ -54,19 +54,20 @@ const PriceImageInfoView = class extends View {
     this._imageInput.addEventListener('change', event => {
       if (event.target.files.length === 0) return;
       const fileList = [...event.target.files];
-      this.trigger('@changeImage', { view: this, type: SINGLE_IMAGE_UPLOADER_TYPE.PRICE, fileList });
+      this.trigger('@changeImage', { view: this, type: SINGLE_IMAGE_UPLOADER_TYPE.LEVEL, fileList });
     });
 
     this._btnContainer.addEventListener('click', event => {
       if (!this.clickable) return;
+
       const btnType = event.target.dataset.btn;
       if (!btnType) return;
       switch (true) {
         case btnType === 'confirm':
-          this.trigger('@confirmImage', { view: this, type: SINGLE_IMAGE_UPLOADER_TYPE.PRICE });
+          this.trigger('@confirmImage', { view: this, type: SINGLE_IMAGE_UPLOADER_TYPE.LEVEL });
           break;
         case btnType === 'cancel':
-          this.trigger('@cancelImage', { view: this, type: SINGLE_IMAGE_UPLOADER_TYPE.PRICE });
+          this.trigger('@cancelImage', { view: this, type: SINGLE_IMAGE_UPLOADER_TYPE.LEVEL });
           break;
         case btnType === 'delete':
           this.trigger('@showAlert', {
@@ -74,7 +75,7 @@ const PriceImageInfoView = class extends View {
             description: '정말로 삭제하시겠습니까?',
             eventInfo: {
               eventName: 'single-image-uploader__delete-image',
-              type: SINGLE_IMAGE_UPLOADER_TYPE.PRICE,
+              type: SINGLE_IMAGE_UPLOADER_TYPE.LEVEL,
             },
           });
           break;
@@ -98,4 +99,4 @@ class Template {
   };
 }
 
-export default PriceImageInfoView;
+export default LevelImageInfoView;

@@ -3,7 +3,7 @@ import { SINGLE_IMAGE_UPLOADER_TYPE } from '../model/SingleImageUploadModel';
 
 const tag = '[PriceImageInfoView]';
 
-const emptyImageUrl = '/web/admin/assets/images/empty-picture.png';
+const emptyImageUrl = '/testWeb/admin/assets/images/empty-picture.png';
 const PriceImageInfoView = class extends View {
   constructor() {
     super();
