@@ -122,12 +122,14 @@ const ExtraPriceInfoView = class extends View {
           });
           break;
         case btnType === 'confirm':
+          const goodsNameInput = goodsNameContainer.querySelector('[data-name-input]');
+          const goodsPriceInput = priceContainer.querySelector('[data-price-input]');
           initialGoodsName = goodsNameContainer.querySelector('[data-initial-name]').dataset.initialName;
-          edittedGoodsName = goodsNameContainer.querySelector('[data-name-input]').value.trim();
-          edittedPrice = priceContainer.querySelector('[data-price-input]').value.trim();
+          edittedGoodsName = goodsNameInput.value.trim();
+          edittedPrice = goodsPriceInput.value.trim();
 
-          if (edittedGoodsName.length === 0) return goodsNameContainer.querySelector('[data-name-input]').focus();
-          if (edittedPrice.length === 0) return priceContainer.querySelector('[data-price-input]').focus();
+          if (edittedGoodsName.length === 0) return goodsNameInput.focus();
+          if (edittedPrice.length === 0 || edittedPrice == 0) return goodsPriceInput.focus();
 
           this.trigger('@confirmEditItem', {
             view: this,
@@ -172,8 +174,6 @@ const ExtraPriceInfoView = class extends View {
           if (inputEl.value.length > 9) inputEl.value = inputEl.value.substr(0, 9);
           // 둘째자리 이상일때 맨앞에 0 제거
           if (inputEl.value.length > 1) inputEl.value = inputEl.value.replace(/(^0+)/, '');
-          // 초기값은 1
-          if (inputEl.value.length === 0) inputEl.value = 1;
           break;
         default:
           return;

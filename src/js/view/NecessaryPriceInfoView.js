@@ -55,7 +55,10 @@ const NecessaryPriceInfoView = class extends View {
           btnContainer.innerHTML = this._template.getEditStateBtnsHtml();
           break;
         case btnType === 'confirm':
-          const priceInputValue = priceContainer.querySelector('[data-price-input]').value;
+          const priceInput = priceContainer.querySelector('[data-price-input]');
+          const priceInputValue = priceInput.value;
+          if (priceInputValue.length === 0 || priceInputValue == 0) return priceInput.focus();
+
           this.trigger('@confirmPriceEdit', { view: this, goodsType, priceType, price: priceInputValue });
           break;
         case btnType === 'cancel':
@@ -76,8 +79,6 @@ const NecessaryPriceInfoView = class extends View {
       if (priceInput.value.length > 9) priceInput.value = priceInput.value.substr(0, 9);
       // 둘째자리 이상일때 맨앞에 0 제거
       if (priceInput.value.length > 1) priceInput.value = priceInput.value.replace(/(^0+)/, '');
-      // 초기값은 1
-      if (priceInput.value.length === 0) priceInput.value = 1;
     });
   };
 };
