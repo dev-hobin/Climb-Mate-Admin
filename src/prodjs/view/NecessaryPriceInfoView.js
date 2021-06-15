@@ -90,7 +90,7 @@ class Template {
         `;
   };
   getPriceInputHtml = price => {
-    const priceNum = price.replace(/,/, '');
+    const priceNum = price.replace(/,/g, '');
     return `
         <input class="necessary-price-item__price-input" type="text" placeholder="가격 입력" value="${priceNum}" data-initial-price="${price}" data-price-input/>
       `;
