@@ -70,8 +70,6 @@ const ExtraPriceInfoView = class extends View {
       if (priceInput.value.length > 9) priceInput.value = priceInput.value.substr(0, 9);
       // 둘째자리 이상일때 맨앞에 0 제거
       if (priceInput.value.length > 1) priceInput.value = priceInput.value.replace(/(^0+)/, '');
-      // 초기값은 1
-      if (priceInput.value.length === 0) priceInput.value = 1;
     });
 
     this._addBtn.addEventListener('click', () => {
@@ -81,7 +79,7 @@ const ExtraPriceInfoView = class extends View {
       const goodsPrice = this._priceInput.value;
 
       if (goodsName.length === 0) return this._nameInput.focus();
-      if (goodsPrice.length === 0) return this._priceInput.focus();
+      if (goodsPrice.length === 0 || goodsPrice == 0) return this._priceInput.focus();
 
       this.trigger('@addItem', { view: this, goodsName, goodsPrice });
     });
