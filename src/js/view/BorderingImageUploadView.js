@@ -211,7 +211,7 @@ const BorderingImageUploadView = class extends View {
 
     infoMessage = document.createElement('span');
     infoMessage.setAttribute('class', 'image-uploader__none-info');
-    infoMessage.textContent = '사진을 추가해주세요!';
+    infoMessage.textContent = '볼더링 사진을 추가해주세요!';
     this._imageList.append(infoMessage);
   };
   // 인포 메세지 삭제

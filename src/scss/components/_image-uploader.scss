@@ -28,7 +28,10 @@
       border-color: $color-light-blue;
     }
   }
-
+  &__description {
+    padding: 0.5rem 0;
+    color: $color-gray;
+  }
   &__image-list {
     padding: 0.5rem;
     margin-top: 1rem;

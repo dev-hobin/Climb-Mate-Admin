@@ -65,6 +65,7 @@ const ModalView = class extends View {
     cancelBtn.addEventListener('click', () => this.removeModal());
 
     this._element.append(modal);
+    confirm.focus();
   };
   removeModal = () => this._element.querySelector('[data-modal]').remove();
 

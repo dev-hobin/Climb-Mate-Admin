@@ -7,6 +7,7 @@ export const TOOL_TYPE = {
   TRAINING_BOARD: 'training-board',
   MOON_BOARD: 'moon-board',
   KILTER_BOARD: 'kilter-board',
+  TENSION_BOARD: 'tension-board',
 };
 export const TOOL_EXTRA_INFO = {
   HEALTH: 'health-description',
@@ -17,6 +18,7 @@ const TOOL_NAME_TO_TYPE_KEY = {
   '문 보드': 'MOON_BOARD',
   '헬스 도구': 'HEATH',
   '트레이닝 보드': 'TRAINING_BOARD',
+  '텐션 보드': 'TENSION_BOARD',
 };
 
 const ToolInfoModel = class extends Model {
@@ -102,6 +104,7 @@ const ToolInfoModel = class extends Model {
         trainingBoardCheck: this._checkInfo.current[TOOL_TYPE.TRAINING_BOARD] ? 1 : 2,
         moonBoardCheck: this._checkInfo.current[TOOL_TYPE.MOON_BOARD] ? 1 : 2,
         kilterBoardCheck: this._checkInfo.current[TOOL_TYPE.KILTER_BOARD] ? 1 : 2,
+        tensionBoardCheck: this._checkInfo.current[TOOL_TYPE.TENSION_BOARD] ? 1 : 2,
         detailCenterHealthTool: this._extraInfo.current[TOOL_EXTRA_INFO.HEALTH],
       },
     };

@@ -328,7 +328,11 @@ const EnduranceLevelInfoView = class extends View {
 class Template {
   getEmptyItemHtml = () => {
     return `
-        <li class="empty-level-item" data-empty-item>난이도 정보를 추가해주세요</li>
+        <li class="empty-level-item" data-empty-item>
+          난이도 정보를 추가해주세요 <br /><br />
+          색깔 -> 예) 빨간색 <br />
+          난이도 이름 -> 예) V0
+        </li>
         `;
   };
   getItemHtml = (level, levelName, color, colorName) => {
